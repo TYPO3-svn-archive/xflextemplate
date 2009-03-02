@@ -1,0 +1,11 @@
+  # cat=basic//10; type=boolean; label= if not set, no control on  acces group to xflextemplate
+emptyGroupnoControl = 0
+
+  # cat=basic//10; type=int [10-300]; label=Number of Columns of TextArea: This field specify the number of column of text area in the template edit form
+textareaCols = 50
+
+  # cat=basic//10; type=int [10-300]; label=Number of Rows of TextArea: This field specify the number of rows of text area in the template edit form
+textareaRows = 20
+
+  # cat=basic//10; type=string; label=Upload folder for saving images and other files
+uploadFolder = uploads/pics
