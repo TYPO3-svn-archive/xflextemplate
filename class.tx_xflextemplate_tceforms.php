@@ -53,6 +53,8 @@
 
 
 require_once(PATH_t3lib.'class.t3lib_tsparser.php');
+require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.tcaTransformation.php");
+require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xmlTransformation.php");
 
 class tx_xflextemplate_tceforms	{
 	/*
@@ -69,7 +71,7 @@ class tx_xflextemplate_tceforms	{
 	 * @param	array		E' l'array  contenente i campi da inserire nelle form (e con cui creare le form)
 	 * @param	object		E' il puntatore alla classe con cui viene effetuato lo hook (tceforms)
 	 * @return	void		none
-	 * @ver 1.0.0
+	 * @ver 1.1.0
 	 */
 	function getMainFields_preProcess($table, &$row, $pObj)	{
 		if($row['xtemplate'] && $row['xtemplate']!='notemplate' && $table = 'tt_content'){ //if xtemplate is not set none to do
@@ -80,9 +82,9 @@ class tx_xflextemplate_tceforms	{
 			$this->ts->parse($dbrow['typoscript']);
 			$xml=str_replace("''","'",$dbrow['xml']);
 			//update the TCA with newer one
-			$this->getTCApalettes($GLOBALS['TCA']['tt_content'],$dbrow['palettes']);
-			$this->getTCA($GLOBALS['TCA']['tt_content'],$xml);
-			$flexFields=tx_xft_div::getArrayFromXMLData($row[$this->_EXTKEY]);
+			tcaTransformation::getTCApalettes($GLOBALS['TCA']['tt_content'],$dbrow['palettes']);
+			tcaTransformation::getFormTCA($GLOBALS['TCA']['tt_content'],$xml);
+			$flexFields=xmlTransformation::getArrayFromXMLData($row[$this->_EXTKEY]);
 			if(is_array($flexFields)){ //if flexdata is an array data will be put into flexdata array
 				//put any field from flexfields
 				foreach($flexFields as $key=>$obj){
@@ -90,115 +92,6 @@ class tx_xflextemplate_tceforms	{
 				}
 			}
 		}
-	}
-
-
-	/**
-	 * La funzione permette la generazione del TCA a partire dal xml passato
-	 * come secondo parametro, vengono cioe' aggiunti i campi relativi ai valori
-	 * presenti nel xml
-	 *
-	 * @param	array		E' l'albero TCA del tt_content, quindi deve essere passato come TCA['tt_content']
-	 * @param	array		E' l'array  modificato dalla funzione t3lib_div::xml2tree del xml presente nella tabella tx_xflextemplate_template
-	 * @return	void		none
-	 * @ver 1.0.0
-	 */
-	function getTCA(&$TCA,$xmlArray) {
-		global $BE_USER;
-		$fieldArray=tx_xft_div::getArrayFromXML($xmlArray); // create array of field from xml template
-		if(is_array($fieldArray)){ // if array is correct
-			foreach($fieldArray as $object){
-				$palettes=$name='';
-				foreach($object as $key=>$item){ //create TCA array from fields
-					switch ($key){
-						case 'name':
-							$name=$item; //name of column
-						break;
-						case 'defaultExtras':
-							$xflexTceForms[$name][$key]=$item; //valid only for rte
-						break;
-						case 'items':
-							$xflexTceForms[$name]['config'][$key]=$this->setSelectItems($item); // items for select and radio buttons
-						break;
-						case 'palettes': //list of palettes
-							$palettes=$item;
-						break;
-						default:
-							$xflexTceForms[$name]['config'][$key]=$item; // standard config fields
-						break;
-					}
-				}
-				//defines personalization in label of field, it can be fetch from dynamicfieldtranslation
-				if (is_array($this->ts->setup['language.'][$name.'.']['beLabel.']))
-					$xflexTceForms[$name]['label']=($this->ts->setup['language.'][$name.'.']['beLabel.'][$BE_USER->uc['lang']])?$this->ts->setup['language.'][$name.'.']['beLabel.'][$BE_USER->uc['lang']]:$this->ts->setup['language.'][$name.'.']['beLabel.']['default'];
-				else
-					$xflexTceForms[$name]['label']='LLL:EXT:xflextemplate/dynamicfieldtranslation.xml:'.$name;
-				$xflexTceForms[$name]['label']=(strlen($xflexTceForms[$name]['label'])>0)?$xflexTceForms[$name]['label']:'LLL:EXT:xflextemplate/dynamicfieldtranslation.xml:'.$name;
-				//exclude field is always set to zero
-				$xflexTceForms[$name]['exclude']='0';
-				//this fields is for RTE and other implementation of particular field (documentation in TYPO3 core api)
-				if(!$xflexTceForms[$name]['defaultExtras']) //defaultExtras is defined as follow
-					$xflexTceForms[$name]['defaultExtras']='richtext[]:rte_transform[flag=rte_enabled|mode=ts]';
-				if($xflexTceForms[$name]['config']['internal_type']=='file'){
-					$xflexTceForms[$name]['config']['uploadfolder']='uploads/pics/';
-				}
-				//create types fields for palettes
-				if (!$palettes) {
-					$paletteValue=($this->translatePalettesArray[$name])?$this->translatePalettesArray[$name]:'';
-					$showfields[]=$name.';;'.$paletteValue.';;';
-				}
-			}
-		}
-		$showfields=(is_array($showfields))?$showfields:array();
-		//Update TCA!! It's very important pass TCA for reference!!!
-		$TCA['columns']=(is_array($xflexTceForms))?array_merge_recursive($TCA['columns'],$xflexTceForms):$TCA['columns'];//if template is hidden not merge array but use original TCA
-		$TCA['types'][$this->_EXTKEY.'_pi1']['showitem']=$TCA['types'][$this->_EXTKEY.'_pi1']['showitem'].','.implode(',',$showfields);
-	}
-
-
-
-
-	/**
-	 * Questa funzione permette di generare dinamicamente il contenuto
-	 * dell'array palettes, in modo coerente con l'xml fornito. Le palettes
-	 * servono per definire i campi secondari associati alle voci principali.
-	 *
-	 * @param	array		E' l'albero TCA del tt_content, quindi deve essere passato come TCA['tt_content']
-	 * @param	array		E' l'array  modificato dalla funzione t3lib_div::xml2tree del xml presente nella tabella tx_xflextemplate_template
-	 * @return	void		none
-	 * @ver 1.0.0
-	 */
-	function getTCApalettes(&$TCA,$palettes) {
-		//unserialize the value palettes
-		$palettesArray=unserialize($palettes);
-		// Order array by means of key
-		ksort($TCA['palettes']);
-		// fetch last key (gratest)
-		end($TCA['palettes']);
-	 	$last=key($TCA['palettes'])+1;
-	 	//in this way $last is the last index +1 (gratest index) in the array and function uses a grater value
-		if($palettesArray){
-			foreach($palettesArray as $key=>$value){
-				$TCA['palettes'][$last]=array('showitem'=>$value);
-				$this->translatePalettesArray[$key]=$last;
-				$last++;
-			}
-		}
-	}
-
-	/**
-	 * This function create the array from items will be passed to TCA constructor for creating select or radio items.
-	 *
-	 * @param	[type]		$field: in this parameter there are all items for select or radio separated from carriage return "/n" and each item is comma separated
-	 * @return	[type]		an array with row and column for each item
-	 * @ver 1.0.0
-	 */
-	function setSelectItems($field){
-		$rowArray=explode("\n",$field);
-		foreach($rowArray as $value){
-			$tmpArray[]=explode(',',$value);
-		}
-		return $tmpArray;
 	}
 
 }

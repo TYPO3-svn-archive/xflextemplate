@@ -41,7 +41,7 @@
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
-class tx_xft_div {
+class xmlTransformation {
 
 
 	/**
@@ -50,13 +50,11 @@ class tx_xft_div {
 	 *
 	 * @param	string		$xml: xml from template
 	 * @return	array		an array with data from xml
-	 * @ver 1.0.0
+	 * @ver 1.1.0
 	 */
 	function getArrayFromXML($xml){
 		$XMLArray=array(); //set value, this value will be send to array merge overrule, and if it'isn't an array an error will raise
 		$tmpArray=t3lib_div::xml2tree($xml); // tranform xml into array typo3 format
-		debug($tmpArray);
-		exit();
 		if(is_array($tmpArray)){
 			$tmpArray=$tmpArray['template'][0]['ch']['el']; // define start level inside array
 			$index=0; // reset index of final array result
@@ -103,6 +101,23 @@ class tx_xft_div {
 					$fieldsArray[$key]=$value['vDEF'];
 		return $fieldsArray;
 	}
+	
+/**
+	 * This function creates the array of Flex Form in TYPO3 format from the array passed as value
+	 *
+	 * @param	array		$dataArray: array to transform
+	 * @return	array		an array with data from input in TYPO3 flex form format
+	 * @ver 1.0.4
+	 */
+	function getXMLDataFromArray($dataArray){
+		if(is_array($dataArray)){
+			foreach($dataArray as $key=>$item){
+				$resultArray[$key]['vDEF']=$item; //create single item in form: [$key]['vDEF']=item
+			}
+		}
+		$XMLDataArray['data']['sDEF']['lDEF']=$resultArray; // link array created above with ['data']['sDEF']['lDEF']
+		return $XMLDataArray;
+	}
 
 }
 
@@ -110,8 +125,8 @@ class tx_xft_div {
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/class.xft_div.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/class.xft_div.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.xmlTransformation.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.xmlTransformation.php']);
 }
 
 ?>
