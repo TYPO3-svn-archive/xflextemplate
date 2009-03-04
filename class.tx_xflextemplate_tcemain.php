@@ -59,7 +59,7 @@ require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.tcaTransform
   * @package typo3
   * @subpackage xflextemplate
   * @author	Federico Bernardin <federico@bernardin.it>
-  * @version 1.0.4
+  * @version 1.1.0
   */
 class tx_xflextemplate_tcemain {
 
@@ -82,10 +82,10 @@ class tx_xflextemplate_tcemain {
 	
 
 	/**
-	 * Questa funzione permette di gestire in maniera personalizzata l'array TCA
-	 * in modo da creare la struttura flex con i campi presenti nel template
-	 * e passarla quindi mediante hook alla classe tcemain perchè esegua le
-	 * operazioni come se i valori provenissero da una flexdata
+	 * This function converts $incomingFieldArray to new one. It transforms all fields from $incomingFieldArray to a new flexform
+	 * with xml format.
+	 * 
+	 * 
 	 *
 	 * @param	array		array con i campi provenienti dalle form (passato per riferimento)
 	 * @param	string		tabella TCA utilizzata

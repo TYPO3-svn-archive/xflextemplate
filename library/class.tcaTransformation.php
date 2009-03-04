@@ -25,20 +25,39 @@
 
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
+ *
+ *
+ *
+ *   52: class tcaTransformation
+ *   61:     function getFormTCA(&$TCA,$xmlArray)
+ *  121:     function getFlexFieldTCA(&$TCA,$xmlArray)
+ *  176:     function getTCApalettes(&$TCA,$palettes)
+ *  200:     function setSelectItems($field)
+ *
+ * TOTAL FUNCTIONS: 4
+ * (This index is automatically created/updated by the extension "extdeveval")
+ *
  */
 
+require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xmlTransformation.php");
 
+/**
+ * Library for TCA management.
+ *
+ * @package typo3
+ * @subpackage xflextemplate
+ * @author	Federico Bernardin <federico@bernardin.it>
+ * @version 1.1.0
+ */
 class tcaTransformation	{
 /**
-	 * La funzione permette la generazione del TCA a partire dal xml passato
-	 * come secondo parametro, vengono cioe' aggiunti i campi relativi ai valori
-	 * presenti nel xml
-	 *
-	 * @param	array		E' l'albero TCA del tt_content, quindi deve essere passato come TCA['tt_content']
-	 * @param	array		E' l'array  modificato dalla funzione t3lib_div::xml2tree del xml presente nella tabella tx_xflextemplate_template
-	 * @return	void		none
-	 * @ver 1.1.0
-	 */
+ * This function creates a fake TCA['tt_content'] for adding the field from flexible template.
+ * It returns void but changes TCA array, so it contains the new columns as they were true.
+ *
+ * @param	array		TCA tree of tt_content, so you have to pass as TCA['tt_content']
+ * @param	array		xml field from template
+ * @return	void		none
+ */
 	function getFormTCA(&$TCA,$xmlArray) {
 		$fieldArray=xmlTransformation::getArrayFromXML($xmlArray); // create array of field from xml template
 		if(is_array($fieldArray)){ // if array is correct
@@ -66,9 +85,6 @@ class tcaTransformation	{
 				//defines personalization in label of field, it can be fetch from dynamicfieldtranslation
 				if (is_array($this->ts->setup['language.'][$name.'.']['beLabel.']))
 					$xflexTceForms[$name]['label']=($this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']])?$this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']]:$this->ts->setup['language.'][$name.'.']['beLabel.']['default'];
-				else
-					$xflexTceForms[$name]['label']='LLL:EXT:xflextemplate/dynamicfieldtranslation.xml:'.$name;
-				$xflexTceForms[$name]['label']=(strlen($xflexTceForms[$name]['label'])>0)?$xflexTceForms[$name]['label']:'LLL:EXT:xflextemplate/dynamicfieldtranslation.xml:'.$name;
 				//exclude field is always set to zero
 				$xflexTceForms[$name]['exclude']='0';
 				$globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
@@ -90,16 +106,15 @@ class tcaTransformation	{
 		$TCA['columns']=(is_array($xflexTceForms))?array_merge_recursive($TCA['columns'],$xflexTceForms):$TCA['columns'];//if template is hidden not merge array but use original TCA
 		$TCA['types'][$this->_EXTKEY.'_pi1']['showitem']=$TCA['types'][$this->_EXTKEY.'_pi1']['showitem'].','.implode(',',$showfields);
 	}
-	
+
 /**
-	 * La funzione permette la generazione del TCA a partire dal xml passato
-	 * come secondo parametro, vengono cioe' aggiunti i campi relativi ai valori
-	 * presenti nel xml
-	 *
-	 * @param	array		E' l'albero TCA del tt_content, quindi deve essere passato come TCA['tt_content']
-	 * @param	array		E' l'array  modificato dalla funzione t3lib_div::xml2tree del xml presente nella tabella tx_xflextemplate_template
-	 * @return	void		none
-	 */
+ * Function to create the flexform for definition of flexform field in TCA column.
+ * Fields are fetched from xml data from templates table.
+ *
+ * @param	array		TCA tree of tt_content, so you have to pass as TCA['tt_content']
+ * @param	array		xml field from template
+ * @return	void		none
+ */
 	 function getFlexFieldTCA(&$TCA,$xmlArray) {
 	 	$fieldArray=xmlTransformation::getArrayFromXML($xmlArray); // create array of field from xml template
 		if(is_array($fieldArray)){ // if array is correct
@@ -142,27 +157,25 @@ class tcaTransformation	{
 		//update TCA
 		$TCA['columns'][$this->_EXTKEY]=$xflexTceForms[$this->_EXTKEY];
 	}
-	
+
 
 
 
 
 	/**
-	 * Questa funzione permette di generare dinamicamente il contenuto
-	 * dell'array palettes, in modo coerente con l'xml fornito. Le palettes
-	 * servono per definire i campi secondari associati alle voci principali.
+	 * This function changes the palettes part of TCA.
+	 * The $palettes parameter is a serilized array containing palette data
 	 *
-	 * @param	array		E' l'albero TCA del tt_content, quindi deve essere passato come TCA['tt_content']
-	 * @param	array		E' l'array  modificato dalla funzione t3lib_div::xml2tree del xml presente nella tabella tx_xflextemplate_template
+	 * @param	array		TCA tree of tt_content, so you have to pass as TCA['tt_content']
+	 * @param	array		palettes serialized array
 	 * @return	void		none
-	 * @ver 1.0.0
 	 */
 	function getTCApalettes(&$TCA,$palettes) {
 		//unserialize the value palettes
 		$palettesArray=unserialize($palettes);
 		// Order array by means of key
 		ksort($TCA['palettes']);
-		// fetch last key (gratest)
+		// fetch last key (greatest)
 		end($TCA['palettes']);
 	 	$last=key($TCA['palettes'])+1;
 	 	//in this way $last is the last index +1 (gratest index) in the array and function uses a grater value
@@ -176,11 +189,10 @@ class tcaTransformation	{
 	}
 
 	/**
-	 * This function create the array from items will be passed to TCA constructor for creating select or radio items.
+	 * This function creates the array from items will be passed to TCA constructor for creating select or radio items.
 	 *
-	 * @param	[type]		$field: in this parameter there are all items for select or radio separated from carriage return "/n" and each item is comma separated
-	 * @return	[type]		an array with row and column for each item
-	 * @ver 1.0.0
+	 * @param	string		in this parameter there are all items for select or radio separated from carriage return "/n" and each item is comma separated
+	 * @return	void		an array with row and column for each item
 	 */
 	function setSelectItems($field){
 		$rowArray=explode("\n",$field);
@@ -189,5 +201,10 @@ class tcaTransformation	{
 		}
 		return $tmpArray;
 	}
+}
+
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.tcaTransformation.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.tcaTransformation.php']);
 }
 ?>

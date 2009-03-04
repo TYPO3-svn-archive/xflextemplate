@@ -41,6 +41,12 @@
  *
  */
 
+
+
+require_once(PATH_t3lib.'class.t3lib_tsparser.php');
+require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.tcaTransformation.php");
+require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xmlTransformation.php");
+
  /**
   * Hook 'tx_xflextemplate_tceforms' for the 't3lib_tceforms.getMainFieldsClass'
   * php class.
@@ -48,14 +54,8 @@
   * @package typo3
   * @subpackage xflextemplate
   * @author	Federico Bernardin <federico@bernardin.it>
-  * @version 1.0.0
+  * @version 1.1.0
   */
-
-
-require_once(PATH_t3lib.'class.t3lib_tsparser.php');
-require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.tcaTransformation.php");
-require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xmlTransformation.php");
-
 class tx_xflextemplate_tceforms	{
 	/*
 	* Name of plugin
@@ -71,7 +71,6 @@ class tx_xflextemplate_tceforms	{
 	 * @param	array		E' l'array  contenente i campi da inserire nelle form (e con cui creare le form)
 	 * @param	object		E' il puntatore alla classe con cui viene effetuato lo hook (tceforms)
 	 * @return	void		none
-	 * @ver 1.1.0
 	 */
 	function getMainFields_preProcess($table, &$row, $pObj)	{
 		if($row['xtemplate'] && $row['xtemplate']!='notemplate' && $table = 'tt_content'){ //if xtemplate is not set none to do

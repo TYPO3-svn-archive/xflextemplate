@@ -1,5 +1,13 @@
 (add new changes on top of this file)
-
+------------------------------------------Release 1.1.0-------------------------
+2009-03-03 Federico Bernardin  <federico@bernardin.it>
+	* Optimize TCE form and TCE main code
+	* Fix bug during copy element
+	* Fix bug during copy element and duplicate attached files
+	* No template select item is removed when you choose right template
+	* Add new item to ext_con_template: upload folder and default extras
+	* Separate code for TCA manipulation and XML transformation into library directory
+--------------------------------------------------------------------------------
 2006-09-18 Federico Bernardin  <federico@bernardin.it>
 	* Change Button with Icon in BE
 	* Fix problem during saving template

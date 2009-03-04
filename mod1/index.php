@@ -60,6 +60,7 @@
 	// DEFAULT initialization of a module [BEGIN]
 unset($MCONF);
 require ("conf.php");
+$BACK_PATH = '/Users/federico/Sites/typo3_repository/testplugin/typo3/';
 require ($BACK_PATH."init.php");
 require ($BACK_PATH."template.php");
 $LANG->includeLLFile("EXT:xflextemplate/mod1/locallang.php");
@@ -69,6 +70,7 @@ require_once (PATH_t3lib."class.t3lib_extmgm.php");
 require_once (PATH_site."/typo3conf/ext/xflextemplate/class.tx_xflextemplate_importexport.php");
 require_once (PATH_site."/typo3conf/ext/xflextemplate/class.fbgp.php");
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
+$BACK_PATH = '/typo3/';
 	// DEFAULT initialization of a module [END]
 
 class tx_xflextemplate_module1 extends t3lib_SCbase {
@@ -1192,9 +1194,9 @@ function createForm1(){
 	 * @return	[type]		...
 	 */
 	function getTemplateList(){
-		global $LANG;
+		global $LANG,$BACK_PATH;
 		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title,tstamp,file,description,hidden,uid','tx_xflextemplate_template','','','title');
-		$content='<input type="hidden" value="new" name="op" /><input type="image" src="/typo3/sysext/t3skin/icons/gfx/new_el.gif" style="border:0" alt=""/><a href="#" onClick="window.open(\'index.php?op=import\',\'importexport\',\'height=350,width=400,status=0,menubar=0,resizable=1,scrollbars=1\')"><img src="'.$this->backPath.'sysext/t3skin/icons/gfx/napshot.gif" /></a><br /><br /><table class="tx_xflextemplate_listtemplate_table">
+		$content='<input type="hidden" value="new" name="op" /><input type="image" '.t3lib_iconWorks::skinImg($BACK_PATH,'gfx/new_el.gif','').' style="border:0" alt=""/><a href="#" onClick="window.open(\'index.php?op=import\',\'importexport\',\'height=350,width=400,status=0,menubar=0,resizable=1,scrollbars=1\')"><img '.t3lib_iconWorks::skinImg($BACK_PATH,'gfx/import.gif','').' /></a><br /><br /><table class="tx_xflextemplate_listtemplate_table">
 		<tr class="bgColor5"><td>'.$LANG->getLL('titlelist').'</td><td>'.$LANG->getLL('descriptionlist').'</td><td>'.$LANG->getLL('filelist').'</td><td>'.$LANG->getLL('datelist').'</td><td>&nbsp;</td></tr>';
 		while($row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 			$hiddenIcon=($row['hidden'])?'/typo3/sysext/t3skin/icons/gfx/button_unhide.gif':'/typo3/sysext/t3skin/icons/gfx/button_hide.gif';

@@ -41,6 +41,15 @@
  * (This index is automatically created/updated by the extension "extdeveval")
  *
  */
+
+/**
+ * Library for XML transformation management.
+ *
+ * @package typo3
+ * @subpackage xflextemplate
+ * @author	Federico Bernardin <federico@bernardin.it>
+ * @version 1.1.0
+ */
 class xmlTransformation {
 
 
@@ -50,7 +59,6 @@ class xmlTransformation {
 	 *
 	 * @param	string		$xml: xml from template
 	 * @return	array		an array with data from xml
-	 * @ver 1.1.0
 	 */
 	function getArrayFromXML($xml){
 		$XMLArray=array(); //set value, this value will be send to array merge overrule, and if it'isn't an array an error will raise
@@ -77,7 +85,6 @@ class xmlTransformation {
 	 *
 	 * @param	string		$xml: xml from template
 	 * @return	array		an array with data from xml
-	 * @ver 1.0.0
 	 */
 	function getArrayFromXMLData($xml){
 		$XMLArray=array(); //set value, this value will be send to array merge overrule, and if it'isn't an array an error will raise
@@ -92,22 +99,13 @@ class xmlTransformation {
 			}
 		}
 		return $XMLArray;
-	}
-	
-	function addFiledsFromArray($array,$fieldsArray){
-		if(is_array($array))
-			if(is_array($array['data']['sDEF']['lDEF']))
-				foreach($array['data']['sDEF']['lDEF'] as $key=>$value)
-					$fieldsArray[$key]=$value['vDEF'];
-		return $fieldsArray;
-	}
+	}	
 	
 /**
 	 * This function creates the array of Flex Form in TYPO3 format from the array passed as value
 	 *
 	 * @param	array		$dataArray: array to transform
 	 * @return	array		an array with data from input in TYPO3 flex form format
-	 * @ver 1.0.4
 	 */
 	function getXMLDataFromArray($dataArray){
 		if(is_array($dataArray)){

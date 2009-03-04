@@ -1,6 +1,7 @@
 <?php
 
 	// DO NOT REMOVE OR CHANGE THESE 3 LINES:
+//define('TYPO3_MOD_PATH', '../../svn typo3/xflextemplate/trunk/mod1/');
 define('TYPO3_MOD_PATH', '../typo3conf/ext/xflextemplate/mod1/');
 $BACK_PATH='../../../../typo3/';
 $MCONF["name"]="tools_txxflextemplateM1";
