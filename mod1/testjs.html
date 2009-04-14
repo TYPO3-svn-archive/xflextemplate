@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <title>Untitled Document</title>
+        <link href="../res/css/template.css" type="text/css">
+        <link rel="stylesheet" type="text/css" href="/typo3/stylesheet.css" />
+        <link rel="stylesheet" type="text/css" href="/typo3/../typo3conf/ext/xflextemplate/res/css/template.css" />
+        <style type="text/css" id="internalStyle">
+            /*<![CDATA[*/
+            /*###POSTCSSMARKER###*/
+            /*]]>*/
+        </style>
+        <link rel="stylesheet" type="text/css" href="/typo3/sysext/t3skin/stylesheets/stylesheet_post.css" />
+        <script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js">
+        </script>
+        <script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js">
+        </script>
+        <script type="text/javascript" src="../javascript/jquery/jquery.selectboxes.js">
+        </script>
+        <script type="text/javascript" src="../javascript/library/class.ajax.js">
+        </script>
+        <script type="text/javascript" src="../javascript/library/class.element.js">
+        </script>
+        <script type="text/javascript">
+        	var languageArray =new Array;
+            $(document).ready(function(){
+                ajaxUrl = 'http://testplugin/typo3conf/ext/xflextemplate/mod1/index1.php';
+                var languageKeyArray = new Array('dialogYes', 'dialogNo', 'dialogOK', 'dialogCancel');
+                parameters = {
+                    url: ajaxUrl
+                }
+                $(languageKeyArray).each(function(i, j){
+                    parameters.data = 'ajax=1&action=getLL&key=' + j;
+                    ajaxObj = new ajaxClass(parameters);
+                    ret = ajaxObj.exec();
+                    languageArray[j] = ret;
+                });
+                elements = new Array();
+                elements[1] = new element({portletClass: 'portlet',language:{dialogYes:'Si'}});
+                elements[1].add(1);
+                elements[2] = new element({portletClass: 'portlet',language:{dialogYes:'Si'}});
+                elements[2].add(2);
+                elements[1].addSortProperties();
+                elements[2].addSortProperties();
+                $(".column").sortable({
+                    connectWith: ['.column']
+                });
+                elements[2].addDeleteHandler();
+            })
+        </script>
+    </head>
+    <body>
+        <div class="column">
+            <div id="element_1" class="portlet">
+                <div class="portlet-header">
+                    <span class="ui-icon-delete"><img src="/typo3/sysext/t3skin/icons/gfx/garbage.gif" height="16" width="16"></span><span class="title"></span>
+                </div>
+                <div class="portlet-content">
+                    <div class="leftside">
+                        <label for="xflextemplate_1_title">
+                            title
+                        </label>
+                        <input id="xflextemplate_1_title" class="xftTitle" name="xflextemplate[1][title]" value="" type="text">
+                        <label for="xflextemplate_1_type">
+                            Element type
+                        </label>
+                        <select id="xflextemplate_1_type" class="typeHandler" name="xflextemplate[1][type]">
+                            <option value="inputType">Input</option>
+                            <option value="textType">text</option>
+                            <option value="radioType">radio</option>
+                            <option value="checkType">check</option>
+                            <option value="groupType">group</option>
+                            <option value="cObjectType">cObject</option>
+                        </select>
+                    </div>
+                    <div class="rightside">
+                        <label for="xflextemplate_1_palette">
+                            palette
+                        </label>
+                        <select id="xflextemplate_1_palette" class="xft-palette" name="xflextemplate[1][palette]">
+                            <option value="none">None</option>
+                        </select>
+                        <label for="xflextemplate_1_xtype">
+                            Render type
+                        </label>
+                        <select id="xflextemplate_1_xtype" name="xflextemplate[1][xtype]">
+                            <option value="noneXtype">check</option>
+                            <option value="textXtype">select</option>
+                            <option value="imageXtype">group</option>
+                            <option value="multimediaXtype">cObject</option>
+                        </select>
+                    </div>
+                    <input id="xflextemplate_1_open" class="xft-main-open" name="xflextemplate[1][open]" value="" type="hidden">
+                    <div class="subelement" id="subelement_1">
+                        <label for="xflextemplate_1_input_maxlength">
+                            Max char number:
+                        </label>
+                        <input id="xflextemplate_1_input_maxlength" name="xflextemplate[1][input_maxlength]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_1_input_size">
+                            Field lenght:
+                        </label>
+                        <input id="xflextemplate_1_input_size" name="xflextemplate[1][input_size]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_1_input_default">
+                            Default value:
+                        </label>
+                        <input id="xflextemplate_1_input_default" name="xflextemplate[1][input_default]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_1_input_listallowed">
+                            List allowed values:
+                        </label>
+                        <input id="xflextemplate_1_input_listallowed" name="xflextemplate[1][input_listAllowed]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_1_input_datatype">
+                            Datatype evaluation:
+                        </label>
+                        <input id="xflextemplate_1_input_datatype" name="xflextemplate[1][input_datatype]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_1_input_checkbox">
+                            Checkbox:
+                        </label>
+                        <input id="xflextemplate_1_input_checkbox" name="xflextemplate[1][input_checkbox]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_1_input_maxval">
+                            Max value:
+                        </label>
+                        <input id="xflextemplate_1_input_maxval" name="xflextemplate[1][input_maxval]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_1_input_minval">
+                            Min value:
+                        </label>
+                        <input id="xflextemplate_1_input_minval" name="xflextemplate[1][input_minval]" class="xft-input-text" value="" type="text">
+                    </div>
+                </div>
+            </div>
+            <div id="element_2" class="portlet">
+                <div class="portlet-header">
+                    <span class="ui-icon-delete"><img src="/typo3/sysext/t3skin/icons/gfx/garbage.gif" height="16" width="16"></span><span class="title"></span>
+                </div>
+                <div class="portlet-content">
+                    <div class="leftside">
+                        <label for="xflextemplate_2_title">
+                            title
+                        </label>
+                        <input id="xflextemplate_2_title" class="xftTitle" name="xflextemplate[2][title]" value="" type="text">
+                        <label for="xflextemplate_2_type">
+                            Element type
+                        </label>
+                        <select id="xflextemplate_2_type" class="typeHandler" name="xflextemplate[2][type]">
+                            <option value="inputType">Input</option>
+                            <option value="textType">text</option>
+                            <option value="radioType">radio</option>
+                            <option value="checkType">check</option>
+                            <option value="groupType">group</option>
+                            <option value="cObjectType">cObject</option>
+                        </select>
+                    </div>
+                    <div class="rightside">
+                        <label for="xflextemplate_2_palette">
+                            palette
+                        </label>
+                        <select id="xflextemplate_2_palette" class="xft-palette" name="xflextemplate[2][palette]">
+                            <option value="none">None</option>
+                        </select>
+                        <label for="xflextemplate_2_xtype">
+                            Render type
+                        </label>
+                        <select id="xflextemplate_2_xtype" name="xflextemplate[2][xtype]">
+                            <option value="noneXtype">check</option>
+                            <option value="textXtype">select</option>
+                            <option value="imageXtype">group</option>
+                            <option value="multimediaXtype">cObject</option>
+                        </select>
+                    </div>
+                    <input id="xflextemplate_2_open" class="xft-main-open" name="xflextemplate[2][open]" value="" type="hidden">
+                    <div class="subelement" id="subelement_2">
+                        <label for="xflextemplate_2_input_maxlength">
+                            Max char number:
+                        </label>
+                        <input id="xflextemplate_2_input_maxlength" name="xflextemplate[2][input_maxlength]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_2_input_size">
+                            Field lenght:
+                        </label>
+                        <input id="xflextemplate_2_input_size" name="xflextemplate[2][input_size]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_2_input_default">
+                            Default value:
+                        </label>
+                        <input id="xflextemplate_2_input_default" name="xflextemplate[2][input_default]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_2_input_listallowed">
+                            List allowed values:
+                        </label>
+                        <input id="xflextemplate_2_input_listallowed" name="xflextemplate[2][input_listAllowed]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_2_input_datatype">
+                            Datatype evaluation:
+                        </label>
+                        <input id="xflextemplate_2_input_datatype" name="xflextemplate[2][input_datatype]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_2_input_checkbox">
+                            Checkbox:
+                        </label>
+                        <input id="xflextemplate_2_input_checkbox" name="xflextemplate[2][input_checkbox]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_2_input_maxval">
+                            Max value:
+                        </label>
+                        <input id="xflextemplate_2_input_maxval" name="xflextemplate[2][input_maxval]" class="xft-input-text" value="" type="text">
+                        <label for="xflextemplate_2_input_minval">
+                            Min value:
+                        </label>
+                        <input id="xflextemplate_2_input_minval" name="xflextemplate[2][input_minval]" class="xft-input-text" value="" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="dialog" title="Cancellazione">
+            <p>
+                <span class="ui-icon ui-icon-alert" style="margin: 0pt 7px 20px 0pt; float: left;"></span>Si  sicuri di voler cancellare l'elemento?
+            </p>
+        </div>
+    </body>
+</html>

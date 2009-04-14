@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'xtemplate'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="titleLabel">title</label>
+			<label index="paletteLabel">palette</label>
+			<label index="xtypeLabel">Render type</label>
+			<label index="typeLabel">Element type</label>
+			
+			<label index="inputType">Input</label>
+			<label index="textType">text</label>
+			<label index="radioType">radio</label>
+			<label index="checkType">check</label>
+			<label index="selectType">select</label>
+			<label index="groupType">group</label>
+			<label index="cObjectType">cObject</label>
+			
+			
+			<label index="noneXtype">check</label>
+			<label index="textXtype">select</label>
+			<label index="imageXtype">group</label>
+			<label index="multimediaXtype">cObject</label>
+			
+			<label index="sizelabel">Field lenght</label>
+			<label index="maxlengthlabel">Max char number</label>
+			<label index="listallowedlabel">List allowed values</label>
+			<label index="defaultlabel">Default value</label>
+			<label index="datatypelabel">Datatype evaluation</label>
+			<label index="checkboxlabel">Checkbox</label>
+			<label index="maxvallabel">Max value</label>
+			<label index="minvallabel">Min value</label>
+			
+			<label index="colslabel">Columns number</label>
+			<label index="rowslabel">Rows number</label>
+			<label index="wraplabel">Wrap in textarea</label>
+			<label index="extraslabel">Extra functions</label>
+			
+			
+			<label index="itemslabel">Items</label>
+			<label index="itemprocfunclabel">User function</label>
+			
+			<label index="hardtypelabel">Type of element</label>
+			<label index="extallowedlabel">Allowed extension (or content)</label>
+			<label index="extnotallowedlabel">Not allowed extension (or content)</label>
+			<label index="relationslabel">Relations</label>
+			<label index="maxdimensionlabel">Max dimension (file)</label>
+			<label index="thumbnaillabel">Thumbnail</label>
+			<label index="maxelementslabel">Max elements</label>
+			<label index="minelementslabel">Min elements</label>
+			<label index="autodimensionlabel">Auti dimension</label>
+			<label index="multiplicitylabel">Multiplicity</label>
+			<label index="palettenone">None</label>
+			
+			
+			
+		</languageKey>
+		<languageKey index="it" type="array">
+			
+		</languageKey>
+	</data>
+</T3locallang>

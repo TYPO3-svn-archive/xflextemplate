@@ -46,7 +46,7 @@
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(PATH_t3lib.'class.t3lib_tsparser.php');
-require_once (PATH_site."/typo3conf/ext/xflextemplate/class.xft_div.php");
+require_once (PATH_site."/typo3conf/ext/xflextemplate/library/class.xmlTransformation.php");
 
 /**
  * Plugin 'xtemplate' for the 'xtemplate' extension.
@@ -118,7 +118,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		//$ts contains all typoscript from xflextemplate
 		$xml=str_replace("''","'",$dbrow['xml']);
 		//create correct element data from xml in the xflextemplate
-		$xmlArray=tx_xft_div::getArrayFromXML($xml);
+		$xmlArray=xmlTransformation::getArrayFromXML($xml);
 		if(is_array($xmlArray)){
 			foreach($xmlArray as $xElemet){
 				$this->xflexData[$xElemet['name']]=$xElemet;
