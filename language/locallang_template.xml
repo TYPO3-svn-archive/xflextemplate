@@ -44,8 +44,8 @@
 			<label index="itemprocfunclabel">User function</label>
 			
 			<label index="hardtypelabel">Type of element</label>
-			<label index="extallowedlabel">Allowed extension (or content)</label>
-			<label index="extnotallowedlabel">Not allowed extension (or content)</label>
+			<label index="extallowedlabel">Allowed extension/content</label>
+			<label index="extnotallowedlabel">Not allowed ext/content</label>
 			<label index="relationslabel">Relations</label>
 			<label index="maxdimensionlabel">Max dimension (file)</label>
 			<label index="thumbnaillabel">Thumbnail</label>

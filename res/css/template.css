@@ -16,6 +16,7 @@ padding-left:0.2em;*/
 background:  #a2aab8 url(images/header.jpg) repeat-x;
 color: #ffffff;
 height: 16px;
+cursor: move; 
 }
 
 .portlet-header .title{
@@ -27,6 +28,7 @@ float:left;
 background:  -31px 0px url(../../res/css/images/plusminus.png);
 width: 16px;
 height: 16px;
+cursor: pointer;
 }
 .portlet-content {
 padding:0.4em;
@@ -53,10 +55,10 @@ height: 16px;
 background-position:  -16px 0px;
 }
 
-.ui-sortable-helper{
+/*.ui-sortable-helper{
 	border: 2px solid red;
 	width: 100%;
-}
+}*/
 
 .subelement input {
 	display: block;
@@ -211,10 +213,124 @@ body .ui-resizable-autohide .ui-resizable-handle { display: none; } /* use 'body
 
 
 
-label{
+.subelement label{
 	float:				left;
-	width:				90px;
+	width:				150px;
 }
+
+.subelement{
+	clear: both;
+	margin-top: 10px;
+}
+
+.subelement dd{
+	float: none;
+}
+
 .subelement input,.subelement select{
 	display:			block;
+	margin: 5px 0;
+}
+
+dl.xft-main-element{
+	display: block;
+	clear: both;
+	margin-bottom: 5px;
+	height:20px;
+}
+
+
+.xft-main-element dd{
+	float: left;
+	margin: 0 30px 0 5px ;
+}
+.xft-main-element dt{
+	float: left;
+}
+
+.portlet-header .ui-icon-delete{
+	cursor: pointer;
+}
+
+.ui-sortable-placeholder{
+	border: 1px dotted black; 
+	/*visibility: visible !important;*/ 
+	height: 50px !important;
+	background:red;
+}
+
+/*.ui-sortable-placeholder * { visibility: hidden; }*/
+
+
+
+
+/*TABS*/
+.xft-TabHeader {
+background:  #a2aab8 url(images/header.jpg) repeat-x;
+color: #ffffff;
+height: 20px;
+}
+
+div.ui-tabs-panel{
+	margin:0;
+	padding:0;
+	
+}
+
+.fullBordered{
+	border-right: 1px solid #a2aab8;
+	border-bottom: 1px solid #a2aab8;
+	border-left: 1px solid #a2aab8;
+}
+
+.xft-icon{
+	padding: 2px 15px;
+	display: block;
+	float: left;
+}
+
+.xft-tabs-header{
+	display: block;
+	font-weight: bold;
+	padding: 2px 15px;
+}
+
+.pointer-icon{
+	cursor: pointer;
+}
+
+.tab-inner-container{
+	margin: 10px;
+}
+
+.tab-inner-container input{
+	margin-left: 5px;
+}
+
+#xftTyposcript{
+	width: 100%;
+}
+
+.labelTextarea{
+	display: block;
+}
+
+.tab-inner-container iframe{
+	border: 1px solid black;
+}
+
+.CodeMirror-line-numbers{
+	background: gray;
+	font-size : 10px;	
+	width:30px;
+	height: 13px;
+}
+
+.column{
+	margin:10px 5px;
+}
+
+.xftTyposcriptEditorContainer{
+	margin:30px;
+	border: 1px solid #a2aab8;
 }

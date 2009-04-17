@@ -6,7 +6,7 @@
  * @state beta
  */
 
- element = function(initializeParameters){
+element = function(initializeParameters){
  	var id;
 	var name;
 	var type;
@@ -16,6 +16,7 @@
 	this.configuration = {
 		portletClass: 'portlet',
 		portletHeaderClass: 'portlet-header',
+		columnClass: 'column',
 		iconDeleteClass: 'ui-icon-delete',
 		uiIconClass: 'ui-icon',
 		elementPreId: 'element',
@@ -25,8 +26,11 @@
 		palettesClass: 'xft-palette',
 		language: {
 			dialogYes: 'Yes',
-			dialogCancel: 'Cancel',
-		}
+			dialogCancel: 'Cancel'
+		},
+		defaultElementName: 'inputType',
+		create: 1,
+		open: 1
 	};
 	$.extend(this.configuration, initializeParameters);
  }
@@ -34,16 +38,34 @@
  element.prototype=
  {
  	add: function(id){
+		var oThis = this;
 		this.id = id;
+		if (oThis.configuration.create) {
+			palette = Array();
+			$(' .' + oThis.configuration.titleClass).each(function(){
+				if ($(this).val()) 
+					palette.push($(this).val() + '_' + id);
+			});
+			palette = palette.join('|');
+			parameters = {
+				url: ajaxUrl,
+				data: 'ajax=1&action=newElement&subElement=' + oThis.configuration.defaultElementName + '&elementID=' + id + '&palette=' + palette
+			}
+			ajaxObj = new ajaxClass(parameters);
+			ret = ajaxObj.exec();
+			$('.' + oThis.configuration.columnClass).append(ret);
+		}
 		this.addTitleHandler();
 		this.addTypeHandler();
+        this.addSortProperties();
+        this.addDeleteHandler();
 	},
 		
 	addTitleHandler: function(){
 		var oThis = this;
 		$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .' + oThis.configuration.titleClass).bind('keyup',function(){
 			dataArray = $(this).attr('id').split('_');
-			$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .title').html($(this).val());
+			$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .title').html(htmlentities($(this).val()));
 		});	
 		$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .' + oThis.configuration.titleClass).bind('blur',function(){
 			oThis.changeAllPaletteByChangerID($(this).val());
@@ -90,8 +112,9 @@
 		$('.' + oThis.configuration.palettesClass).each(function(){
 			selectedIndex = this.selectedIndex;
 			selectedItem = this.options[this.selectedIndex].value;
-			$(this).removeOption(oThis.id);
-			if(selectedItem == oThis.id)
+			actualElementID = 'element_' + oThis.id;
+			$(this).removeOption(actualElementID);
+			if(selectedItem == actualElementID)
 				this.selectedIndex = 0
 			else
 				this.selectedIndex = selectedIndex;
@@ -100,10 +123,17 @@
 	
 	addSortProperties: function(){
 		var oThis = this;
+		if (oThis.configuration.open == 1) {
+			className = 'ui-icon-minusthick';
+		}
+		else {
+			className = 'ui-icon-plusthick';
+			$('#' + oThis.configuration.elementPreId + '_' + oThis.id + '.portlet').find('.portlet-content').toggle();
+		}
 		$('#' + oThis.configuration.elementPreId + '_' + oThis.id + '.portlet').addClass('ui-widget ui-widget-content ui-helper-clearfix ui-corner-all')
 		.find('.portlet-header')
 			.addClass('ui-widget-header ui-corner-all')
-			.prepend('<span class="ui-icon ui-icon-plusthick"></span>')
+			.prepend('<span class="ui-icon ' + className + '"></span>')
 			.end()
 		.find('.portlet-content');
 	
@@ -134,8 +164,8 @@
 				},
 				buttons: {
 					'dialogYes': function() {
-						$(oThis).parent().parent().remove();
-						removePaletteOptionByElementDelete($(oThis).parent().parent().attr('id'));
+						oThis.removePaletteOptionByElementDelete();
+						$('#' + oThis.configuration.elementPreId + '_' + oThis.id).remove();
 						$(this).dialog('close');
 					},
 					'dialogCancel': function() {
@@ -144,7 +174,7 @@
 				}
 			});
 			$('.ui-dialog-buttonpane button').each(function(){
-				console.log(oThis.configuration.language);
+				//alert($(this).html());
 				$(this).html(oThis.configuration.language[$(this).html()]);
 			});
 		});

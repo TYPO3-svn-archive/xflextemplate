@@ -121,8 +121,8 @@ class elementTemplate {
 		
 		$markerArray['PALETTESELECT'] = implode(chr(10),$optionType);
 		$markerArray['DELETEICON'] = '<img ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . '/>';
-		$markerArray['TITLEVALUE'] = $elementArray['title'];
-		$markerArray['OPENVALUE'] = $elementArray['open'];
+		$markerArray['TITLEVALUE'] = htmlentities($elementArray['title']);
+		$markerArray['OPENVALUE'] = ($elementArray['open']==1)?'1':'0';
 		$markerArray['SUBELEMENT'] = $this->setSubElementType($elementName,$elementArray);
 		$markerArray = t3lib_div::array_merge_recursive_overrule($elementArray,$markerArray);
 		//debug($markerArray);

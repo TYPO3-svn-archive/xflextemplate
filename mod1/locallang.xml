@@ -64,6 +64,18 @@
             <label index="dialogNo">No</label>
             <label index="dialogCancel">Cancel</label>
             <label index="dialogOK">OK</label>
+			
+			
+            <label index="typoscriptTitle">Typoscript</label>
+            <label index="descriptionTitle">Description</label>
+            <label index="generalTitle">General</label>
+            <label index="elementTitle">Elements</label>
+            <label index="xftTitle">Name of template</label>
+            <label index="xftElementTitle">Elements creation</label>
+            <label index="xftTyposcriptTitle">Typoscript configuration</label>
+            <label index="xftDescriptionTitle">General description for template</label>
+            <label index="xftNewElementTitle">Add new element</label>
+            <label index="xftSaveDokTitle">Save template</label>
             
         </languageKey>
         <languageKey index="it" type="array">
@@ -153,6 +165,19 @@
             <label index="dialogNo">No</label>
             <label index="dialogCancel">Annulla</label>
             <label index="dialogOK">OK</label>
+			
+			
+            <label index="typoscriptTitle">Typoscript</label>
+            <label index="descriptionTitle">Descrizione</label>
+            <label index="generalTitle">Generale</label>
+            <label index="elementTitle">Elementi</label>
+            <label index="xftTitle">Titolo del template</label>
+            <label index="xftElementTitle">Creazione degli elementi</label>
+            <label index="xftTyposcriptTitle">Configurazione del typoscript</label>
+            <label index="xftDescriptionTitle">Descrizione generale del template</label>
+            <label index="xftNewElementTitle">Aggiungi nuovo elemento</label>
+            <label index="xftSaveDokTitle">Salva template</label>
+			
         </languageKey>
     </data>
     <orig_hash type="array">

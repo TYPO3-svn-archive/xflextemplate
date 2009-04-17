@@ -221,14 +221,12 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 						$subElement = t3lib_div::_GP('subElement');
 						$elementID = t3lib_div::_GP('elementID');
 						$palette = t3lib_div::_GP('palette');
-						//debug($palette);
 						$parameters = array(
 								'ID' => $elementID,
+								'palette' => explode('|',$palette),
 							);
-						
-						$parameters['paletteArray'] = (strlen(str_replace('|','',$palette))) ? explode('|',trim($palette)) : array();
-						//$subelement = $template->setSubElementType('inputType',$parameters);
-						//$parameters['subelement'] = $subelement;
+						$subelement = $template->setSubElementType('inputType',$parameters);
+						$parameters['subelement'] = $subelement;
 						$content = $template->setSubElement($subElement,$parameters);
 						echo($content);
 						exit();
@@ -244,20 +242,250 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 						echo($subelement);
 						exit();
 					break;
-					case 'getLL':
-						$key = t3lib_div::_GP('key');
-						echo(htmlentities($LANG->getLL($key)));
-						exit();
-					break;
 				}
 				
 			}
-			$this->doc = t3lib_div::makeInstance("template");
+			$this->doc = t3lib_div::makeInstance("mediumDoc");
 			$this->doc->backPath = $BACK_PATH;
 			$this->doc->form='<form action="" method="POST">';
-			$this->doc->styleSheetFile2='../typo3conf/ext/xflextemplate/res/css/template.css';
+			$this->doc->styleSheetFile2='../typo3conf/ext/xflextemplate/stylesheet_xflextemplate.css';
 				// JavaScript
-			
+			$this->doc->JScode = '
+				<script language="javascript" src="'.$this->extensionDir.'res/listmanage.js" type="text/javascript">
+				</script>
+				<script language="javascript" type="text/javascript">
+					script_ended = 0;
+					function jumpToUrl(URL)	{
+						document.location = URL;
+					}
+
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$extradata,checkstr: ...
+	 * @return	[type]		...
+	 */
+					function submitFormwithCheck(extradata,checkstr)	{
+						ret=confirm(checkstr);
+						if (ret){
+							document.forms[0].operation.value=\'del\';
+							document.forms[0].extradata.value=extradata;
+							document.forms[0].submit();
+						}
+					}
+
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$id,direction: ...
+	 * @return	[type]		...
+	 */
+					function moveElement(id,direction)	{
+						document.forms[0].operation.value=\'move\';
+						document.forms[0].extradata.value=id+\',\'+direction;
+						document.forms[0].submit();
+					}
+
+	/**
+	 * [Describe function...]
+	 *
+	 * @param	[type]		$URL,checkstr: ...
+	 * @return	[type]		...
+	 */
+					function jumpToUrlwithCheck(URL,checkstr)	{
+						ret=confirm(checkstr);
+						if (ret)
+							document.location = URL;
+					}
+					function setFormValueOpenBrowser(mode,params) {	//
+						var url = "/typo3/browser.php?mode="+mode+"&bparams="+params;
+						var formObj = setFormValue_getFObj(mode);
+						if((formObj[mode+"_mul"].value==0) && formObj[mode+"_list"].length>0 ){
+							alert("Cancellare ogni elemento presente prima di inserirne di nuovi");
+							return "";
+						}
+						browserWin = window.open(url,"Typo3WinBrowser","height=350,width="+(mode=="db"?650:600)+",status=0,menubar=0,resizable=1,scrollbars=1");
+						browserWin.focus();
+					}
+					function setFormValueFromBrowseWin(fName,value,label)	{	//
+						var formObj = setFormValue_getFObj(fName);
+						if (formObj && value!="--div--")	{
+							fObj = formObj[fName+"_list"];
+								// Inserting element
+							var l=fObj.length;
+							var setOK=1;
+							if (!formObj[fName+"_mul"] || formObj[fName+"_mul"].value==0)	{
+								for (a=0;a<l;a++)	{
+									if (fObj.options[a].value==value)	{
+										setOK=0;
+									}
+								}
+							}
+							if (setOK)	{
+								fObj.length++;
+								fObj.options[l].value=value;
+								fObj.options[l].text=unescape(label);
+
+									// Traversing list and set the hidden-field
+								setHiddenFromList(fObj,formObj[fName]);
+								//TBE_EDITOR_fieldChanged_fName(fName,formObj[fName+"_list"]);
+							}
+						}
+					}
+					function setHiddenFromList(fObjSel,fObjHid)	{	//
+						l=fObjSel.length;
+						fObjHid.value="";
+						for (a=0;a<l;a++)	{
+							fObjHid.value+=fObjSel.options[a].value+",";
+						}
+					}
+					function setFormValueManipulate(fName,type)	{	//
+						var formObj = setFormValue_getFObj(fName)
+						if (formObj)	{
+							var localArray_V = new Array();
+							var localArray_L = new Array();
+							var localArray_S = new Array();
+							var fObjSel = formObj[fName+"_list"];
+							var l=fObjSel.length;
+							var c=0;
+							if (type=="Remove" || type=="Top" || type=="Bottom")	{
+								if (type=="Top")	{
+									for (a=0;a<l;a++)	{
+										if (fObjSel.options[a].selected==1)	{
+											localArray_V[c]=fObjSel.options[a].value;
+											localArray_L[c]=fObjSel.options[a].text;
+											localArray_S[c]=1;
+											c++;
+										}
+									}
+								}
+								for (a=0;a<l;a++)	{
+									if (fObjSel.options[a].selected!=1)	{
+										localArray_V[c]=fObjSel.options[a].value;
+										localArray_L[c]=fObjSel.options[a].text;
+										localArray_S[c]=0;
+										c++;
+									}
+								}
+								if (type=="Bottom")	{
+									for (a=0;a<l;a++)	{
+										if (fObjSel.options[a].selected==1)	{
+											localArray_V[c]=fObjSel.options[a].value;
+											localArray_L[c]=fObjSel.options[a].text;
+											localArray_S[c]=1;
+											c++;
+										}
+									}
+								}
+							}
+							if (type=="Down")	{
+								var tC = 0;
+								var tA = new Array();
+
+								for (a=0;a<l;a++)	{
+									if (fObjSel.options[a].selected!=1)	{
+											// Add non-selected element:
+										localArray_V[c]=fObjSel.options[a].value;
+										localArray_L[c]=fObjSel.options[a].text;
+										localArray_S[c]=0;
+										c++;
+
+											// Transfer any accumulated and reset:
+										if (tA.length > 0)	{
+											for (aa=0;aa<tA.length;aa++)	{
+												localArray_V[c]=fObjSel.options[tA[aa]].value;
+												localArray_L[c]=fObjSel.options[tA[aa]].text;
+												localArray_S[c]=1;
+												c++;
+											}
+
+											var tC = 0;
+											var tA = new Array();
+										}
+									} else {
+										tA[tC] = a;
+										tC++;
+									}
+								}
+									// Transfer any remaining:
+								if (tA.length > 0)	{
+									for (aa=0;aa<tA.length;aa++)	{
+										localArray_V[c]=fObjSel.options[tA[aa]].value;
+										localArray_L[c]=fObjSel.options[tA[aa]].text;
+										localArray_S[c]=1;
+										c++;
+									}
+								}
+							}
+							if (type=="Up")	{
+								var tC = 0;
+								var tA = new Array();
+								var c = l-1;
+
+								for (a=l-1;a>=0;a--)	{
+									if (fObjSel.options[a].selected!=1)	{
+
+											// Add non-selected element:
+										localArray_V[c]=fObjSel.options[a].value;
+										localArray_L[c]=fObjSel.options[a].text;
+										localArray_S[c]=0;
+										c--;
+
+											// Transfer any accumulated and reset:
+										if (tA.length > 0)	{
+											for (aa=0;aa<tA.length;aa++)	{
+												localArray_V[c]=fObjSel.options[tA[aa]].value;
+												localArray_L[c]=fObjSel.options[tA[aa]].text;
+												localArray_S[c]=1;
+												c--;
+											}
+
+											var tC = 0;
+											var tA = new Array();
+										}
+									} else {
+										tA[tC] = a;
+										tC++;
+									}
+								}
+									// Transfer any remaining:
+								if (tA.length > 0)	{
+									for (aa=0;aa<tA.length;aa++)	{
+										localArray_V[c]=fObjSel.options[tA[aa]].value;
+										localArray_L[c]=fObjSel.options[tA[aa]].text;
+										localArray_S[c]=1;
+										c--;
+									}
+								}
+								c=l;	// Restore length value in "c"
+							}
+
+								// Transfer items in temporary storage to list object:
+							fObjSel.length = c;
+							for (a=0;a<c;a++)	{
+								fObjSel.options[a].value = localArray_V[a];
+								fObjSel.options[a].text = localArray_L[a];
+								fObjSel.options[a].selected = localArray_S[a];
+							}
+							setHiddenFromList(fObjSel,formObj[fName]);
+
+							//TBE_EDITOR_fieldChanged_fName(fName,formObj[fName+"_list"]);
+						}
+					}
+					function setFormValue_getFObj(fName)	{	//
+						var formObj = document.forms[0];
+						if (formObj)	{
+							if (formObj[fName] && formObj[fName+"_list"] && formObj[fName+"_list"].type=="select-multiple")	{
+								return formObj;
+							} else {
+								alert("Formfields missing:\n fName: "+formObj[fName]+"\n fName_list:"+formObj[fName+"_list"]+"\n type:"+formObj[fName+"_list"].type+"\n fName:"+fName);
+							}
+						}
+						return "";
+					}
+
+				</script>
+			';
 			$this->doc->postCode='
 				<script language="javascript" type="text/javascript">
 					script_ended = 1;
@@ -306,8 +534,8 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 
 		$this->content.=$this->doc->endPage();
 		//inserisco l'action, altrimenti mi si porta dietro anche il GET
-		//$encode_type=(t3lib_div::_GP('op')=='import')?'enctype="multipart/form-data"':'';
-		//$this->content=str_replace('<form action="" method="POST">','<form action="index.php" method="POST" '.$encode_type.'>',$this->content);
+		$encode_type=(t3lib_div::_GP('op')=='import')?'enctype="multipart/form-data"':'';
+		$this->content=str_replace('<form action="" method="POST">','<form action="index.php" method="POST" '.$encode_type.'>',$this->content);
 		echo $this->content;
 	}
 
@@ -318,48 +546,95 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 	 */
 	function moduleContent()	{
 		global $LANG,$BE_USER;
-		$template = t3lib_div::makeInstance('elementTemplate');
-		$template->init(PATH_typo3conf .'ext/xflextemplate/configuration/subelement.tmpl');
-		//debug($_POST['xflextemplate'],'xftpost');
-		$elementID = 1;
-		if(count($_POST['xflextemplate'])){
-			foreach ($_POST['xflextemplate'] as $key => $item){
-				foreach ($item as $subKey => $value)
-					$elementArray[$subKey] = $value;
-				$elementArray['id'] = $elementID;
-				$elementID++;
-				$paletteArray[] = $item['title'] . '_' . $elementArray['id'];
-				$element[$key] = $elementArray;
-			}
-			foreach ($_POST['xflextemplate'] as $key => $item){
-				$element[$key]['paletteArray'] = $paletteArray;
-				$columns .= $template->setSubElement($element[$key]['type'], $element[$key]);	
-			}
+		/*switch((string)$this->MOD_SETTINGS["function"])	{
+			case 1:
+			break;
+		}*/
+		//debug($_GET);
+		//debug(t3lib_div::_GP('loadXML'));
+		//$this->fieldsArray=$this->getArrayFromXML(2);
+
+		switch (t3lib_div::_GP('op')){
+			case 'delete':
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_xflextemplate_template','uid='.t3lib_div::_GP('uid'));
+				$this->content.=$this->getTemplateList();
+			break;
+			case 'hidden':
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_xflextemplate_template','uid='.t3lib_div::_GP('uid'),array('hidden'=>t3lib_div::_GP('hiddenstate')));
+				$this->content.=$this->getTemplateList();
+			break;
+			case 'edit':
+			case 'new':
+			case 'reload':
+				$this->loaded=0;
+				$this->title=t3lib_div::_GP('title');
+				$this->description=t3lib_div::_GP('description');
+				$this->enableGroups=t3lib_div::_GP('enablegroups');
+				$this->typoscript=t3lib_div::_GP('typoscript');
+				$this->palettes=t3lib_div::_GP('palettes');
+				$this->file=t3lib_div::_GP('file');
+				$this->fieldsArray=(t3lib_div::_GP('loadXML'))?$this->getArrayFromXML(t3lib_div::_GP('loadXML')):t3lib_div::_GP('tx_xflextemplate');
+				$this->error=$this->checkError();
+				$this->content.=$this->createForm();
+
+			break; //fine break standard (edit,reload,new)
+			case 'import':
+				if (t3lib_div::_GP('_upload')){
+					$tempFile=t3lib_div::upload_to_tempfile($_FILES['upload']['tmp_name']);
+					$handle = fopen($tempFile, "r");
+					$content= fread($handle, filesize($tempFile));
+					t3lib_div::unlink_tempfile($tempFile);
+					$export=t3lib_div::makeInstance('tx_xflextemplate_importexport');
+					$export->_EXTKEY=$this->extKey;
+					$templateArray=$export->main($content);
+					if(is_array($templateArray)){
+						unset($templateArray['uid']);
+						unset($templateArray['delete']);
+						$now=mktime(date('h'),date('i'),date('s'),date('m'),date('d'),date('Y'));
+						$templateArray['crdate']=$now;
+						$templateArray['tstamp']=$now;
+						$templateArray['cruser_id']=$BE_USER->user['uid'];
+						$templateArray['enablegroup']='';
+						$templateArray['hidden']=0;
+						$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_xflextemplate_template',' title="'.$templateArray['title'].'"');
+						if ($GLOBALS['TYPO3_DB']->sql_num_rows($res)>0){
+							$this->content.='Un template con questo nome esiste gi&agrave;';
+						}
+						else{
+							$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_xflextemplate_template',$templateArray);
+							$this->content.="<script language=\"javascript\" type=\"text/javascript\">window.opener.location.href=\"index.php\";\nwindow.close();</script>";
+						}
+					}
+					else{
+						switch ($templateArray){
+							case 0:
+								$this->content.='file non corretto';
+							break;
+							case -1:
+								$this->content.='La versione non supporta il file';
+							break;
+							default:
+								$this->content.='altro';
+							break;
+						}
+					}
+				}
+				else{
+					$content='<div class="bgColor5">'.$LANG->getLL('uploadfiletitle').'</div>';
+					$content.='<div class="bgColor4"><input type="hidden" name="op" value="import" /><input name="upload" size="40" type="file"><br /><input name="_upload" value="'.$LANG->getLL('uploadfilesubmit').'" type="submit"></div>';
+					$this->content.=$content;
+				}
+			break;
+			case 'export':
+				$export=new tx_xflextemplate_importexport;
+				$export->_EXTKEY=$this->extKey;
+				$export->main();
+
+			break;
+			default:
+				$this->content.=$this->getTemplateList();
+			break;
 		}
-		
-		$this->doc->JScode = '
-			<script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js"></script>
-			<script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js"></script>
-			<script type="text/javascript" src="../javascript/jquery/jquery.selectboxes.js"></script>
-			<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
-			<script type="text/javascript" src="../javascript/library/test.js"></script>';
-		$this->content=$this->doc->startPage($LANG->getLL("title"));
-		$this->content.=$this->doc->header($LANG->getLL("title"));
-		$this->content.=$this->doc->spacer(5);
-		/*$this->content.=$this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));*/
-		$this->content.=$this->doc->divider(5);
-	
-			
-		$this->content .= '
-			<input type="submit" id="test1btn" value="esegui" />
-			<input type="button" id="testbtn" value="test ajax" />
-			<div class="column"> ' . $columns . '
-			</div>
-			<div id="dialog" title="' . $LANG->getLL('deleteelementtitle') . '">
-				<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>' .  $LANG->getLL('deleteelementmessage') . '</p>
-			</div>
-			
-		';
 
 	}
 

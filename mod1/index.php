@@ -78,68 +78,7 @@ $BACK_PATH = '/typo3/';
 class tx_xflextemplate_module1 extends t3lib_SCbase {
 	var $pageinfo;
 
-	var $typeArray=array(
-		'input'=>array(
-			'size'=>'input:10',
-			'max'=>'input:10',
-			'default'=>'input:10',
-			'eval'=>'input:10',
-			'is_in'=>'input:10',
-			'checkbox'=>'input:10',
-			'upper'=>'input:10',
-			'lower'=>'input:10',
-			),
-		'text'=>array(
-			'cols'=>'input:10',
-			'rows'=>'input:10',
-			'default'=>'input:10',
-			'wrap'=>'check',
-			'defaultExtras'=>'text:40:6',
-			),
-		'check'=>array(
-			'items'=>'text:40:6',
-			'cols'=>'input:10',
-			'deafult'=>'input:10',
-			'itemsProcFunc'=>'input:30',
-			),
-		'radio'=>array(
-			'items'=>'text:40:6',
-			'deafult'=>'input:10',
-			'itemsProcFunc'=>'input:30',
-			),
-		'select'=>array(
-			'items'=>'text:40:6',
-			'deafult'=>'input:10',
-			'itemsProcFunc'=>'input:30',
-			'foreign_table'=>'input:30',
-			'foreign_table_where'=>'input:30',
-			'size'=>'input:10',
-			'maxitems'=>'input:10',
-			'minitems'=>'input:10',
-			'multiple'=>'input:10',
-			'default'=>'input:10',
-			'selicon_cols'=>'input:10',
-			),
-		'group'=>array(
-			'internal_type'=>'select:file:db',
-			'allowed'=>'input:30',
-			'disallowed'=>'input:30',
-			'MM'=>'input:30',
-			'max_size'=>'input:10',
-			'uploadfolder'=>'hidden:uploads/pics/',
-			'show_thumbs'=>'check',
-			'maxitems'=>'input:10',
-			'minitems'=>'input:10',
-			'autoSizeMax'=>'check',
-			'multiple'=>'input:10',
-			),
-		'cObject'=>array(
-			),
-		);
-
-		var $cr="\n";
-
-		var $xTypeArray=array('nessuno','multimedia','image','file','text','cObject');
+	
 
 		var $description;
 		var $file;
@@ -154,6 +93,13 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 
 		var $extKey='xflextemplate';
 		var $extensionDir='xflextemplate';
+		
+		var $cObj;
+		var $templateFile;
+		var $template;
+		var $language;
+		
+		var $elementArray;
 
 
 	/**
@@ -162,18 +108,14 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 	function init()	{
 		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
 		parent::init();
+		$this->language = $LANG;
 		$this->globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
 		$this->textareaCols=($this->globalConf['textareaCols'])?$this->globalConf['textareaCols']:80;
-		$this->textareaRows=($this->globalConf['textareaRows'])?$this->globalConf['textareaRows']:40;		
-		$this->xTypeArray=array('none'=>$LANG->getLL("none"),'multimedia'=>$LANG->getLL("multimedia"),'file'=>$LANG->getLL("file"),'image'=>$LANG->getLL("image"),'text'=>$LANG->getLL("text"),'cObject'=>$LANG->getLL("cObject"));
-		//inizializzo la variabile che definisce il numero massimo di posizioni nell'array, prima di uscire da un eventuale loop (moveElement)
-		$this->maxArrayKey=1000;
-
-		/*
-		if (t3lib_div::_GP("clear_all_cache"))	{
-			$this->include_once[]=PATH_t3lib."class.t3lib_tcemain.php";
-		}
-		*/
+		$this->textareaRows=($this->globalConf['textareaRows'])?$this->globalConf['textareaRows']:40;	
+		$this->templateFile = PATH_site.'/typo3conf/ext/xflextemplate/configuration/subelement.tmpl';
+		$this->template = file_get_contents($this->templateFile);
+		$this->elementArray = array();
+		
 	}
 
 	/**
@@ -194,15 +136,6 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 	function main()	{
 		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
 		$this->backPath=$BACK_PATH;
-		/*this code permits to extend Content Type, using $TYPO3_CONF_VARS['SC_OPTIONS']['typo3conf/ext/xflextemplate']['listContentType']*/
-		if($TYPO3_CONF_VARS['SC_OPTIONS']['typo3conf/ext/xflextemplate']['listContentType']){
-			$extendedContentType=explode(',',$TYPO3_CONF_VARS['SC_OPTIONS']['typo3conf/ext/xflextemplate']['listContentType']);
-			foreach ($extendedContentType as $key=>$value){
-				if (!in_array($value,$this->xTypeArray) && !(array_key_exists($key,$this->xTypeArray))){
-					$this->xTypeArray[$key]=$value;
-				}
-			}
-		}
 		$tmpDirectory = t3lib_div::dirname(t3lib_div::getIndpEnv('SCRIPT_NAME'));
 		$this->extensionDir = t3lib_div::dirname($tmpDirectory).'/';
 		// Access check!
@@ -212,7 +145,9 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 		/*la pagina deve essere sempre vista*/
 		if (($this->id && $access) || ($BE_USER->user["admin"] && !$this->id))	{
         //if (1) {
-				// Draw the header.
+		    $this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		        	//
+				// call ajax
 			if (t3lib_div::_GP('ajax')==1){
 				$template = t3lib_div::makeInstance('elementTemplate');
 				$template->init(PATH_typo3conf .'ext/xflextemplate/configuration/subelement.tmpl');
@@ -221,12 +156,14 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 						$subElement = t3lib_div::_GP('subElement');
 						$elementID = t3lib_div::_GP('elementID');
 						$palette = t3lib_div::_GP('palette');
+						//debug($palette);
 						$parameters = array(
 								'ID' => $elementID,
-								'palette' => explode('|',$palette),
 							);
-						$subelement = $template->setSubElementType('inputType',$parameters);
-						$parameters['subelement'] = $subelement;
+						
+						$parameters['paletteArray'] = (strlen(str_replace('|','',$palette))) ? explode('|',trim($palette)) : array();
+						//$subelement = $template->setSubElementType('inputType',$parameters);
+						//$parameters['subelement'] = $subelement;
 						$content = $template->setSubElement($subElement,$parameters);
 						echo($content);
 						exit();
@@ -242,287 +179,120 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 						echo($subelement);
 						exit();
 					break;
+					case 'getLL':
+						$key = t3lib_div::_GP('key');
+						echo(htmlentities($LANG->getLL($key)));
+						exit();
+					break;
 				}
 				
 			}
-			$this->doc = t3lib_div::makeInstance("mediumDoc");
+			else
+				debug($_POST);
+			$this->doc = t3lib_div::makeInstance("bigDoc");
 			$this->doc->backPath = $BACK_PATH;
-			$this->doc->form='<form action="" method="POST">';
-			$this->doc->styleSheetFile2='../typo3conf/ext/xflextemplate/stylesheet_xflextemplate.css';
+			$this->doc->form='<form id="xftForm" action="" method="POST">';
+			$this->doc->docType = 'xhtml_trans';
+			$this->doc->styleSheetFile2='../typo3conf/ext/xflextemplate/res/css/template.css';
 				// JavaScript
 			$this->doc->JScode = '
-				<script language="javascript" src="'.$this->extensionDir.'res/listmanage.js" type="text/javascript">
-				</script>
-				<script language="javascript" type="text/javascript">
-					script_ended = 0;
-					function jumpToUrl(URL)	{
-						document.location = URL;
-					}
+			<link  rel="stylesheet" type="text/css" href="../res/css/ui.tabs.css" />
+			<link href="' . $this->doc->backPath . 'sysext/t3editor/css/t3editor.css" type="text/css" rel="stylesheet" />
+			<script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js"></script>
+			<script type="text/javascript" src="../javascript/jquery/jquery.bgiframe.js"></script>
+			<script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js"></script>
+			<script type="text/javascript" src="../javascript/jquery/jquery.selectboxes.js"></script>
+			<script type="text/javascript" src="../javascript/jquery/jquery.form.js"></script>
+			<script type="text/javascript" src="../javascript/jquery/jquery.blockUI.js"></script>
+			<script type="text/javascript" src="../javascript/library/class.general.js"></script>
+			<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
+			<script type="text/javascript" src="../javascript/library/class.element.js"></script>
+			<script type="text/javascript" src="../javascript/library/mainBE.js"></script>
+<script type="text/javascript" src="' . $this->doc->backPath . 'sysext/t3editor/jslib/codemirror/codemirror.js"></script>
+<script type="text/javascript">PATH_t3e = "' . $this->doc->backPath . 'sysext/t3editor/"; 
+var editor="";
+$(document).ready(function(){
+  editor = CodeMirror.fromTextArea("xftTyposcriptEditor" , {
+  parserfile: ["tokenizetyposcript.js", "parsetyposcript.js"],
+  path: PATH_t3e + "jslib/codemirror/",
+  stylesheet: PATH_t3e + "css/t3editor_inner.css",
+  textWrapping: false,
+  lineNumbers: true
+});
 
-	/**
-	 * [Describe function...]
-	 *
-	 * @param	[type]		$extradata,checkstr: ...
-	 * @return	[type]		...
-	 */
-					function submitFormwithCheck(extradata,checkstr)	{
-						ret=confirm(checkstr);
-						if (ret){
-							document.forms[0].operation.value=\'del\';
-							document.forms[0].extradata.value=extradata;
-							document.forms[0].submit();
-						}
-					}
+} );
+</script>
 
-	/**
-	 * [Describe function...]
-	 *
-	 * @param	[type]		$id,direction: ...
-	 * @return	[type]		...
-	 */
-					function moveElement(id,direction)	{
-						document.forms[0].operation.value=\'move\';
-						document.forms[0].extradata.value=id+\',\'+direction;
-						document.forms[0].submit();
-					}
-
-	/**
-	 * [Describe function...]
-	 *
-	 * @param	[type]		$URL,checkstr: ...
-	 * @return	[type]		...
-	 */
-					function jumpToUrlwithCheck(URL,checkstr)	{
-						ret=confirm(checkstr);
-						if (ret)
-							document.location = URL;
-					}
-					function setFormValueOpenBrowser(mode,params) {	//
-						var url = "/typo3/browser.php?mode="+mode+"&bparams="+params;
-						var formObj = setFormValue_getFObj(mode);
-						if((formObj[mode+"_mul"].value==0) && formObj[mode+"_list"].length>0 ){
-							alert("Cancellare ogni elemento presente prima di inserirne di nuovi");
-							return "";
-						}
-						browserWin = window.open(url,"Typo3WinBrowser","height=350,width="+(mode=="db"?650:600)+",status=0,menubar=0,resizable=1,scrollbars=1");
-						browserWin.focus();
-					}
-					function setFormValueFromBrowseWin(fName,value,label)	{	//
-						var formObj = setFormValue_getFObj(fName);
-						if (formObj && value!="--div--")	{
-							fObj = formObj[fName+"_list"];
-								// Inserting element
-							var l=fObj.length;
-							var setOK=1;
-							if (!formObj[fName+"_mul"] || formObj[fName+"_mul"].value==0)	{
-								for (a=0;a<l;a++)	{
-									if (fObj.options[a].value==value)	{
-										setOK=0;
-									}
-								}
-							}
-							if (setOK)	{
-								fObj.length++;
-								fObj.options[l].value=value;
-								fObj.options[l].text=unescape(label);
-
-									// Traversing list and set the hidden-field
-								setHiddenFromList(fObj,formObj[fName]);
-								//TBE_EDITOR_fieldChanged_fName(fName,formObj[fName+"_list"]);
-							}
-						}
-					}
-					function setHiddenFromList(fObjSel,fObjHid)	{	//
-						l=fObjSel.length;
-						fObjHid.value="";
-						for (a=0;a<l;a++)	{
-							fObjHid.value+=fObjSel.options[a].value+",";
-						}
-					}
-					function setFormValueManipulate(fName,type)	{	//
-						var formObj = setFormValue_getFObj(fName)
-						if (formObj)	{
-							var localArray_V = new Array();
-							var localArray_L = new Array();
-							var localArray_S = new Array();
-							var fObjSel = formObj[fName+"_list"];
-							var l=fObjSel.length;
-							var c=0;
-							if (type=="Remove" || type=="Top" || type=="Bottom")	{
-								if (type=="Top")	{
-									for (a=0;a<l;a++)	{
-										if (fObjSel.options[a].selected==1)	{
-											localArray_V[c]=fObjSel.options[a].value;
-											localArray_L[c]=fObjSel.options[a].text;
-											localArray_S[c]=1;
-											c++;
-										}
-									}
-								}
-								for (a=0;a<l;a++)	{
-									if (fObjSel.options[a].selected!=1)	{
-										localArray_V[c]=fObjSel.options[a].value;
-										localArray_L[c]=fObjSel.options[a].text;
-										localArray_S[c]=0;
-										c++;
-									}
-								}
-								if (type=="Bottom")	{
-									for (a=0;a<l;a++)	{
-										if (fObjSel.options[a].selected==1)	{
-											localArray_V[c]=fObjSel.options[a].value;
-											localArray_L[c]=fObjSel.options[a].text;
-											localArray_S[c]=1;
-											c++;
-										}
-									}
-								}
-							}
-							if (type=="Down")	{
-								var tC = 0;
-								var tA = new Array();
-
-								for (a=0;a<l;a++)	{
-									if (fObjSel.options[a].selected!=1)	{
-											// Add non-selected element:
-										localArray_V[c]=fObjSel.options[a].value;
-										localArray_L[c]=fObjSel.options[a].text;
-										localArray_S[c]=0;
-										c++;
-
-											// Transfer any accumulated and reset:
-										if (tA.length > 0)	{
-											for (aa=0;aa<tA.length;aa++)	{
-												localArray_V[c]=fObjSel.options[tA[aa]].value;
-												localArray_L[c]=fObjSel.options[tA[aa]].text;
-												localArray_S[c]=1;
-												c++;
-											}
-
-											var tC = 0;
-											var tA = new Array();
-										}
-									} else {
-										tA[tC] = a;
-										tC++;
-									}
-								}
-									// Transfer any remaining:
-								if (tA.length > 0)	{
-									for (aa=0;aa<tA.length;aa++)	{
-										localArray_V[c]=fObjSel.options[tA[aa]].value;
-										localArray_L[c]=fObjSel.options[tA[aa]].text;
-										localArray_S[c]=1;
-										c++;
-									}
-								}
-							}
-							if (type=="Up")	{
-								var tC = 0;
-								var tA = new Array();
-								var c = l-1;
-
-								for (a=l-1;a>=0;a--)	{
-									if (fObjSel.options[a].selected!=1)	{
-
-											// Add non-selected element:
-										localArray_V[c]=fObjSel.options[a].value;
-										localArray_L[c]=fObjSel.options[a].text;
-										localArray_S[c]=0;
-										c--;
-
-											// Transfer any accumulated and reset:
-										if (tA.length > 0)	{
-											for (aa=0;aa<tA.length;aa++)	{
-												localArray_V[c]=fObjSel.options[tA[aa]].value;
-												localArray_L[c]=fObjSel.options[tA[aa]].text;
-												localArray_S[c]=1;
-												c--;
-											}
-
-											var tC = 0;
-											var tA = new Array();
-										}
-									} else {
-										tA[tC] = a;
-										tC++;
-									}
-								}
-									// Transfer any remaining:
-								if (tA.length > 0)	{
-									for (aa=0;aa<tA.length;aa++)	{
-										localArray_V[c]=fObjSel.options[tA[aa]].value;
-										localArray_L[c]=fObjSel.options[tA[aa]].text;
-										localArray_S[c]=1;
-										c--;
-									}
-								}
-								c=l;	// Restore length value in "c"
-							}
-
-								// Transfer items in temporary storage to list object:
-							fObjSel.length = c;
-							for (a=0;a<c;a++)	{
-								fObjSel.options[a].value = localArray_V[a];
-								fObjSel.options[a].text = localArray_L[a];
-								fObjSel.options[a].selected = localArray_S[a];
-							}
-							setHiddenFromList(fObjSel,formObj[fName]);
-
-							//TBE_EDITOR_fieldChanged_fName(fName,formObj[fName+"_list"]);
-						}
-					}
-					function setFormValue_getFObj(fName)	{	//
-						var formObj = document.forms[0];
-						if (formObj)	{
-							if (formObj[fName] && formObj[fName+"_list"] && formObj[fName+"_list"].type=="select-multiple")	{
-								return formObj;
-							} else {
-								alert("Formfields missing:\n fName: "+formObj[fName]+"\n fName_list:"+formObj[fName+"_list"]+"\n type:"+formObj[fName+"_list"].type+"\n fName:"+fName);
-							}
-						}
-						return "";
-					}
-
-				</script>
 			';
-			$this->doc->postCode='
-				<script language="javascript" type="text/javascript">
-					script_ended = 1;
-					if (top.fsMod) top.fsMod.recentIds["web"] = '.intval($this->id).';
-				</script>
-			';
-
-			$headerSection = $this->doc->getHeader("pages",$this->pageinfo,$this->pageinfo["_thePath"])."<br>".$LANG->sL("LLL:EXT:lang/locallang_core.php:labels.path").": ".t3lib_div::fixed_lgd_pre($this->pageinfo["_thePath"],50);
-
+			
 			$this->content.=$this->doc->startPage($LANG->getLL("title"));
 			$this->content.=$this->doc->header($LANG->getLL("title"));
 			$this->content.=$this->doc->spacer(5);
-			/*$this->content.=$this->doc->section("",$this->doc->funcMenu($headerSection,t3lib_BEfunc::getFuncMenu($this->id,"SET[function]",$this->MOD_SETTINGS["function"],$this->MOD_MENU["function"])));*/
-			$this->content.=$this->doc->divider(5);
 
 
+
+			
+			$this->mainArray = t3lib_div::_GP('xftMain');
+			$this->elementArray = array('typoscriptbody'=>'ecco il typoscript','generalbody'=>'prova di general');
 			// Render content:
 			$this->moduleContent();
-
-
+			$this->getGeneralTab();
+			$this->getTyposcriptTab();
+			$this->getDescriptionTab();
+			$this->getElementTab();
+			$this->makeTabs();
 			// ShortCut
-			if ($BE_USER->mayMakeShortcut())	{
-				$this->content.=$this->doc->spacer(20).$this->doc->section("",$this->doc->makeShortcutIcon("id",implode(",",array_keys($this->MOD_MENU)),$this->MCONF["name"]));
-			}
-
-			$this->content.=$this->doc->spacer(10);
-		} else {
-				// If no access or if ID == zero
-
-			$this->doc = t3lib_div::makeInstance("mediumDoc");
-			$this->doc->backPath = $BACK_PATH;
-
-			$this->content.=$this->doc->startPage($LANG->getLL("title"));
-			$this->content.=$this->doc->header($LANG->getLL("title"));
-			$this->content.=$this->doc->spacer(5);
-			$this->content.=$this->doc->spacer(10);
+			
 		}
+	}
+	
+	function getGeneralTab(){
+		$this->elementArray['generalicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+		$this->elementArray['xfttitle'] = $this->language->getLL('xftTitle');
+		$this->elementArray['generalbody'] = '<div class="tab-inner-container" ><label for="xftTitle">' . $this->language->getLL('xftTitle') . '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" /></div>';
+	}
+	
+	function getTyposcriptTab(){
+		$this->elementArray['typoscripticons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+		$this->elementArray['xftTyposcriptTitle'] = $this->language->getLL('xftTyposcriptTitle');
+		$this->elementArray['typoscriptbody'] = '<div class="tab-inner-container" ><textarea class="fixed-font enable-tab t3editor" id="xftTyposcriptEditor" name="xftMain[xftTyposcript]" cols="' . $this->textareaCols . '" rows="' . $this->textareaCols . '" >' . $this->mainArray['xftTyposcript'] . '</textarea></div>';
+	}
+	
+	function getDescriptionTab(){
+		$this->elementArray['generalicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+		$this->elementArray['xftDescriptionTitle'] = $this->language->getLL('xftDescriptionTitle');
+		$this->elementArray['descriptionbody'] = '<div class="tab-inner-container" ><textarea class="xftDescriptionClass" name="xftMain[xftDescription]" cols="' . $this->textareaCols . '" rows="' . $this->textareaCols . '" >' . $this->mainArray['xftDescription'] . '</textarea></div>';
+	}
+	
+	function getElementTab(){
+		$this->elementArray['elementicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/><img class="pointer-icon xftNewElement" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/new_el.gif','') . ' title="' . $this->language->getLL('xftNewElementTitle') . '"/>';
+		$this->elementArray['xftElementTitle'] = $this->language->getLL('xftElementTitle');
+		$template = t3lib_div::makeInstance('elementTemplate');
+		$template->init(PATH_typo3conf .'ext/xflextemplate/configuration/subelement.tmpl');
+		//debug($_POST['xflextemplate'],'xftpost');
+		$elementID = 1;
+		if(count($_POST['xflextemplate'])){
+			foreach ($_POST['xflextemplate'] as $key => $item){
+				foreach ($item as $subKey => $value)
+					$elementArray[$subKey] = $value;
+				$elementArray['id'] = $elementID;
+				$elementID++;
+				$paletteArray[] = $item['title'] . '_' . $elementArray['id'];
+				$element[$key] = $elementArray;
+			}
+			foreach ($_POST['xflextemplate'] as $key => $item){
+				$element[$key]['paletteArray'] = $paletteArray;
+				$columns .= $template->setSubElement($element[$key]['type'], $element[$key]);	
+			}
+		}
+		$this->elementArray['elementbody'] = '
+			<div class="column"> ' . $columns . '
+			</div>
+			<div id="dialog" style="visibility:hidden;clear:both" title="' . $this->language->getLL('deleteelementtitle') . '">
+				<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>' .  $this->language->getLL('deleteelementmessage') . '</p>
+			</div>
+			
+		';
 	}
 
 	/**
@@ -534,10 +304,26 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 
 		$this->content.=$this->doc->endPage();
 		//inserisco l'action, altrimenti mi si porta dietro anche il GET
-		$encode_type=(t3lib_div::_GP('op')=='import')?'enctype="multipart/form-data"':'';
-		$this->content=str_replace('<form action="" method="POST">','<form action="index.php" method="POST" '.$encode_type.'>',$this->content);
+		//$encode_type=(t3lib_div::_GP('op')=='import')?'enctype="multipart/form-data"':'';
+		//$this->content=str_replace('<form action="" method="POST">','<form action="index.php" method="POST" '.$encode_type.'>',$this->content);
 		echo $this->content;
 	}
+	
+	
+	function makeTabs(){
+		$this->elementArray['generalTitle'] = $this->language->getLL('generalTitle');
+		$this->elementArray['descriptionTitle'] = $this->language->getLL('descriptionTitle');
+		$this->elementArray['typoscriptTitle'] = $this->language->getLL('typoscriptTitle');
+		$this->elementArray['elementTitle'] = $this->language->getLL('elementTitle');
+		$subpart = $this->cObj->getSubpart($this->template,'TABS');
+		$tabSelected = ($this->mainArray['TabSelected'])?$this->mainArray['TabSelected']:0;
+		//debug($this->elementArray);
+		//debug($this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1));
+		$this->content .= '<input type="hidden" id="xftTabSelected" value="' . $tabSelected . '" name="xftMain[TabSelected]" />' . $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
+		//debug($this->content);
+	}
+	
+	
 
 	/**
 	 * Generates the module content
@@ -545,98 +331,16 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 	 * @return	[type]		...
 	 */
 	function moduleContent()	{
-		global $LANG,$BE_USER;
-		/*switch((string)$this->MOD_SETTINGS["function"])	{
-			case 1:
-			break;
-		}*/
-		//debug($_GET);
-		//debug(t3lib_div::_GP('loadXML'));
-		//$this->fieldsArray=$this->getArrayFromXML(2);
-
-		switch (t3lib_div::_GP('op')){
-			case 'delete':
-				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_xflextemplate_template','uid='.t3lib_div::_GP('uid'));
-				$this->content.=$this->getTemplateList();
-			break;
-			case 'hidden':
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_xflextemplate_template','uid='.t3lib_div::_GP('uid'),array('hidden'=>t3lib_div::_GP('hiddenstate')));
-				$this->content.=$this->getTemplateList();
-			break;
-			case 'edit':
-			case 'new':
-			case 'reload':
-				$this->loaded=0;
-				$this->title=t3lib_div::_GP('title');
-				$this->description=t3lib_div::_GP('description');
-				$this->enableGroups=t3lib_div::_GP('enablegroups');
-				$this->typoscript=t3lib_div::_GP('typoscript');
-				$this->palettes=t3lib_div::_GP('palettes');
-				$this->file=t3lib_div::_GP('file');
-				$this->fieldsArray=(t3lib_div::_GP('loadXML'))?$this->getArrayFromXML(t3lib_div::_GP('loadXML')):t3lib_div::_GP('tx_xflextemplate');
-				$this->error=$this->checkError();
-				$this->content.=$this->createForm();
-
-			break; //fine break standard (edit,reload,new)
-			case 'import':
-				if (t3lib_div::_GP('_upload')){
-					$tempFile=t3lib_div::upload_to_tempfile($_FILES['upload']['tmp_name']);
-					$handle = fopen($tempFile, "r");
-					$content= fread($handle, filesize($tempFile));
-					t3lib_div::unlink_tempfile($tempFile);
-					$export=t3lib_div::makeInstance('tx_xflextemplate_importexport');
-					$export->_EXTKEY=$this->extKey;
-					$templateArray=$export->main($content);
-					if(is_array($templateArray)){
-						unset($templateArray['uid']);
-						unset($templateArray['delete']);
-						$now=mktime(date('h'),date('i'),date('s'),date('m'),date('d'),date('Y'));
-						$templateArray['crdate']=$now;
-						$templateArray['tstamp']=$now;
-						$templateArray['cruser_id']=$BE_USER->user['uid'];
-						$templateArray['enablegroup']='';
-						$templateArray['hidden']=0;
-						$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_xflextemplate_template',' title="'.$templateArray['title'].'"');
-						if ($GLOBALS['TYPO3_DB']->sql_num_rows($res)>0){
-							$this->content.='Un template con questo nome esiste gi&agrave;';
-						}
-						else{
-							$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_xflextemplate_template',$templateArray);
-							$this->content.="<script language=\"javascript\" type=\"text/javascript\">window.opener.location.href=\"index.php\";\nwindow.close();</script>";
-						}
-					}
-					else{
-						switch ($templateArray){
-							case 0:
-								$this->content.='file non corretto';
-							break;
-							case -1:
-								$this->content.='La versione non supporta il file';
-							break;
-							default:
-								$this->content.='altro';
-							break;
-						}
-					}
-				}
-				else{
-					$content='<div class="bgColor5">'.$LANG->getLL('uploadfiletitle').'</div>';
-					$content.='<div class="bgColor4"><input type="hidden" name="op" value="import" /><input name="upload" size="40" type="file"><br /><input name="_upload" value="'.$LANG->getLL('uploadfilesubmit').'" type="submit"></div>';
-					$this->content.=$content;
-				}
-			break;
-			case 'export':
-				$export=new tx_xflextemplate_importexport;
-				$export->_EXTKEY=$this->extKey;
-				$export->main();
-
-			break;
-			default:
-				$this->content.=$this->getTemplateList();
-			break;
-		}
+		global $LANG,$BE_USER;	
 
 	}
+	
+	
+	
+	function evaluateError(){
+		
+	}
+	
 
 	/**
 	 * [Describe function...]
