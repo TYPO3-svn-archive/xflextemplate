@@ -76,6 +76,11 @@
             <label index="xftDescriptionTitle">General description for template</label>
             <label index="xftNewElementTitle">Add new element</label>
             <label index="xftSaveDokTitle">Save template</label>
+			
+            <label index="emptyTitleEntry">Title couldn't be empty</label>
+            <label index="duplicateTitleEntry">Title is already present in the database</label>
+            <label index="emptyElementEntry">A template with empty element couldn't be saved</label>
+			<label index="dialogErrorTitle">Errors during saving</label>
             
         </languageKey>
         <languageKey index="it" type="array">
@@ -177,6 +182,12 @@
             <label index="xftDescriptionTitle">Descrizione generale del template</label>
             <label index="xftNewElementTitle">Aggiungi nuovo elemento</label>
             <label index="xftSaveDokTitle">Salva template</label>
+			
+            <label index="emptyTitleEntry">Il campo titolo non può essere vuoto</label>
+            <label index="duplicateTitleEntry">Il campo titolo non può essere già presente</label>
+            <label index="emptyElementEntry">Non si può salvare un template senza elementi</label>
+			<label index="dialogErrorTitle">Errori durante il salvataggio</label>
+			
 			
         </languageKey>
     </data>

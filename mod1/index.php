@@ -69,6 +69,7 @@ require_once (PATH_t3lib."class.t3lib_scbase.php");
 require_once (PATH_t3lib."class.t3lib_extmgm.php");
 
 require_once('../library/class.elementTemplate.php');
+require_once ('../library/class.listTemplate.php');
 require_once (PATH_site."/typo3conf/ext/xflextemplate/class.tx_xflextemplate_importexport.php");
 require_once (PATH_site."/typo3conf/ext/xflextemplate/class.fbgp.php");
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
@@ -148,7 +149,9 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 		    $this->cObj = t3lib_div::makeInstance('tslib_cObj');
 		        	//
 				// call ajax
+			//debug($_POST);
 			if (t3lib_div::_GP('ajax')==1){
+				$this->mainArray = t3lib_div::_GP('xftMain');
 				$template = t3lib_div::makeInstance('elementTemplate');
 				$template->init(PATH_typo3conf .'ext/xflextemplate/configuration/subelement.tmpl');
 				switch(t3lib_div::_GP('action')){
@@ -184,6 +187,24 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 						echo(htmlentities($LANG->getLL($key)));
 						exit();
 					break;
+					default:
+						switch ($this->mainArray['operation']){
+							case 'submit':
+								if ($this->evaluateError()){
+									//system generates error
+									//var_export($this->errorList);
+									foreach($this->errorList as $key => $item){
+										$errorString .= '<div class="xft-error xft-error-' . $key . '">' . htmlentities(implode(',',$item)) . '</div>';
+									}
+									echo '1|' . $errorString;
+								}
+								else
+									echo '0';
+								//var_export($_POST);
+								exit();
+							break;
+						}
+					break;
 				}
 				
 			}
@@ -191,13 +212,15 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 				debug($_POST);
 			$this->doc = t3lib_div::makeInstance("bigDoc");
 			$this->doc->backPath = $BACK_PATH;
-			$this->doc->form='<form id="xftForm" action="" method="POST">';
+			$this->doc->form='<form onsubmit="return false" id="xftForm" action="" method="POST">';
 			$this->doc->docType = 'xhtml_trans';
 			$this->doc->styleSheetFile2='../typo3conf/ext/xflextemplate/res/css/template.css';
 				// JavaScript
 			$this->doc->JScode = '
 			<link  rel="stylesheet" type="text/css" href="../res/css/ui.tabs.css" />
 			<link href="' . $this->doc->backPath . 'sysext/t3editor/css/t3editor.css" type="text/css" rel="stylesheet" />
+			<script type="text/javascript">PATH_t3e = "' . $this->doc->backPath . 'sysext/t3editor/"; 
+</script>
 			<script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js"></script>
 			<script type="text/javascript" src="../javascript/jquery/jquery.bgiframe.js"></script>
 			<script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js"></script>
@@ -207,21 +230,9 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 			<script type="text/javascript" src="../javascript/library/class.general.js"></script>
 			<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
 			<script type="text/javascript" src="../javascript/library/class.element.js"></script>
+			<script type="text/javascript" src="' . $this->doc->backPath . 'sysext/t3editor/jslib/codemirror/codemirror.js"></script>
 			<script type="text/javascript" src="../javascript/library/mainBE.js"></script>
-<script type="text/javascript" src="' . $this->doc->backPath . 'sysext/t3editor/jslib/codemirror/codemirror.js"></script>
-<script type="text/javascript">PATH_t3e = "' . $this->doc->backPath . 'sysext/t3editor/"; 
-var editor="";
-$(document).ready(function(){
-  editor = CodeMirror.fromTextArea("xftTyposcriptEditor" , {
-  parserfile: ["tokenizetyposcript.js", "parsetyposcript.js"],
-  path: PATH_t3e + "jslib/codemirror/",
-  stylesheet: PATH_t3e + "css/t3editor_inner.css",
-  textWrapping: false,
-  lineNumbers: true
-});
 
-} );
-</script>
 
 			';
 			
@@ -231,8 +242,8 @@ $(document).ready(function(){
 
 
 
-			
 			$this->mainArray = t3lib_div::_GP('xftMain');
+			
 			$this->elementArray = array('typoscriptbody'=>'ecco il typoscript','generalbody'=>'prova di general');
 			// Render content:
 			$this->moduleContent();
@@ -247,7 +258,7 @@ $(document).ready(function(){
 	}
 	
 	function getGeneralTab(){
-		$this->elementArray['generalicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+		$this->elementArray['generalicons'] = '<input type="image" class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
 		$this->elementArray['xfttitle'] = $this->language->getLL('xftTitle');
 		$this->elementArray['generalbody'] = '<div class="tab-inner-container" ><label for="xftTitle">' . $this->language->getLL('xftTitle') . '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" /></div>';
 	}
@@ -259,7 +270,7 @@ $(document).ready(function(){
 	}
 	
 	function getDescriptionTab(){
-		$this->elementArray['generalicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+		//$this->elementArray['generalicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
 		$this->elementArray['xftDescriptionTitle'] = $this->language->getLL('xftDescriptionTitle');
 		$this->elementArray['descriptionbody'] = '<div class="tab-inner-container" ><textarea class="xftDescriptionClass" name="xftMain[xftDescription]" cols="' . $this->textareaCols . '" rows="' . $this->textareaCols . '" >' . $this->mainArray['xftDescription'] . '</textarea></div>';
 	}
@@ -288,12 +299,19 @@ $(document).ready(function(){
 		$this->elementArray['elementbody'] = '
 			<div class="column"> ' . $columns . '
 			</div>
-			<div id="dialog" style="visibility:hidden;clear:both" title="' . $this->language->getLL('deleteelementtitle') . '">
-				<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>' .  $this->language->getLL('deleteelementmessage') . '</p>
+			<div id="dialogContainer">
+				<div id="dialog" title="' . $this->language->getLL('deleteelementtitle') . '">
+					<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><div class="dialogContent">' .  $this->language->getLL('deleteelementmessage') . '</div></p>
+				</div>
+				<div id="dialogError" title="' . $this->language->getLL('dialogErrorTitle') . '">
+					<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><div class="dialogContent"></div></p>
+				</div>
 			</div>
+			<span class="clear">&nbsp;</span>
 			
 		';
 	}
+	
 
 	/**
 	 * Prints out the module HTML
@@ -319,7 +337,13 @@ $(document).ready(function(){
 		$tabSelected = ($this->mainArray['TabSelected'])?$this->mainArray['TabSelected']:0;
 		//debug($this->elementArray);
 		//debug($this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1));
-		$this->content .= '<input type="hidden" id="xftTabSelected" value="' . $tabSelected . '" name="xftMain[TabSelected]" />' . $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
+		$this->hiddenFields[]='<input type="hidden" name="ajax" value="1" />';
+		$this->hiddenFields[]='<input type="hidden" id="xftTabSelected" value="' . $tabSelected . '" name="xftMain[TabSelected]" />';
+		$this->hiddenFields[]='<input type="hidden" id="xftOperation" name="xftMain[operation]" value="submit" />';
+		$templateList = t3lib_div::makeInstance('listTemplate');
+		$templateList->init();
+		$this->content .= $templateList->getTemplateList();
+		$this->content .= implode(chr(10),$this->hiddenFields) . $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
 		//debug($this->content);
 	}
 	
@@ -338,7 +362,32 @@ $(document).ready(function(){
 	
 	
 	function evaluateError(){
-		
+		//check Template name
+		$error = 0;
+		//var_export($this->mainArray);
+		if ($this->mainArray['xftTitle']){
+			if(!$this->mainArray['xftIDNumber']){
+				//title is inserted but it must control for inserting operation the uniqness of name
+				//debug($GLOBALS['TYPO3_DB']->SELECTquery('title','tx_xflextemplate_template','deleted=0'));
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_xflextemplate_template','deleted=0');
+				while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+					if ($row['title'] == $this->mainArray['xftTitle']){
+						$error = 1;
+						$this->errorList['title'][] = $this->language->getLL('duplicateTitleEntry');
+						break;
+					}
+				}
+			}				
+		}
+		else{
+			$error = 1;
+			$this->errorList['title'][] = $this->language->getLL('emptyTitleEntry');
+		}
+		if (!count(t3lib_div::_GP('xflextemplate'))){
+			$error = 1;
+			$this->errorList['element'][] = $this->language->getLL('emptyElementEntry');
+		}
+		return $error;
 	}
 	
 

@@ -6,11 +6,12 @@
 //javascript global variables
 ajaxUrl = 'http://testplugin/typo3conf/ext/xflextemplate/mod1/index.php';
 var languageArray =new Array;
+var editor=""; 
 
 //Main document ready function
 $(document).ready(function(){
-	
 	//exec tabs
+	
 	$("#xft-mainblock>ul").tabs({selected: parseInt($('#xftTabSelected').val())});
 	$('#xft-mainblock>ul').bind('tabsselect', function(event, ui) {
   		$('#xftTabSelected').val(ui.index);
@@ -64,8 +65,64 @@ $(document).ready(function(){
         elements[elementId].add(elementId);
     });
 	
-	$('.xftSaveDok').bind('click',function(){
+	
+	var options = { 
+	        target:        '',   // target element(s) to be updated with server response 
+	        beforeSubmit:  function(formData, jqForm, options){
+								//$('#xftOperation').attr('value','submit');
+								$('#xftTyposcriptEditor').val(editor.getCode());
+								$.blockUI({message : '<img src="../res/css/images/loading_24.gif"', css : {width: '24px', height: '24px', border: 0, top: '50%', left : '50%', margin: '-15px 0 0 -15px', padding: '5px', background : 'transparent'} });
+								//alert(formData['xftMain[operation]']);
+								$('#xftOperation',jqForm).attr('value','submit');
+								//alert($('#xftOperation',jqForm).attr('value') );
+							},  // pre-submit callback 
+	        success:       function(responseText, statusText){
+								//alert(responseText);
+								$.unblockUI();
+								returnArray = responseText.split('|');
+								error = returnArray[0];
+								if (error == 1){
+									//alert(returnArray[1]);
+									$('#dialogError .dialogContent').html(returnArray[1]);
+									$('#dialogError').dialog({
+										bgiframe: true,
+										resizable: false,
+										height:140,
+										modal: true,
+										overlay: {
+											backgroundColor: '#000',
+											opacity: 0.5
+										},
+										buttons: {
+											'dialogOK': function() {
+												$(this).dialog('close');
+											}
+										}
+									});
+									$('.ui-dialog-buttonpane button').each(function(){
+										//alert($(this).html());
+										$(this).html(languageArray['dialogOK']);
+									});
+								}
+								//alert(responseText);
+							}  // post-submit callback 
+	    
+    }; 
+ 
+    // bind form using 'ajaxForm' 
+    $('#xftForm').ajaxForm(options);
+	
+	editor = CodeMirror.fromTextArea("xftTyposcriptEditor" , {
+	  parserfile: ["tokenizetyposcript.js", "parsetyposcript.js"],
+	  path: PATH_t3e + "jslib/codemirror/",
+	  stylesheet: PATH_t3e + "css/t3editor_inner.css",
+	  textWrapping: false,
+	  lineNumbers: true
+	});
+
+	
+	/*$('.xftSaveDok').bind('click',function(){
 		$('#xftTyposcriptEditor').val(editor.getCode());
 		$('#xftForm')[0].submit();
-	})
+	})*/
 });
