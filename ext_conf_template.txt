@@ -10,6 +10,9 @@ textareaRows = 20
   # cat=basic//10; type=string; label=Upload folder for saving images and other files
 uploadFolder = uploads/pics
 
+  # cat=basic//10; type=string; label=Date configuration string 
+date = m-d-Y
+
   # cat=basic//10; type=string; label=standard string for textarea when defaultExtra is empty
 defaultExtra = richtext[]:rte_transform[flag=rte_enabled|mode=ts]
 

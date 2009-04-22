@@ -40,6 +40,7 @@ element = function(initializeParameters){
  	add: function(id){
 		var oThis = this;
 		this.id = id;
+		//alert(oThis.configuration.create);
 		if (oThis.configuration.create) {
 			palette = Array();
 			$(' .' + oThis.configuration.titleClass).each(function(){

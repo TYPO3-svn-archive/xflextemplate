@@ -6,7 +6,8 @@
 //javascript global variables
 ajaxUrl = 'http://testplugin/typo3conf/ext/xflextemplate/mod1/index.php';
 var languageArray =new Array;
-var editor=""; 
+var typoscriptEditor=""; 
+var HTMLEditor=""; 
 
 //Main document ready function
 $(document).ready(function(){
@@ -66,16 +67,7 @@ $(document).ready(function(){
     });
 	
 	
-	var options = { 
-	        target:        '',   // target element(s) to be updated with server response 
-	        beforeSubmit:  function(formData, jqForm, options){
-								//$('#xftOperation').attr('value','submit');
-								$('#xftTyposcriptEditor').val(editor.getCode());
-								$.blockUI({message : '<img src="../res/css/images/loading_24.gif"', css : {width: '24px', height: '24px', border: 0, top: '50%', left : '50%', margin: '-15px 0 0 -15px', padding: '5px', background : 'transparent'} });
-								//alert(formData['xftMain[operation]']);
-								$('#xftOperation',jqForm).attr('value','submit');
-								//alert($('#xftOperation',jqForm).attr('value') );
-							},  // pre-submit callback 
+	var optionsForm = { 
 	        success:       function(responseText, statusText){
 								//alert(responseText);
 								$.unblockUI();
@@ -108,17 +100,38 @@ $(document).ready(function(){
 							}  // post-submit callback 
 	    
     }; 
+	
+	$('.xftSaveDok').bind('click',function(){
+		$('#xftTyposcriptEditor').val(typoscriptEditor.getCode());
+		$('#xftHTMLEditor').val(htmlEditor.getCode());
+		$.blockUI({message : '<img src="../res/css/images/loading_24.gif"', css : {width: '24px', height: '24px', border: 0, top: '50%', left : '50%', margin: '-15px 0 0 -15px', padding: '5px', background : 'transparent'} });
+		$('#xftForm').ajaxSubmit(optionsForm); 
+	});
  
     // bind form using 'ajaxForm' 
-    $('#xftForm').ajaxForm(options);
+    //$('#xftForm').ajaxForm(options);
 	
-	editor = CodeMirror.fromTextArea("xftTyposcriptEditor" , {
+	typoscriptEditor = CodeMirror.fromTextArea("xftTyposcriptEditor" , {
 	  parserfile: ["tokenizetyposcript.js", "parsetyposcript.js"],
-	  path: PATH_t3e + "jslib/codemirror/",
-	  stylesheet: PATH_t3e + "css/t3editor_inner.css",
-	  textWrapping: false,
-	  lineNumbers: true
+	  path: "/typo3conf/ext/xflextemplate/javascript/library/editor/js/",
+	  stylesheet: "/typo3conf/ext/xflextemplate/javascript/library/editor/css/t3editor_inner.css",
+    lineNumbers: false,    
+	continuousScanning: 500,
+    textWrapping: false
+	  //textWrapping: false,
+	  //lineNumbers: true
 	});
+	
+	htmlEditor = CodeMirror.fromTextArea('xftHTMLEditor', {
+    height: "350px",
+    parserfile: ["parsexml.js"],
+    stylesheet: "/typo3conf/ext/xflextemplate/javascript/library/editor/css/xmlcolors.css",
+    path: "/typo3conf/ext/xflextemplate/javascript/library/editor/js/",
+    continuousScanning: 500,
+    lineNumbers: false,
+    textWrapping: false
+  });
+
 
 	
 	/*$('.xftSaveDok').bind('click',function(){

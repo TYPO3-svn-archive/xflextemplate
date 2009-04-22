@@ -1,9 +1,44 @@
+<!-- ###TEMPLATELIST### -->
+<table class="xftTableList">
+	<thead>
+		<tr>
+			<th>###TITLEHEADER###</th>
+			<th>###DESCRIPTIONHEADER###</th>
+			<th>###CRDATEHEADER###</th>
+			<th>###TSTAMPHEADER###</th>
+			<th>###ICONSHEADER###</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- ###TEMPLATELISTCOLUMN### -->
+			<tr id="xftRow###UIDROWID###">
+				<td>###TITLECOLUMN###</td>
+				<td>###DESCRIPTIONCOLUMN###</td>
+				<td>###CRDATECOLUMN###</td>
+				<td>###TSTAMPCOLUMN###</td>
+				<td>###ICONSCOLUMN###</td>
+			</tr>
+		<!-- ###TEMPLATELISTCOLUMN### -->
+	</tbody>
+</table>
+<div id="dialogContainer">
+				<div id="dialog" title="###DELETEELEMENTTITLE###">
+					<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><div class="dialogContent">###DELETEELEMENTMESSAGE###</div></p>
+				</div>
+				<div id="dialogError" title="' . $this->language->getLL('dialogErrorTitle') . '">
+					<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><div class="dialogContent"></div></p>
+				</div>
+			</div>
+			<span class="clear">&nbsp;</span>
+<!-- ###TEMPLATELIST### -->
+
 <!-- ###TABS### -->
          <div id="xft-mainblock">
             <ul>
                 <li><a href="#general"><span>###GENERALTITLE###</span></a></li>
                 <li><a href="#description"><span>###DESCRIPTIONTITLE###</span></a></li>
                 <li><a href="#typoscript"><span>###TYPOSCRIPTTITLE###</span></a></li>
+                <li><a href="#html"><span>###HTMLTITLE###</span></a></li>
                 <li><a href="#element"><span>###ELEMENTTITLE###</span></a></li>
             </ul>
             <div class="fullBordered" id="general">
@@ -18,6 +53,12 @@
             	<div class="xft-TabHeader"><span class="xft-icon">###GENERALICONS###</span><span class="xft-tabs-header">###XFTTYPOSCRIPTTITLE###</span></div>
                 <div class="xftTyposcriptEditorContainer">
                		###TYPOSCRIPTBODY###
+				</div>
+            </div>
+            <div class="fullBordered" id="html">
+            	<div class="xft-TabHeader"><span class="xft-icon">###GENERALICONS###</span><span class="xft-tabs-header">###XFTHTMLTITLE###</span></div>
+                <div class="xftHTMLEditorContainer">
+               		###HTMLBODY###
 				</div>
             </div>
             <div class="fullBordered" id="element">

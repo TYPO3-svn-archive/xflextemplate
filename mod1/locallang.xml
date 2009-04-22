@@ -67,6 +67,7 @@
 			
 			
             <label index="typoscriptTitle">Typoscript</label>
+            <label index="HTMLTitle">HTML</label>
             <label index="descriptionTitle">Description</label>
             <label index="generalTitle">General</label>
             <label index="elementTitle">Elements</label>
@@ -173,6 +174,7 @@
 			
 			
             <label index="typoscriptTitle">Typoscript</label>
+            <label index="HTMLTitle">HTML</label>
             <label index="descriptionTitle">Descrizione</label>
             <label index="generalTitle">Generale</label>
             <label index="elementTitle">Elementi</label>
@@ -187,6 +189,14 @@
             <label index="duplicateTitleEntry">Il campo titolo non può essere già presente</label>
             <label index="emptyElementEntry">Non si può salvare un template senza elementi</label>
 			<label index="dialogErrorTitle">Errori durante il salvataggio</label>
+			
+			
+			<label index="titleHeader">Titolo</label>
+			<label index="descriptionHeader">Descrizione</label>
+			<label index="crdateHeader">Data di creazione</label>
+			<label index="tstampHeader">data di aggiornamento</label>
+			<label index="iconsHeader"></label>
+			<label index="hiddenColumnTips">Nascondi template</label>
 			
 			
         </languageKey>

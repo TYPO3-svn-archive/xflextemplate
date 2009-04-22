@@ -35,27 +35,48 @@ class listTemplate {
 	
 	var $xft;
 	var $template;
+	var $cObj;
+	var $language;
+	var $globalConf;
 	
-	function init($fileName=''){
+	function init($langObj, $fileName='', $globalConf){
 		$this->xft = t3lib_div::makeInstance('xftObject');
+		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->template = ($fileName) ? file_get_contents($fileName) : '';
+		$this->language = $langObj;
+		$this->globalConf = $globalConf;
 		//debug($this->template,'ffffff');
 	}
 	
 	function getTemplateList(){
+		global $BACK_PATH;
 		 $templateList = $this->xft->getTemplateList();
-		 if(count($templateList)){
-		 	$tableHeader = '<table class="xft-table">
-								<thead>
-									<tr>
-										<th>Title</th>
-										<th>Description</th>
-										<th>Create</th>
-										<th>Updated</th>
-										<th>Hidden</th>
-									</tr>
-								</thead>
-							</table>';
-			$content = $tableHeader;
+		 if(count($templateList)){		 	
+			$tableContent = $this->cObj->getSubpart($this->template,'###TEMPLATELIST###');
+			$rowTemplate = $this->cObj->getSubpart($tableContent,'###TEMPLATELISTCOLUMN###');
+			$columnContent = '';
+			foreach($templateList as $item){
+				$markerColumnArray = array();
+				$markerColumnArray['titlecolumn'] = $item['title'];
+				$markerColumnArray['crdatecolumn'] = date($this->globalConf['date'],$item['crdate']);
+				$markerColumnArray['tstampcolumn'] = date($this->globalConf['date'],$item['tstamp']);
+				$markerColumnArray['descriptioncolumn'] = $item['description'];
+				$markerColumnArray['uidRowID'] = $item['uid'];
+				$hiddenIcon = ($item['hidden'])?'button_unhide':'button_hide';
+				$markerColumnArray['iconsColumn'] = '<img id="edit-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/edit2.gif','') . ' title="' . $this->language->getLL('xftEditIcon') . '"/>
+													<img id="hide-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftHidden" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/' . $hiddenIcon . '.gif','') . ' title="' . $this->language->getLL('xftHiddenIcon') . '"/>
+													<img id="dele-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . ' title="' . $this->language->getLL('xftDelteIcon') . '"/>';
+				$columnContent .= $this->cObj->substituteMarkerArray($rowTemplate,$markerColumnArray,'###|###',1);
+			}
+			$markerTableArray['titleHeader'] = $this->language->getLL("titleHeader");
+			$markerTableArray['descriptionHeader'] = $this->language->getLL("descriptionHeader");
+			$markerTableArray['crdateHeader'] = $this->language->getLL("crdateHeader");
+			$markerTableArray['tstampHeader'] = $this->language->getLL("tstampHeader");
+			$markerTableArray['iconsHeader'] = $this->language->getLL("iconsHeader");
+			$markerTableArray['deleteelementtitle'] = $this->language->getLL('deleteelementtitle');
+			$markerTableArray['deleteelementmessage'] = $this->language->getLL('deleteelementmessage');
+			$content = $this->cObj->substituteSubpart($tableContent, '###TEMPLATELISTCOLUMN###', $columnContent);
+			$content = $this->cObj->substituteMarkerArray($content,$markerTableArray,'###|###',1);
 		 }
 		 return $content;
 	} 

@@ -109,7 +109,7 @@ class elementTemplate {
 		$markerArray['XTYPESELECT'] = implode(chr(10),$optionType);
 		$optionType = array();
 		$optionType[] = '<option value="none">' . $LANG->sL('LLL:EXT:xflextemplate/language/locallang_template.xml:palettenone') . '</option>';
-		if (count($elementArray['paletteArray']) && is_array($elementArray['paletteArray'])){
+		if (is_array($elementArray['paletteArray']) && count($elementArray['paletteArray'])){
 			foreach($elementArray['paletteArray'] as $item){				
 				$paletteSubItem = explode('_',$item);
 				$selected = ($elementArray['palette'] == 'element_' . $paletteSubItem[1]) ? ' selected ' : '';
