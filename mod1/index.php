@@ -34,7 +34,7 @@
 	// DEFAULT initialization of a module [BEGIN]
 unset($MCONF);
 require ("conf.php");
-$BACK_PATH = '/Users/federico/Sites/TYPO3/testplugin/typo3/';
+//$BACK_PATH = '/Users/federico/Sites/TYPO3/testplugin/typo3/';
 require ($BACK_PATH."init.php");
 require ($BACK_PATH."template.php");
 $LANG->includeLLFile("EXT:xflextemplate/mod1/locallang.php");
@@ -48,7 +48,7 @@ require_once (PATH_site."/typo3conf/ext/xflextemplate/class.tx_xflextemplate_imp
 require_once ('../library/class.xftObject.php');
 require_once (PATH_site."/typo3conf/ext/xflextemplate/class.fbgp.php");
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
-$BACK_PATH = '/typo3/';
+//$BACK_PATH = '/typo3/';
 	// DEFAULT initialization of a module [END]
 
 /*
