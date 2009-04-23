@@ -4,14 +4,14 @@
 
 var ajaxUrl = 'http://testplugin/typo3conf/ext/xflextemplate/mod1/index.php';
 
-var languageArray =new Array;
+var languageArray = new Array;
 
 //Main document ready function
 $(document).ready(function(){
 	var elements = new Array();
 	
 	//Array for possible dialog button label name
-	var languageKeyArray = new Array('dialogYes', 'dialogNo', 'dialogOK', 'dialogCancel');
+	var languageKeyArray = new Array('dialogYes', 'dialogNo', 'dialogOK', 'dialogCancel','showColumnTips','hiddenColumnTips');
 	
 	//retrieve labels for translation by ajax calls
 	parameters = {

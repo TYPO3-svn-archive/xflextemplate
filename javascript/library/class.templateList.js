@@ -14,8 +14,7 @@ templateList.prototype = {
 			$(this).bind('click',function(){
 				img = this;
 				operationArray = this.id.split('-');
-				//alert('operation: ' + operationArray[0] + ', id=' + operationArray[1]);
-				if (operationArray[0] == 'edit'){					
+				if (operationArray[0] == 'edit' || operationArray[0] == 'new'){
 					document.location.href = 'index.php?templateId=' + operationArray[1] + '&action=' + operationArray[0];
 				}
 				else{
@@ -49,7 +48,6 @@ templateList.prototype = {
 							}
 						});
 						$('.ui-dialog-buttonpane button').each(function(){
-							//alert($(this).html());
 							$(this).html(languageArray[$(this).html()]);
 						});
 					}
@@ -62,7 +60,10 @@ templateList.prototype = {
 						var ret = ajaxObj.exec();
 						hideArray = ret.split('|');
 						$(img).attr('src',$(img).attr('src').replace(hideArray[0],hideArray[1]));
-						alert(ret);
+						if(hideArray[1] == 'button_unhide')
+							$(img).attr('title',languageArray['showColumnTips']);
+						else
+							$(img).attr('title',languageArray['hiddenColumnTips']);
 					}
 				}
 			});

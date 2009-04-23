@@ -118,7 +118,7 @@ dl.xft-main-element{
 
 /*TABS*/
 .xft-TabHeader {
-background:  #a2aab8 url(images/header.jpg) repeat-x;
+background:  #a2aab8  repeat-x;
 color: #ffffff;
 height: 20px;
 }
@@ -176,6 +176,13 @@ div.ui-tabs-panel{
 	margin:10px 5px;
 }
 
+.xftDescriptionClass{
+	width: 660px;
+	height: 350px;
+	border: 1px solid #a2aab8;
+	margin:30px;
+}
+
 .xftTyposcriptEditorContainer, .xftHTMLEditorContainer{
 	margin:30px;
 	border: 1px solid #a2aab8;
@@ -200,7 +207,7 @@ input.xftSaveDok, input.xftSaveDok:hover{
 	font-size: 1.1em;
 	background: #ffffff url(images/ffffff_40x100_textures_01_flat_75.png) 0 0 repeat-x;
 	color: #222222;
-	border: 4px solid #fa8800;
+	border: 4px solid #8b919b;
 	position: relative;
 }
 .ui-resizable-handle {
@@ -274,10 +281,10 @@ body .ui-resizable-autohide .ui-resizable-handle { display: none; } /* use 'body
 	/*resets*/margin: 0; padding: 0; border: 0; outline: 0; line-height: 1.3; text-decoration: none; font-size: 100%; list-style: none;
 	padding: .5em 1.5em .5em 1em;
 	color: #ffffff;
-	background: #ff9f33 url(images/e6e6e6_40x100_textures_02_glass_75.png) 0 50% repeat-x;
-	border-bottom: 1px solid #d3d3d3;
+	background: #a2aab8 url(images/e6e6e6_40x100_textures_02_glass_75.png) 0 50% repeat-x;
+	border-bottom: 1px solid #a2aab8;
 	font-size: 1em;
-	font-weight: normal;
+	font-weight: bold;
 	position: relative;
 }
 .ui-dialog-title {}

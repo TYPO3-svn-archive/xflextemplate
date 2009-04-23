@@ -9,7 +9,7 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="title">XFlexTemplate</label>
+            <label index="title">XFlexTemplate - Dynamic content element genarator</label>
             <label index="titlelist">Title</label>
             <label index="descriptionlist">Description</label>
             <label index="filelist">File HTML</label>
@@ -81,11 +81,23 @@
             <label index="emptyTitleEntry">Title couldn't be empty</label>
             <label index="duplicateTitleEntry">Title is already present in the database</label>
             <label index="emptyElementEntry">A template with empty element couldn't be saved</label>
+            <label index="emptyElementTitleEntry">Title for element n° %d couldn't be empty</label>
 			<label index="dialogErrorTitle">Errors during saving</label>
+			
+			<label index="titleHeader">Title</label>
+			<label index="descriptionHeader">Description</label>
+			<label index="crdateHeader">Creation date</label>
+			<label index="tstampHeader">Update date</label>
+			<label index="iconsHeader"></label>
+			<label index="hiddenColumnTips">Hide template</label>
+			<label index="showColumnTips">Show template</label>
+			<label index="deleteColumnTips">Delete template</label>
+			<label index="editColumnTips">Edit template</label>
+			<label index="newColumnTips">New template</label>
             
         </languageKey>
         <languageKey index="it" type="array">
-            <label index="title">XFlexTemplate</label>
+            <label index="title">XFlexTemplate - costruttore di elementi di template dinamici</label>
             <label index="titlelist">Titolo</label>
             <label index="descriptionlist">Descrizione</label>
             <label index="filelist">File HTML</label>
@@ -188,15 +200,20 @@
             <label index="emptyTitleEntry">Il campo titolo non può essere vuoto</label>
             <label index="duplicateTitleEntry">Il campo titolo non può essere già presente</label>
             <label index="emptyElementEntry">Non si può salvare un template senza elementi</label>
+            <label index="emptyElementTitleEntry">Il titolo dell'elemento n° %d non può essere vuoto</label>
 			<label index="dialogErrorTitle">Errori durante il salvataggio</label>
 			
 			
 			<label index="titleHeader">Titolo</label>
 			<label index="descriptionHeader">Descrizione</label>
 			<label index="crdateHeader">Data di creazione</label>
-			<label index="tstampHeader">data di aggiornamento</label>
+			<label index="tstampHeader">Data di aggiornamento</label>
 			<label index="iconsHeader"></label>
 			<label index="hiddenColumnTips">Nascondi template</label>
+			<label index="showColumnTips">Mostra template</label>
+			<label index="deleteColumnTips">Elimina template</label>
+			<label index="editColumnTips">Modifica template</label>
+			<label index="newColumnTips">Crea nuovo template</label>
 			
 			
         </languageKey>
