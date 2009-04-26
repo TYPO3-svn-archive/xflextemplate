@@ -49,9 +49,9 @@ $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users
  * @todo controlla re che il campo template o templateFile ci siano 
  */
  
-// TODO pippo
+//TODO pippo
 
-class tx_xflextemplate_module1 extends t3lib_SCbase {
+class tx_xflextemplate_backend extends t3lib_SCbase {
 	
 		
 	
@@ -214,7 +214,6 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 			$this->doc->backPath = $this->backPath;
 			$this->doc->form='<form onsubmit="return false" id="xftForm" action="index.php" method="POST">';
 			$this->doc->docType = 'xhtml_trans';
-			
 			//stylesheets and js file
 			$this->doc->JScode = '
 				<link  rel="stylesheet" type="text/css" href="../res/css/template.css" />
@@ -223,6 +222,7 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 				<script type="text/javascript">
 					PATH_t3e = "' . $this->doc->backPath . 'sysext/t3editor/";
 					PATH_xft = "' . $this->doc->backPath . '../typo3conf/ext/xflextemplate/";
+					URL_xft = "http://' . t3lib_div::getThisUrl() . '";
 				</script>
 				<script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js"></script>
 				<script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js"></script>
@@ -256,7 +256,7 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 						<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
 						<script type="text/javascript" src="../javascript/library/class.element.js"></script>
 						<script type="text/javascript" src="../javascript/library/editor/js/codemirror.js"></script>
-						<script type="text/javascript" src="../javascript/library/mainBE.js"></script>';
+						<script type="text/javascript" src="../javascript/backEndBSTP.js"></script>';
 			}
 			else{ //if operation is a listing display (default view)
 				//initialize listTemplate object
@@ -270,7 +270,7 @@ class tx_xflextemplate_module1 extends t3lib_SCbase {
 				$this->doc->JScode .= '
 						<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
 						<script type="text/javascript" src="../javascript/library/class.templateList.js"></script>
-						<script type="text/javascript" src="../javascript/backEnd.js"></script>';
+						<script type="text/javascript" src="../javascript/backEndBLTP.js"></script>';
 			}
 			
 			
@@ -472,7 +472,7 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflexte
 
 
 // Make instance:
-$SOBE = t3lib_div::makeInstance('tx_xflextemplate_module1');
+$SOBE = t3lib_div::makeInstance('tx_xflextemplate_backend');
 $SOBE->init();
 
 // Include files?

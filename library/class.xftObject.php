@@ -27,10 +27,26 @@
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
 
-
+/**
+ * XFT object for elementary function
+ * 
+ * @author Federico Bernardin <federico@bernardin.it>
+ * @version 2.0
+ * @package TYPO3
+ * @subpackage xfletemplate
+ */
 class xftObject {
+	
+	/**
+	 * @var string define the version of xft
+	 */
 	var $version = '2.0.0';
 	
+	/**
+	 * This function retrieves rows from database
+	 * 
+	 * @return array list of template 
+	 */
 	function getTemplateList(){
 		$rows = array();
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,title,description,crdate,tstamp,hidden','tx_xflextemplate_template','deleted=0','','title');
@@ -40,13 +56,23 @@ class xftObject {
 		return $rows;
 	}
 	
+	/**
+	 * This function save data into database 
+	 * @param array Array containing xftMain and xflextemplate subarray
+	 * 
+	 * @return void
+	 */
 	function save($dataArray){
+		global $BE_USER;
 		$uid = $dataArray['xftMain']['uid'];
 		$dataArrayIndexed = array();
 		$i=1; // counter for rewriting of array
 		if($uid){ //data is an update
 			foreach($dataArray['xflextemplate'] as $mainKey=>$item){
-				foreach($item as $key=>$value)
+				$type = substr($item['type'],0,strlen($item['type'])-4);
+				$title = $dataArray['xflextemplate'][$mainKey]['title'];
+				foreach($item as $key=>$value){
+					$keyReduced = substr($key,strlen($type)+1);
 					switch ($key){
 						case 'open':
 							unset($dataArray['xflextemplate'][$mainKey][$key]);
@@ -55,26 +81,53 @@ class xftObject {
 							//if palette field contains string "element_" means it is a palette and translate into title name of palette field
 							if (strstr($dataArray['xflextemplate'][$mainKey]['palette'],'element_')){
 								$paletteID = substr($dataArray['xflextemplate'][$mainKey]['palette'],8);
-								$dataArray['xflextemplate'][$mainKey]['palette'] = $dataArray['xflextemplate'][$paletteID]['title'];
+								$dataArray['xflextemplate'][$mainKey]['palettes'] = $dataArray['xflextemplate'][$paletteID]['title'];
+								unset($dataArray['xflextemplate'][$mainKey]['palette']);
+								$paletteArray[$dataArray['xflextemplate'][$paletteID]['title']][] = $title;
 							}
 						break;
+						case 'title':
+							$dataArray['xflextemplate'][$mainKey]['name'] = $value;
+							unset($dataArray['xflextemplate'][$mainKey]['title']);
+						break;
+						case 'type':
+							$dataArray['xflextemplate'][$mainKey]['type'] = $type;
+						break;
+						default:
+							if(strstr($key,$type . '_')){	
+								if($value){
+									$dataArray['xflextemplate'][$mainKey][$keyReduced] = $value;
+									unset($dataArray['xflextemplate'][$mainKey][$key]);
+								}	
+								else						
+									unset($dataArray['xflextemplate'][$mainKey][$key]);
+							}								
+						break;
 					}
+				}
 				//move dataarray in dataarraIndexed so index starts with 1 and in incremental way
 				$dataArrayIndexed[$i++] = $dataArray['xflextemplate'][$mainKey];
+			}
+			foreach($paletteArray as $key=>$item){
+				$tempPaletteArray[$key] = implode(',', $item);
 			}
 			$xml = t3lib_div::array2xml($dataArrayIndexed);
 			$savedData['title'] = $dataArray['xftMain']['xftTitle'];
 			$savedData['description'] = $dataArray['xftMain']['xftDescription'];
 			$savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];
-			$savedData['tstamp'] = mktime(date("h"),date("m"),date("s"),date("m"),date("d"),date("Y"));
+			$savedData['tstamp'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
 			$savedData['html'] = $dataArray['xftMain']['xftHTML'];
+			$savedData['palettes'] = serialize($tempPaletteArray);
 			$savedData['xml'] = $xml;
 			$savedData['version'] = $this->version;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_xflextemplate_template','uid=' . $uid ,$savedData);
 		}
 		else{ //data is an insert
 			foreach($dataArray['xflextemplate'] as $mainKey=>$item){
-				foreach($item as $key=>$value)
+				$type = substr($item['type'],0,strlen($item['type'])-4);
+				$title = $dataArray['xflextemplate'][$mainKey]['title'];
+				foreach($item as $key=>$value){
+					$keyReduced = substr($key,strlen($type)+1);
 					switch ($key){
 						case 'open':
 							unset($dataArray['xflextemplate'][$mainKey][$key]);
@@ -83,23 +136,46 @@ class xftObject {
 							//if palette field contains string "element_" means it is a palette and translate into title name of palette field
 							if (strstr($dataArray['xflextemplate'][$mainKey]['palette'],'element_')){
 								$paletteID = substr($dataArray['xflextemplate'][$mainKey]['palette'],8);
-								$dataArray['xflextemplate'][$mainKey]['palette'] = $dataArray['xflextemplate'][$paletteID]['title'];
+								$dataArray['xflextemplate'][$mainKey]['palettes'] = $dataArray['xflextemplate'][$paletteID]['title'];
+								unset($dataArray['xflextemplate'][$mainKey]['palette']);
+								$paletteArray[$dataArray['xflextemplate'][$paletteID]['title']][] = $title;
 							}
 						break;
+						case 'title':
+							$dataArray['xflextemplate'][$mainKey]['name'] = $value;
+							unset($dataArray['xflextemplate'][$mainKey]['title']);
+						break;
+						case 'type':
+							$dataArray['xflextemplate'][$mainKey]['type'] = $type;
+						break;
+						default:
+							if(strstr($key,$type . '_')){	
+								if($value){
+									$dataArray['xflextemplate'][$mainKey][$keyReduced] = $value;
+									unset($dataArray['xflextemplate'][$mainKey][$key]);
+								}	
+								else						
+									unset($dataArray['xflextemplate'][$mainKey][$key]);
+							}								
+						break;
 					}
+				}
 				//move dataarray in dataarraIndexed so index starts with 1 and in incremental way
 				$dataArrayIndexed[$i++] = $dataArray['xflextemplate'][$mainKey];
+			}
+			foreach($paletteArray as $key=>$item){
+				$tempPaletteArray[$key] = implode(',', $item);
 			}
 			$xml = t3lib_div::array2xml($dataArrayIndexed);
 			$savedData['title'] = $dataArray['xftMain']['xftTitle'];
 			$savedData['description'] = $dataArray['xftMain']['xftDescription'];
 			$savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];
-			$savedData['crdate'] = mktime(date("h"),date("m"),date("s"),date("m"),date("d"),date("Y"));
-			$savedData['tstamp'] = mktime(date("h"),date("m"),date("s"),date("m"),date("d"),date("Y"));
+			$savedData['crdate'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
+			$savedData['tstamp'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
 			$savedData['html'] = $dataArray['xftMain']['xftHTML'];
 			$savedData['xml'] = $xml;
 			$savedData['version'] = $this->version;
-			$savedData['cruser_id'] = '2';
+			$savedData['cruser_id'] = $BE_USER->user['uid'];
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_xflextemplate_template',$savedData);			
 		}
 	}
@@ -111,16 +187,32 @@ class xftObject {
 		if (is_array($row)){
 			$xftArray['xflextemplate'] = t3lib_div::xml2array($row['xml']);
 			foreach($xftArray['xflextemplate'] as $key=>$value){
-				$titleArray[$value['title']] = $key;
+				$titleArray[$value['name']] = $key;
 			}
-			foreach($xftArray['xflextemplate'] as $mainKey=>$item)
-					foreach($item as $key=>$value)
-						switch ($key){
-							case 'palette':
-								if ($xftArray['xflextemplate'][$mainKey]['palette'] != 'none')
-									$xftArray['xflextemplate'][$mainKey]['palette'] = 'element_' . $titleArray[$xftArray['xflextemplate'][$mainKey]['palette']];
-							break;
-						}
+			foreach($xftArray['xflextemplate'] as $mainKey=>$item){
+				$type = $item['type'];
+				foreach($item as $key=>$value)
+					switch ($key){
+						case 'palette':
+							if ($xftArray['xflextemplate'][$mainKey]['palettes'] != 'none' && $xftArray['xflextemplate'][$mainKey]['palettes'] != '' )
+								$xftArray['xflextemplate'][$mainKey]['palette'] = 'element_' . $titleArray[$xftArray['xflextemplate'][$mainKey]['palettes']];
+						break;
+						case 'name':
+							$xftArray['xflextemplate'][$mainKey]['title'] = $value;
+							unset($xftArray['xflextemplate'][$mainKey]['name']);
+						break;
+						case 'type':
+							$xftArray['xflextemplate'][$mainKey]['type'] = $value . 'Type';
+						break;
+						default:
+							if(!t3lib_div::inList('name,title,xtype,palette,palettes',$key)){								
+								$xftArray['xflextemplate'][$mainKey][$type .'_' . $key] = $value;
+								unset($xftArray['xflextemplate'][$mainKey][$key]);
+							}					
+						break;
+						
+					}
+			}
 			$xftArray['xftMain']['xftTitle'] = $row['title'];
 			$xftArray['xftMain']['xftDescription'] = $row['description'];
 			$xftArray['xftMain']['xftHTML'] = $row['html'];
@@ -150,6 +242,7 @@ class xftObject {
 			return 'button_hide|button_unhide';
 		}
 	}
+	
 	
 	/**
 	 * [Describe function...]

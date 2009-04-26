@@ -40,6 +40,7 @@
  */
 
 require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xmlTransformation.php");
+require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xftObject.php");
 
 /**
  * Library for TCA management.
@@ -60,9 +61,11 @@ class tcaTransformation	{
  */
 	function getFormTCA(&$TCA,$xmlArray) {
 		$fieldArray=xmlTransformation::getArrayFromXML($xmlArray); // create array of field from xml template
+		$fieldArray = t3lib_div::xml2array($xmlArray);
 		if(is_array($fieldArray)){ // if array is correct
 			foreach($fieldArray as $object){
-				$palettes=$name='';
+				$palettes='';
+				$name = $object['name'];
 				foreach($object as $key=>$item){ //create TCA array from fields
 					switch ($key){
 						case 'name':
@@ -76,6 +79,9 @@ class tcaTransformation	{
 						break;
 						case 'palettes': //list of palettes
 							$palettes=$item;
+							$paletteArray[$item][] = $name;
+						break;
+						case 'xtype': //list of palettes
 						break;
 						default:
 							$xflexTceForms[$name]['config'][$key]=$item; // standard config fields
@@ -89,10 +95,10 @@ class tcaTransformation	{
 				$xflexTceForms[$name]['exclude']='0';
 				$globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
 				//this fields is for RTE and other implementation of particular field (documentation in TYPO3 core api)
-				if(!$xflexTceForms[$name]['defaultExtras']) //defaultExtras is defined as follow
-					$xflexTceForms[$name]['defaultExtras']=$globalConf['defaultExtra'];;
+				if(!$xflexTceForms[$name]['defaultExtras'] && $xflexTceForms[$name]['config']['type'] == 'text') //defaultExtras is defined as follow
+					$xflexTceForms[$name]['defaultExtras']=$globalConf['defaultExtra'];
 				if($xflexTceForms[$name]['config']['internal_type']=='file'){
-					$xflexTceForms[$name]['config']['uploadfolder']=$globalConf['uploadFolder'];;
+					$xflexTceForms[$name]['config']['uploadfolder']=$globalConf['uploadFolder'];
 				}
 				//create types fields for palettes
 				if (!$palettes) {
@@ -117,6 +123,8 @@ class tcaTransformation	{
  */
 	 function getFlexFieldTCA(&$TCA,$xmlArray) {
 	 	$fieldArray=xmlTransformation::getArrayFromXML($xmlArray); // create array of field from xml template
+	 	$globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
+		$fieldArray = t3lib_div::xml2array($xmlArray);
 		if(is_array($fieldArray)){ // if array is correct
 			foreach($fieldArray as $object){ // each object is a content subitem
 				$temp=array();
@@ -135,13 +143,18 @@ class tcaTransformation	{
 						case 'palettes': //list of palettes
 							$palettes=$item;
 						break;
+						case 'internal_type':
+							if($item == 'file')
+								$tempConfig.='<uploadfolder>'.$globalConf['uploadFolder'].'</uploadfolder>'."\n";
+							$tempConfig.='<'.$key.'>'.$item.'</'.$key.'>'."\n";
+						break;
 						default:
 							$tempConfig.='<'.$key.'>'.$item.'</'.$key.'>'."\n";
 						break;
 					}
-					//flextstring contains the xml block for each TCA column
-					$flexString.='<'.$name.'><TCEforms>'.$label.$defaultExtras.'<config>'.$tempConfig.'</config></TCEforms></'.$name.'>'."\n";
 				}
+				//flextstring contains the xml block for each TCA column
+				$flexString.='<'.$name.'><TCEforms>'.$label.$defaultExtras.'<config>'.$tempConfig.'</config></TCEforms></'.$name.'>'."\n";
 			}
 		}
 		$flexString='<T3DataStructure><meta><langDisable>1</langDisable></meta><ROOT><type>array</type><el>'.$flexString.'</el></ROOT></T3DataStructure>';
@@ -186,6 +199,7 @@ class tcaTransformation	{
 				$last++;
 			}
 		}
+		
 	}
 
 	/**

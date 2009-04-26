@@ -62,18 +62,22 @@ class xmlTransformation {
 	 */
 	function getArrayFromXML($xml){
 		$XMLArray=array(); //set value, this value will be send to array merge overrule, and if it'isn't an array an error will raise
-		$tmpArray=t3lib_div::xml2tree($xml); // tranform xml into array typo3 format
+		$tmpArray=t3lib_div::xml2array($xml); // tranform xml into array typo3 format
 		if(is_array($tmpArray)){
-			$tmpArray=$tmpArray['template'][0]['ch']['el']; // define start level inside array
-			$index=0; // reset index of final array result
-			if(is_array($tmpArray)){
-				foreach($tmpArray as $elem){ // cycle from element inside array
-					foreach($elem['ch'] as $key=>$item){
-						$XMLArray[$index][$key]=$item[0]['values'][0]; // save value into XMLArray
+			$index = 0;
+				foreach($tmpArray as $object){ // cycle from element inside array
+					$type = substr($object['type'],0,strlen($object['type'])-4);
+					foreach($object as $key=>$item){
+						if(strstr($key,$type . '_'))
+							$XMLArray[$index][substr($key,strlen($type)+1)]=$item; // save value into XMLArray
+						else
+							if($key == 'type')
+								$XMLArray[$index][$key]=$type;
+							else									
+								$XMLArray[$index][$key]=$item;
 					}
 					$index++; // increment index of final array
 				}
-			}
 		}
 		return $XMLArray;
 	}

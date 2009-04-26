@@ -1,9 +1,33 @@
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2005 Federico Bernardin (federico@bernardin.it)
+*  All rights reserved
+*
+*  This script is part of the TYPO3 project. The TYPO3 project is
+*  free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+
 /**
- * This class contains the code to manage single element of xflextemplate
- * @package xflextemplate
- * @author federico
- * @ver 2.0
- * @state beta
+ * element object class for managing single object (content element)
+ * 
+ * @author Federico Bernardin <federico@bernardin.it>
+ * @version 2.0
+ * @package TYPO3
+ * @subpackage xfletemplate
  */
 
 element = function(initializeParameters){
@@ -32,21 +56,28 @@ element = function(initializeParameters){
 		create: 1,
 		open: 1
 	};
+	
+	//merge data from caller with private one
 	$.extend(this.configuration, initializeParameters);
  }
 
+ //method definition for element class
  element.prototype=
  {
+ 	//add function for creation of element
  	add: function(id){
+		//define class in function variable
 		var oThis = this;
 		this.id = id;
-		//alert(oThis.configuration.create);
+		//(the object is not already present in HTML code) the code will be inserted in HTML code
 		if (oThis.configuration.create) {
 			palette = Array();
+			//create palette array
 			$(' .' + oThis.configuration.titleClass).each(function(){
 				if ($(this).val()) 
 					palette.push($(this).val() + '_' + id);
 			});
+			//palette is built join single item with pipe
 			palette = palette.join('|');
 			parameters = {
 				url: ajaxUrl,
@@ -54,14 +85,21 @@ element = function(initializeParameters){
 			}
 			ajaxObj = new ajaxClass(parameters);
 			ret = ajaxObj.exec();
+			//add HTML code to column
 			$('.' + oThis.configuration.columnClass).append(ret);
 		}
+		//add all handlers to element
 		this.addTitleHandler();
 		this.addTypeHandler();
         this.addSortProperties();
         this.addDeleteHandler();
 	},
 		
+	/**
+	 * This function add Title update event to system 
+	 * When user change focus from title title input change all palette from other element
+	 * When user press key on title input, title of element change
+	 */
 	addTitleHandler: function(){
 		var oThis = this;
 		$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .' + oThis.configuration.titleClass).bind('keyup',function(){
@@ -73,6 +111,10 @@ element = function(initializeParameters){
 		});	
 	},
 	
+	/**
+	 * This function binds change on type select of element
+	 * When user changes type of element, application calls (via ajax) the modificatio of subelement
+	 */
 	addTypeHandler: function(){
 		var oThis = this;
 		$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .' + oThis.configuration.typeClass).bind('change',function(){
@@ -82,10 +124,15 @@ element = function(initializeParameters){
 			}
 			var ajaxObj = new ajaxClass(parameters);
 			var ret = ajaxObj.exec();
+			//set subelemet code
 			$('#' + oThis.configuration.subElementPreId + '_' + oThis.id).html(ret);
 		});
 	},
 	
+	/**
+	 * This function changes title in palette of all other element with title of this element
+	 * @param string title of element
+	 */
 	changeAllPaletteByChangerID: function(title){
 		var oThis = this;
 		$('.' + oThis.configuration.palettesClass).each(function(){
@@ -108,6 +155,9 @@ element = function(initializeParameters){
 		})
 	},
 	
+	/**
+	 * This function removes title from all other palettes
+	 */
 	removePaletteOptionByElementDelete: function(){
 		var oThis = this;
 		$('.' + oThis.configuration.palettesClass).each(function(){
@@ -122,8 +172,12 @@ element = function(initializeParameters){
 		});
 	},
 	
+	/**
+	 * This function add sorting feature to the element
+	 */
 	addSortProperties: function(){
 		var oThis = this;
+		//defining icon for close and open element
 		if (oThis.configuration.open == 1) {
 			className = 'ui-icon-minusthick';
 		}
@@ -131,6 +185,8 @@ element = function(initializeParameters){
 			className = 'ui-icon-plusthick';
 			$('#' + oThis.configuration.elementPreId + '_' + oThis.id + '.portlet').find('.portlet-content').toggle();
 		}
+		
+		//add sort draggable function
 		$('#' + oThis.configuration.elementPreId + '_' + oThis.id + '.portlet').addClass('ui-widget ui-widget-content ui-helper-clearfix ui-corner-all')
 		.find('.portlet-header')
 			.addClass('ui-widget-header ui-corner-all')
@@ -138,22 +194,23 @@ element = function(initializeParameters){
 			.end()
 		.find('.portlet-content');
 	
+		//enable open and close event
 		$('#' + oThis.configuration.elementPreId + '_' + oThis.id + ' .' + oThis.configuration.portletHeaderClass + ' .' + oThis.configuration.uiIconClass).click(function() {
 			$(this).toggleClass('ui-icon-minusthick');
 			$(this).toggleClass('ui-icon-plusthick');
 			$(this).parents('.portlet:first').find('.portlet-content').toggle();
 			dataArray = $(this).parent().parent().attr('id').split('_');
 			elementId = dataArray[1];
-			if($('#xflextemplate_' + elementId + '_open').val() == '1')
-				$('#xflextemplate_' + elementId + '_open').val('0');
-			else
-				$('#xflextemplate_' + elementId + '_open').val('1');
 		});
 	},
 	
+	/**
+	 * This function adds delete event, opens dialog for confirmation of deleting element
+	 */
 	addDeleteHandler: function(){
 		oThis = this;
 		$('#' + oThis.configuration.elementPreId + '_'+ this.id +' .portlet-header .ui-icon-delete').bind('click',function() {
+			//open dialog
 			$('#dialog').dialog({
 				bgiframe: true,
 				resizable: false,
@@ -174,8 +231,8 @@ element = function(initializeParameters){
 					}
 				}
 			});
+			//update dialog button with label from configuration array
 			$('.ui-dialog-buttonpane button').each(function(){
-				//alert($(this).html());
 				$(this).html(oThis.configuration.language[$(this).html()]);
 			});
 		});

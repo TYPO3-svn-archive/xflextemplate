@@ -20,16 +20,16 @@
 			<label index="cObjectType">cObject</label>
 			
 			
-			<label index="noneXtype">check</label>
-			<label index="textXtype">select</label>
-			<label index="imageXtype">group</label>
-			<label index="multimediaXtype">cObject</label>
+			<label index="noneXtype">none</label>
+			<label index="textXtype">text</label>
+			<label index="imageXtype">image</label>
+			<label index="multimediaXtype">multimedia</label>
 			
 			<label index="sizelabel">Field lenght</label>
-			<label index="maxlengthlabel">Max char number</label>
-			<label index="listallowedlabel">List allowed values</label>
+			<label index="maxlabel">Max char number</label>
+			<label index="is_inlabel">List allowed values</label>
 			<label index="defaultlabel">Default value</label>
-			<label index="datatypelabel">Datatype evaluation</label>
+			<label index="evallabel">Datatype evaluation</label>
 			<label index="checkboxlabel">Checkbox</label>
 			<label index="maxvallabel">Max value</label>
 			<label index="minvallabel">Min value</label>
@@ -37,22 +37,22 @@
 			<label index="colslabel">Columns number</label>
 			<label index="rowslabel">Rows number</label>
 			<label index="wraplabel">Wrap in textarea</label>
-			<label index="extraslabel">Extra functions</label>
+			<label index="defaultExtraslabel">Extra functions</label>
 			
 			
 			<label index="itemslabel">Items</label>
 			<label index="itemprocfunclabel">User function</label>
 			
-			<label index="hardtypelabel">Type of element</label>
-			<label index="extallowedlabel">Allowed extension/content</label>
-			<label index="extnotallowedlabel">Not allowed ext/content</label>
-			<label index="relationslabel">Relations</label>
-			<label index="maxdimensionlabel">Max dimension (file)</label>
-			<label index="thumbnaillabel">Thumbnail</label>
-			<label index="maxelementslabel">Max elements</label>
-			<label index="minelementslabel">Min elements</label>
-			<label index="autodimensionlabel">Auti dimension</label>
-			<label index="multiplicitylabel">Multiplicity</label>
+			<label index="internal_typelabel">Type of element</label>
+			<label index="allowedlabel">Allowed extension/content</label>
+			<label index="disallowedlabel">Not allowed ext/content</label>
+			<label index="MMlabel">Relations</label>
+			<label index="max_sizelabel">Max dimension (file)</label>
+			<label index="show_thumbslabel">Thumbnail</label>
+			<label index="maxitemslabel">Max elements</label>
+			<label index="minitemslabel">Min elements</label>
+			<label index="automaxsizelabel">Auti dimension</label>
+			<label index="multiplelabel">Multiplicity</label>
 			<label index="palettenone">None</label>
 			
 			

@@ -86,7 +86,6 @@
 				<dd><select id="xflextemplate_###ID###_xtype" name="xflextemplate[###ID###][xtype]" >###XTYPESELECT###</select></dd>
 			
 			</dl>
-			<input type="hidden" id="xflextemplate_###ID###_open" class="xft-main-open" name="xflextemplate[###ID###][open]" value="###OPENVALUE###" />
 			<div class="subelement" id="subelement_###ID###">###SUBELEMENT###</div>
 		</div>
 </div>
@@ -95,16 +94,16 @@
 
 <!--###INPUTTYPE_SUBELEMENT### -->
 <dl>
-<dt><label for="xflextemplate_###ID###_input_maxlength">###MAXLENGTH_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_input_maxlength" type="text" name="xflextemplate[###ID###][input_maxlength]" class="xft-input-text" value="###MAXLENGTHVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_input_max">###MAX_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_input_max" type="text" name="xflextemplate[###ID###][input_max]" class="xft-input-text" value="###MAXVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_input_size">###SIZE_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_input_size" type="text" name="xflextemplate[###ID###][input_size]" class="xft-input-text" value="###SIZEVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_input_default">###DEFAULT_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_input_default" type="text" name="xflextemplate[###ID###][input_default]" class="xft-input-text" value="###DEFAULTVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_input_listallowed">###LISTALLOWED_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_input_listallowed" type="text" name="xflextemplate[###ID###][input_listAllowed]" class="xft-input-text" value="###LISTALLOWEDVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_input_datatype">###DATATYPE_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_input_datatype" type="text" name="xflextemplate[###ID###][input_datatype]" class="xft-input-text" value="###DATATYPEVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_input_is_in">###IS_IN_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_input_is_in" type="text" name="xflextemplate[###ID###][input_is_in]" class="xft-input-text" value="###IS_INVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_input_eval">###EVAL_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_input_eval" type="text" name="xflextemplate[###ID###][input_eval]" class="xft-input-text" value="###EVALVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_input_checkbox">###CHECKBOX_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_input_checkbox" type="text" name="xflextemplate[###ID###][input_checkbox]" class="xft-input-text" value="###CHECKBOXVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_input_maxval">###MAXVAL_LABEL###:</label></dt>
@@ -124,37 +123,37 @@
 <dd><input id="xflextemplate_###ID###_text_default" type="text" name="xflextemplate[###ID###][_text_default]" class="xft-input-text" value="###DEFAULTVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_text_wrap">###WRAP_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_text_wrap" type="checkbox" name="xflextemplate[###ID###][text_wrap]" class="xft-input-text" ###WRAPCHECKED### value="1" /></dd>
-<dt><label for="xflextemplate_###ID###_text_extras">###EXTRAS_LABEL###:</label></dt>
-<dd><textarea id="xflextemplate_###ID###_text_extras" name="xflextemplate[###ID###][text_extras]" class="xft-input-text">###EXTRASVALUE###</textarea></dd>
+<dt><label for="xflextemplate_###ID###_text_defaultExtras">###DEFAULTEXTRAS_LABEL###:</label></dt>
+<dd><textarea id="xflextemplate_###ID###_text_defaultExtras" name="xflextemplate[###ID###][text_defaultExtras]" class="xft-input-text">###DEFAULTEXTRASVALUE###</textarea></dd>
 </dl>
 <!--###TEXTTYPE_SUBELEMENT### -->
 
 
 <!--###GROUPTYPE_SUBELEMENT### -->
 <dl>
-<dt><label for="xflextemplate_###ID###_group_hardtype">###HARDTYPE_LABEL###:</label></dt>
-<dd><select id="xflextemplate_###ID###_group_hardtype" name="xflextemplate[###ID###][group_hardtype]" class="xft-group-text" value="###MAXLENGHTVALUE###" ></dd>
+<dt><label for="xflextemplate_###ID###_group_internal_type">###INTERNAL_TYPE_LABEL###:</label></dt>
+<dd><select id="xflextemplate_###ID###_group_internal_type" name="xflextemplate[###ID###][group_internal_type]" class="xft-group-text"></dd>
 	<option value="file" ###FILESELECTED###>file</option>
-	<option value="database" ###DATABASESELECTED###>database</option>
+	<option value="db" ###DATABASESELECTED###>database</option>
 </select></dd>
-<dt><label for="xflextemplate_###ID###_group_extallowed">###EXTALLOWED_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_extallowed" type="text" name="xflextemplate[###ID###][group_extallowed]" class="xft-group-text" value="###EXTALLOWEDVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_group_extnotallowed">###EXTNOTALLOWED_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_extnotallowed" type="text" name="xflextemplate[###ID###][group_extnotallowed]" class="xft-group-text" value="###EXTNOTALLOWEDVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_group_relations">###RELATIONS_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_relations" type="text" name="xflextemplate[###ID###][group_relations]" class="xft-group-text" value="###RELATIONSVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_group_maxdimension">###MAXDIMENSION_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_maxdimension" type="text" name="xflextemplate[###ID###][group_maxdimension]" class="xft-group-text" value="###MAXDIMENSIONVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_group_thumbnail">###THUMBNAIL_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_thumbnail" type="checkbox" name="xflextemplate[###ID###][group_thumbnail]" class="xft-group-checkbox" ###THUMBNAILCHECKED### value="1" /></dd>
-<dt><label for="xflextemplate_###ID###_group_maxelements">###MAXELEMENTS_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_maxelements" type="text" name="xflextemplate[###ID###][group_maxelements]" class="xft-group-text" value="###MAXELEMENTSVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_group_minelements">###MINELEMENTS_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_minelements" type="text" name="xflextemplate[###ID###][group_minelements]" class="xft-group-text" value="###MINELEMENTSVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_group_autodimension">###AUTODIMENSION_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_autodimension" type="checkbox" name="xflextemplate[###ID###][group_autodimension]" class="xft-group-checkbox" ###AUTODIMENSIONCHECKED### value="1" /></dd>
-<dt><label for="xflextemplate_###ID###_group_multiplicity">###MULTIPLICITY_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_multiplicity" type="text" name="xflextemplate[###ID###][group_multiplicity]" class="xft-group-text" value="###MULTIPLICITYVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_allowed">###ALLOWED_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_allowed" type="text" name="xflextemplate[###ID###][group_allowed]" class="xft-group-text" value="###ALLOWEDVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_disallowed">###DISALLOWED_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_disallowed" type="text" name="xflextemplate[###ID###][group_disallowed]" class="xft-group-text" value="###DISALLOWEDVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_MM">###MM_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_MM" type="text" name="xflextemplate[###ID###][group_MM]" class="xft-group-text" value="###MMVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_max_size">###MAX_SIZE_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_max_size" type="text" name="xflextemplate[###ID###][group_max_size]" class="xft-group-text" value="###MAX_SIZEVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_show_thumbs">###SHOW_THUMBS_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_show_thumbs" type="checkbox" name="xflextemplate[###ID###][group_show_thumbs]" class="xft-group-checkbox" ###SHOW_THUMBSCHECKED### value="1" /></dd>
+<dt><label for="xflextemplate_###ID###_group_maxitems">###MAXITEMS_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_maxitems" type="text" name="xflextemplate[###ID###][group_maxitems]" class="xft-group-text" value="###MAXITEMSVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_minitems">###MINITEMS_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_minitems" type="text" name="xflextemplate[###ID###][group_minitems]" class="xft-group-text" value="###MINITEMSVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_autosizemax">###AUTOSIZEMAX_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_autosizemax" type="checkbox" name="xflextemplate[###ID###][group_autosizemax]" class="xft-group-checkbox" ###AUTOSIZEMAXCHECKED### value="1" /></dd>
+<dt><label for="xflextemplate_###ID###_group_multiple">###MULTIPLE_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_multiple" type="text" name="xflextemplate[###ID###][group_multiple]" class="xft-group-text" value="###MULTIPLEVALUE###" /></dd>
 </dl>
 <!--###GROUPTYPE_SUBELEMENT### -->
 
@@ -175,7 +174,7 @@
 <!--###RADIOTYPE_SUBELEMENT### -->
 <dl>
 <dt><label for="xflextemplate_###ID###_radio_items">###ITEMS_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_radio_items" type="text" name="xflextemplate[###ID###][radio_items]" class="xft-input-check" value="###ITEMSVALUE###" /></dd>
+<dd><textarea id="xflextemplate_###ID###_radio_items" type="text" name="xflextemplate[###ID###][radio_items]" class="xft-input-check" >###ITEMSVALUE###</textarea></dd>
 <dt><label for="xflextemplate_###ID###_radio_default">###DEFAULT_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_radio_default" type="text" name="xflextemplate[###ID###][radio_default]" class="xft-input-check" value="###DEFAULTVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_radio_itemprocfunc">###ITEMPROCFUNC_LABEL###:</label></dt>

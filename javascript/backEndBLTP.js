@@ -22,7 +22,7 @@
 ***************************************************************/
 
 /**
- * Ajax class for managing post calls
+ * Main JS File for Backend Listing Templating Programming (BSTP)
  * 
  * @author Federico Bernardin <federico@bernardin.it>
  * @version 2.0
@@ -30,38 +30,33 @@
  * @subpackage xfletemplate
  */
 
-ajaxClass=function(parameters){
-	//private variables
-	this._parameters = {
-			type: "POST",
-			url: "",
-			data: "",
-			async: false
-	};
-	//retrieve parameter from caller
-	if (parameters.type) this._parameters.type = parameters.type;
-	if (parameters.url) this._parameters.url = parameters.url;
-	if (parameters.data) this._parameters.data = parameters.data;
-	if (parameters.async) this._parameters.async = parameters.async;
-	if (parameters.success) this._parameters.success = parameters.success;
-}
+//javascript global variables
+var ajaxUrl;
+var languageArray;
 
-ajaxClass.prototype=
-{
-	//execute function, this calls post or get
-	exec : function(){
-		oThis = this;
-		$.ajax({
-			type: this._parameters.type,
-			url: this._parameters.url,
-			data: this._parameters.data,
-			async: this._parameters.async,
-			success: function(message){
-				oThis._message = message;
-				if (typeof(oThis._parameters.success) != "undefined")
-					oThis._parameters.success(message);
-			}
-		});
-		return oThis._message;
+ajaxUrl = URL_xft + 'index.php';
+
+languageArray = new Array;
+
+//Main document ready function
+$(document).ready(function(){
+	
+	//Array for possible dialog button label name
+	var languageKeyArray = new Array('dialogYes', 'dialogNo', 'dialogOK', 'dialogCancel','showColumnTips','hiddenColumnTips');
+	
+	//retrieve labels for translation by ajax calls
+	parameters = {
+		url: ajaxUrl
 	}
-}
+	$(languageKeyArray).each(function(i,j){
+		parameters.data = 'ajax=1&action=getLL&key=' + j;
+		ajaxObj = new ajaxClass(parameters);
+		ret = ajaxObj.exec();
+		languageArray[j] = ret;
+	});
+	
+	//create List object
+	var list = new templateList;
+	//enable list template object
+	list.addOperationHandler();
+});

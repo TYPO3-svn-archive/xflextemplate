@@ -23,6 +23,7 @@
 ***************************************************************/
 
 
+
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  */
@@ -31,30 +32,75 @@ require_once($BACK_PATH . 'sysext/cms/tslib/class.tslib_content.php');
 require_once('../configuration/elementConfiguration.php');
 require_once('../library/class.xftObject.php');
 
+/**
+ * List of template class.
+ * This class create a table based list of template form DB
+ * 
+ * @author Federico Bernardin <federico@bernardin.it>
+ * @version 2.0
+ * @package TYPO3
+ * @subpackage xfletemplate
+ */
 class listTemplate {
 	
+	/**
+	 * @var object xftObject
+	 */
 	var $xft;
+	
+	/**
+	 * @var string template content string
+	 */
 	var $template;
+	
+	/**
+	 * @var object content object (tslib_content.php)
+	 */
 	var $cObj;
+	
+	/**
+	 * @var object language TYPO3 object
+	 */
 	var $language;
+	
+	/**
+	 * @var array unserialize array containing EXTCONF
+	 */
 	var $globalConf;
 	
+	/**
+	 * This function bind element from parameters to element of class
+	 * 
+	 * @param object language TYPO3 object
+	 * @param string filename string
+	 * @param array unserialize array containing EXTCONF 
+	 * 
+	 * @return void
+	 */
 	function init($langObj, $fileName='', $globalConf){
 		$this->xft = t3lib_div::makeInstance('xftObject');
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 		$this->template = ($fileName) ? file_get_contents($fileName) : '';
 		$this->language = $langObj;
 		$this->globalConf = $globalConf;
-		//debug($this->template,'ffffff');
 	}
 	
+	
+	/**
+	 * This function creates the HTML code for template list
+	 * 
+	 * @return string HTML code 
+	 */
 	function getTemplateList(){
 		global $BACK_PATH;
 		 $templateList = $this->xft->getTemplateList();
-		 if(count($templateList)){		 	
+		 //if there is some database rows
+		 if(count($templateList)){	
+		 	//retrieve template subparts	 	
 			$tableContent = $this->cObj->getSubpart($this->template,'###TEMPLATELIST###');
 			$rowTemplate = $this->cObj->getSubpart($tableContent,'###TEMPLATELISTCOLUMN###');
 			$columnContent = '';
+			//builds column marker array
 			foreach($templateList as $item){
 				$markerColumnArray = array();
 				$markerColumnArray['titlecolumn'] = $item['title'];
@@ -69,6 +115,7 @@ class listTemplate {
 													<img id="dele-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftDelete" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . ' title="' . $this->language->getLL('deleteColumnTips') . '"/>';
 				$columnContent .= $this->cObj->substituteMarkerArray($rowTemplate,$markerColumnArray,'###|###',1);
 			}
+			//builds header marker array
 			$markerTableArray['titleHeader'] = $this->language->getLL("titleHeader");
 			$markerTableArray['descriptionHeader'] = $this->language->getLL("descriptionHeader");
 			$markerTableArray['crdateHeader'] = $this->language->getLL("crdateHeader");
@@ -80,7 +127,6 @@ class listTemplate {
 			$content = $this->cObj->substituteMarkerArray($content,$markerTableArray,'###|###',1);
 		 }
 		 return $content;
-	} 
-	
+	} 	
 }
 ?>
