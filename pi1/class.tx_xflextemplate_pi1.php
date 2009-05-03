@@ -108,15 +108,15 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 	function init(){
 		$this->pi_initPIflexForm(); // Init and get the flexform data of the plugin
 		//merge lConf with standard tt_content column, so in $this->cObj->data there are all data from xflextemplate
-		$this->cObj->data=array_merge($this->cObj->data,tx_xft_div::getArrayFromXMLData($this->cObj->data['xflextemplate']));
+		$this->cObj->data=array_merge($this->cObj->data,xmlTransformation::getArrayFromXMLData($this->cObj->data['xflextemplate']));
 		//fetch all other data from template
-		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('xml,file,typoscript','tx_xflextemplate_template','title="'.$this->cObj->data['xtemplate'].'" AND deleted=0 AND hidden=0');
-		$dbrow=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-		$this->typoscript=$dbrow['typoscript'];
+		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('xml,file,typoscript,html','tx_xflextemplate_template','title="'.$this->cObj->data['xtemplate'].'" AND deleted=0 AND hidden=0');
+		$databaseRow=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		$this->typoscript=$databaseRow['typoscript'];
 		$ts=t3lib_div::makeInstance('t3lib_TSparser');
 		$ts->parse($this->typoscript);
 		//$ts contains all typoscript from xflextemplate
-		$xml=str_replace("''","'",$dbrow['xml']);
+		$xml=str_replace("''","'",$databaseRow['xml']);
 		//create correct element data from xml in the xflextemplate
 		$xmlArray=xmlTransformation::getArrayFromXML($xml);
 		if(is_array($xmlArray)){
@@ -126,10 +126,11 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		}
 		//assign typoscript
 		$this->typoscript=$ts->setup;
-		$this->template=$this->cObj->TEMPLATE($this->typoscript['templateFile.']);
+		$this->template=($databaseRow['html']) ? $databaseRow['html'] : $this->cObj->TEMPLATE($this->typoscript['templateFile.']);
 		if($this->template){
-			$this->template=$this->cObj->getSubpart($this->template,  '###'.strtoupper($this->cObj->data['xtemplate']).'###');
+			$this->template=$this->cObj->getSubpart($this->template,  '###'.strtoupper(str_replace(' ','_',$this->cObj->data['xtemplate'])).'###');
 		}
+		//only for back compatibility
 		$this->template=($this->template)?$this->template:$this->getTemplateString($dbrow['file']);//retrieve file data, only if is not defined in template
 		//Updating conf array with typoscript
 		$this->conf=t3lib_div::array_merge_recursive_overrule($this->conf,$ts->setup);
@@ -164,6 +165,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 				$hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
 			}
 		}
+		$ts=t3lib_div::makeInstance('t3lib_TSparser');
 		//create object directly from typoscript without analyzing single object
 		if ($this->conf['GCO']){
 			$this->markerArray['###GCO###']=$this->cObj->CObjGet($this->typoscript);
@@ -173,7 +175,37 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 			foreach ($this->xflexData as $key=>$xftitem) {
 				//eseguo questa associazione per fare in modo che modifiche successive al template non implichino la visualizzazione di campi non riempiti
 				$item=$this->cObj->data[$key];
-				if ($item) {
+				if($xftitem['xtype']!='none'){
+					$conf = array();
+					$confSingle = array();
+					$confType = array();
+					if(!$this->conf[$key]){
+						$this->conf[$key] = $xftitem['xtype'];
+					}
+					if(is_array($this->conf[$this->conf[$key] . '.']))
+						$this->substiteValueInArrayRecursive('###XFTELEMENTFIELD###', $key ,$this->conf[$this->conf[$key] . '.']);
+					$confType = ($this->conf[$this->conf[$key] . '.']) ? $this->conf[$this->conf[$key] . '.'] : array();
+					$conf[$key . '.'] = ($this->conf[$key . '.']) ? $this->conf[$key . '.'] : array();
+					switch ($this->conf[$key]){
+						case 'text':
+						break;
+						case 'image':
+						case 'multimedia':
+							if($conf[$key . '.']['file']){
+								unset($confType['file.']['import']);
+								unset($confType['file.']['import.']);
+							}
+						break;
+						case 'cObject':
+						break;
+					}
+					$confSingle['10.'] = t3lib_div::array_merge_recursive_overrule($confType, $conf[$key . '.']);
+					$confSingle['10'] = strtoupper($this->conf[$key]);
+					debug($confSingle);
+					$this->markerArray['###' . strtoupper($key) . '###']=$this->cObj->cObjGet($confSingle);
+				}
+				
+				/*if ($item) {
 					if(is_array($this->xflexData[$key])){
 						$this->cObj->LOAD_REGISTER(array($key.'xft'=>$this->cObj->data[$key]),'');
 						//analyze type of content
@@ -282,7 +314,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 										* autostart		string		autostart (true/false) in multimedia object
 										* plugin		string		url for plugin of multimedia object
 										*/
-										if (strtolower($ext)=='swf' && $confMultimedia['jsFlash']==1){
+										/*if (strtolower($ext)=='swf' && $confMultimedia['jsFlash']==1){
 											$GLOBALS['TSFE']->additionalHeaderData['js_flashscript']='<script type="text/javascript" src="/typo3conf/ext/xflextemplate/jsFlash.js"></script>';
 											$divID=md5(mktime(date('h'),date('i'),date('s'),date('y'),date('m'),date('d')));
 											$width=($confMultimedia['width'] || is_array($confMultimedia['width.']))?$this->cObj->stdWrap($confMultimedia['width'],$confMultimedia['width.']):(($confMultimedia['param.']['width'])?$confMultimedia['param.']['width']:'');
@@ -361,7 +393,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 				}//if $item is not empty
 				else{//if $item is  empty
 					$this->markerArray['###'.strtoupper($key).'###']='';
-				}
+				}*/
 			}
 		}
 		$this->markerArray['###CONTENTUID###']=$this->cObj->data['uid'];
@@ -503,6 +535,18 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 			$content=$this->cObj->substituteMarkerArray($template,$markerArray,'',1);
 		}//end if page browser is visible
 		return $content;
+	}
+	
+	function substiteValueInArrayRecursive($search,$replace,&$array){
+		foreach($array as $key=>$item){
+			if (!is_array($item)){
+				if($item == $search){
+					$array[$key] = str_replace($search, $replace, $item);
+				}
+			}
+			else
+				$this->substiteValueInArrayRecursive($search, $replace, $array[$key]);
+		}
 	}
 
 }

@@ -81,8 +81,10 @@ class tx_xflextemplate_tceforms	{
 			$this->ts->parse($dbrow['typoscript']);
 			$xml=str_replace("''","'",$dbrow['xml']);
 			//update the TCA with newer one
-			tcaTransformation::getTCApalettes($GLOBALS['TCA']['tt_content'],$dbrow['palettes']);
-			tcaTransformation::getFormTCA($GLOBALS['TCA']['tt_content'],$xml);
+			$tcaTransformation = t3lib_div::makeInstance('tcaTransformation');
+			$tcaTransformation->init($this->_EXTKEY, $this->ts);
+			$tcaTransformation->getTCApalettes($GLOBALS['TCA']['tt_content'],$dbrow['palettes']);
+			$tcaTransformation->getFormTCA($GLOBALS['TCA']['tt_content'],$xml);
 			$flexFields=xmlTransformation::getArrayFromXMLData($row[$this->_EXTKEY]);
 			if(is_array($flexFields)){ //if flexdata is an array data will be put into flexdata array
 				//put any field from flexfields

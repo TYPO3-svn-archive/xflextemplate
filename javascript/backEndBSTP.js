@@ -117,6 +117,9 @@ $(document).ready(function(){
 					$(this).html(languageArray['dialogOK']);
 				});
 			}
+			else {
+				$('#xftUid').val(returnArray[1]);
+			}
 		}	    
     }; 
 	

@@ -51,7 +51,7 @@
 			<label index="show_thumbslabel">Thumbnail</label>
 			<label index="maxitemslabel">Max elements</label>
 			<label index="minitemslabel">Min elements</label>
-			<label index="automaxsizelabel">Auti dimension</label>
+			<label index="autoSizeMaxlabel">Max dimension of list</label>
 			<label index="multiplelabel">Multiplicity</label>
 			<label index="palettenone">None</label>
 			

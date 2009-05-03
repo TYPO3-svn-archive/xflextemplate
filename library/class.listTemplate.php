@@ -84,7 +84,7 @@ class listTemplate {
 		$this->language = $langObj;
 		$this->globalConf = $globalConf;
 	}
-	
+	// TODO
 	
 	/**
 	 * This function creates the HTML code for template list

@@ -8,7 +8,7 @@ $GLOBALS['configuration'] = array(
 		'textType' => array('cols', 'rows', 'default', 'wrap', 'defaultExtras'),
 		'checkType' => array('items','cols', 'default', 'itemprocfunc'),
 		'radioType' => array('items', 'default', 'itemprocfunc'),
-		'groupType' => array('internal_type', 'allowed', 'disallowed', 'MM', 'max_size', 'show_thumbs', 'maxitems', 'minitems', 'autosizemax', 'multiple'),
+		'groupType' => array('internal_type', 'allowed', 'disallowed', 'MM', 'max_size', 'show_thumbs', 'maxitems', 'minitems', 'size', 'autoSizeMax', 'multiple'),
 		'cObjectType' => array(),
 	),
 );

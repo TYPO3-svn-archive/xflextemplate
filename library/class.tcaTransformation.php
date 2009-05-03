@@ -40,7 +40,6 @@
  */
 
 require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xmlTransformation.php");
-require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xftObject.php");
 
 /**
  * Library for TCA management.
@@ -51,6 +50,16 @@ require_once (t3lib_extMgm::extPath('xflextemplate')."library/class.xftObject.ph
  * @version 1.1.0
  */
 class tcaTransformation	{
+	var $_EXTKEY='xflextemplate';
+	
+	var $ts;
+	
+	
+	function init($extKey, $tsParser){
+		$this->_EXTKEY = $extKey;
+		$this->ts = $tsParser;
+	}
+	
 /**
  * This function creates a fake TCA['tt_content'] for adding the field from flexible template.
  * It returns void but changes TCA array, so it contains the new columns as they were true.
@@ -62,6 +71,7 @@ class tcaTransformation	{
 	function getFormTCA(&$TCA,$xmlArray) {
 		$fieldArray=xmlTransformation::getArrayFromXML($xmlArray); // create array of field from xml template
 		$fieldArray = t3lib_div::xml2array($xmlArray);
+		//var_export($fieldArray);
 		if(is_array($fieldArray)){ // if array is correct
 			foreach($fieldArray as $object){
 				$palettes='';
@@ -81,6 +91,8 @@ class tcaTransformation	{
 							$palettes=$item;
 							$paletteArray[$item][] = $name;
 						break;
+						case 'palette':
+						break;
 						case 'xtype': //list of palettes
 						break;
 						default:
@@ -89,6 +101,7 @@ class tcaTransformation	{
 					}
 				}
 				//defines personalization in label of field, it can be fetch from dynamicfieldtranslation
+				//var_export($this->ts->setup['language.'][$name.'.']['beLabel.']);
 				if (is_array($this->ts->setup['language.'][$name.'.']['beLabel.']))
 					$xflexTceForms[$name]['label']=($this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']])?$this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']]:$this->ts->setup['language.'][$name.'.']['beLabel.']['default'];
 				//exclude field is always set to zero
@@ -99,6 +112,7 @@ class tcaTransformation	{
 					$xflexTceForms[$name]['defaultExtras']=$globalConf['defaultExtra'];
 				if($xflexTceForms[$name]['config']['internal_type']=='file'){
 					$xflexTceForms[$name]['config']['uploadfolder']=$globalConf['uploadFolder'];
+					$xflexTceForms[$name]['config']['autoSizeMax'] = ($xflexTceForms[$name]['config']['autoSizeMax']) ? $xflexTceForms[$name]['config']['autoSizeMax'] : $globalConf['autoSizeMax'];
 				}
 				//create types fields for palettes
 				if (!$palettes) {
@@ -111,6 +125,8 @@ class tcaTransformation	{
 		//Update TCA!! It's very important pass TCA for reference!!!
 		$TCA['columns']=(is_array($xflexTceForms))?array_merge_recursive($TCA['columns'],$xflexTceForms):$TCA['columns'];//if template is hidden not merge array but use original TCA
 		$TCA['types'][$this->_EXTKEY.'_pi1']['showitem']=$TCA['types'][$this->_EXTKEY.'_pi1']['showitem'].','.implode(',',$showfields);
+		//var_export($TCA['columns']['image']);
+		//var_export($TCA['columns']['el2']);
 	}
 
 /**
@@ -134,11 +150,13 @@ class tcaTransformation	{
 						case 'name':
 							$name=$item; //name of column
 						break;
+						case 'xtype':
+						break;
 						case 'defaultExtras':
 							$defaultExtras='<'.$key.'>'.$item.'</'.$key.'>'; //valid only for rte
 						break;
 						case 'items':
-							$xflexTceForms[$name]['config'][$key]=$this->setSelectItems($item); // items for select and radio buttons
+							$tempConfig.= $this->setSelectItemsXML($item); // items for select and radio buttons							
 						break;
 						case 'palettes': //list of palettes
 							$palettes=$item;
@@ -214,6 +232,27 @@ class tcaTransformation	{
 			$tmpArray[]=explode(',',$value);
 		}
 		return $tmpArray;
+	}
+	
+	/**
+	 * This function creates the xml for flexdata from items will be passed to TCA constructor for creating select or radio items.
+	 *
+	 * @param	string		in this parameter there are all items for select or radio separated from carriage return "/n" and each item is comma separated
+	 * @return	void		an xml string with row and column for each item
+	 */
+	function setSelectItemsXML($field){
+		$rowArray=explode("\n",$field);
+		foreach($rowArray as $value){
+			if (strstr(',',$value))
+				$tmpArray[]=explode(',',$value);
+			else{
+				$tmpArray[]=array($value,$value);
+			}
+		}
+		$XMLArray = t3lib_div::array2xml($tmpArray);
+		$XMLArray = str_replace('phparray', 'items', $XMLArray);
+		$XMLArray = str_replace('type="array"', '', $XMLArray);
+		return $XMLArray;
 	}
 }
 

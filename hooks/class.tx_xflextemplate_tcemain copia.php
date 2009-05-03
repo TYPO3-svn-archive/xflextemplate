@@ -110,6 +110,7 @@ class tx_xflextemplate_tcemain {
 				$this->xmldata=$dbrow['xml'];
 				// extract xml data from template and assign to fieldArray
 				$fieldArray=xmlTransformation::getArrayFromXML($this->xmldata);
+				$this->fieldArray = $fieldArray;
 				// $fieldArray format is:
 				// name=>name of element
 				// xtype=>specific type of element wrap function (text, multimedia, image,...)
@@ -120,7 +121,8 @@ class tx_xflextemplate_tcemain {
 					// define class of file function to create a copy of file
 					$this->fileFunc = t3lib_div::makeInstance('t3lib_basicFileFunctions'); 
 					// if xml is correct update TCA
-					tcaTransformation::getFlexFieldTCA($GLOBALS['TCA']['tt_content'],$this->xmldata);
+					$tcaTransformation = t3lib_div::makeInstance('tcaTransformation'); 
+					$tcaTransformation->getFlexFieldTCA($GLOBALS['TCA']['tt_content'],$this->xmldata);
 					// if the operation is an update the $id will be an integer and fetch old value form database
 					if (t3lib_div::intval_positive($id)){ 
 						$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('xtemplate','tt_content','uid='.$id.' AND deleted=0');
@@ -135,6 +137,8 @@ class tx_xflextemplate_tcemain {
 						// reset $fileList so for each content teh list of file is empty
 						$fileList=array();
 										//debug($flexfields,'intval');
+						//var_export($GLOBALS['TCA']['tt_content']['columns']);
+					//	echo var_export($incomingFieldArray,true) . "\n\n";
 						if(strlen($incomingFieldArray[$this->_EXTKEY])>0){							
 								$flexFields=xmlTransformation::getArrayFromXMLData($incomingFieldArray[$this->_EXTKEY]);
 						}					
@@ -172,12 +176,13 @@ class tx_xflextemplate_tcemain {
 								}
 							} // otherwise (not a copy) fetch data for flexfield from $incomingFieldArray
 							else{
-								// save the original value of $incomingFieldArray in the new variable $flexDataFields
+								// save the original value of $incomingFieldArray in the new variable 
+								//$flexDataFields and add filename to xft_file if internal_type is file
 								$flexDataFields[$elem['name']]=$incomingFieldArray[$elem['name']];
 							}
 						}
 						// update ctf_files field
-						$incomingFieldArray['xft_files']=(is_array($fileList))?implode(',',$fileList):$incomingFieldArray['xft_files'];
+					/////	$incomingFieldArray['xft_files']=(is_array($fileList))?implode(',',$fileList):$incomingFieldArray['xft_files'];
 						// save in xflextemplate field the array from $flexDataFields
 						$flexField=xmlTransformation::getXMLDataFromArray($flexDataFields);
 						$incomingFieldArray[$this->_EXTKEY]=$flexField;
@@ -190,7 +195,7 @@ class tx_xflextemplate_tcemain {
 						//if template was changed, flex data will be erase.
 						$incomingFieldArray[$this->_EXTKEY]='';
 						// erase xft_files too
-						$incomingFieldArray['xft_files']='';
+						/////$incomingFieldArray['xft_files']='';
 					}
 				}
 				else{					
@@ -199,15 +204,33 @@ class tx_xflextemplate_tcemain {
 				}
 			}
 		}
+		//var_export($incomingFieldArray);
 	}
 
+	function processDatamap_postProcessFieldArray($status, $table, $id, &$fieldArray, $pObj){
+		/*if(strlen($fieldArray[$this->_EXTKEY])>0 && is_array($this->fieldArray)){							
+				$flexFields=xmlTransformation::getArrayFromXMLData($fieldArray[$this->_EXTKEY]);
+				foreach($this->fieldArray as $key=>$elem){
+					if ($elem['internal_type'] == 'file' && $flexFields[$elem['name']]){
+						//echo $key . ':' . var_export($flexFields[$elem['name']],true) . "\n<br/>\n";
+						$fileList[]=$flexFields[$elem['name']];
+					}
+				}
+				if (is_array($fileList) && count($fileList))
+					//$fieldArray['xft_files'] = implode(',',$fileList);
+					$u=1;
+		}
+		var_export($fieldArray);*/	
+	}	
 
 }
 
 
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/class.tx_xflextemplate_tcemain.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/class.tx_xflextemplate_tcemain.php']);
+
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/hooks/class.tx_xflextemplate_tcemain.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/hooks/class.tx_xflextemplate_tcemain.php']);
 }
 ?>

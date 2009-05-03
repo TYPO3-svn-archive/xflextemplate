@@ -7,10 +7,13 @@ $tempColumns = Array (
 		"label" => "LLL:EXT:xflextemplate/locallang_db.xml:tt_content.xtemplate",		
 		"config" => Array (
 			"type" => "select",	
-			"itemsProcFunc"=>"tx_xtemplate_handletemplate->main",
+			"itemsProcFunc"=>"tx_xflextemplate_handletemplate->main",
 		)
 	),	
-	// this field is created to compatibility with database management relation, this field contains all object as file inside xft flex field
+	
+);
+/*
+ // this field is created to compatibility with database management relation, this field contains all object as file inside xft flex field
 	"xft_files" => Array (		
 		'exclude' => 1,
 		'label' => 'LLL:EXT:lang/locallang_general.php:LGL.images',
@@ -24,8 +27,7 @@ $tempColumns = Array (
 			'uploadfolder' => 'uploads/pics',
 		)
 	),
-);
-
+ * */
 
 
 
@@ -41,11 +43,12 @@ t3lib_extMgm::addStaticFile($_EXTKEY,"pi1/static/","XFlexTemplate");
 
 
 
-t3lib_extMgm::addPlugin(Array('LLL:EXT:xflextemplate/locallang_db.xml:tt_content.CType_pi1', $_EXTKEY.'_pi1'),'CType');
+t3lib_extMgm::addPlugin(Array('LLL:EXT:xflextemplate/locallang_db.xml:tt_content.CType_pi1', $_EXTKEY.'_pi1',t3lib_extMgm::extRelPath("xflextemplate") . 'ext_icon.gif'),'CType');
+$TCA['tt_content']['columns']['CType']['config']['default'] = 'xflextemplate_pi1';
 
-include_once(t3lib_extMgm::extPath('xflextemplate').'class.tx_xtemplate_handletemplate.php');
-include_once(t3lib_extMgm::extPath('xflextemplate').'class.tx_xflextemplate_tceforms.php');
-include_once(t3lib_extMgm::extPath('xflextemplate').'class.tx_xflextemplate_tcemain.php');
+include_once(t3lib_extMgm::extPath('xflextemplate').'library/class.tx_xflextemplate_handletemplate.php');
+include_once(t3lib_extMgm::extPath('xflextemplate').'hooks/class.tx_xflextemplate_tceforms.php');
+include_once(t3lib_extMgm::extPath('xflextemplate').'hooks/class.tx_xflextemplate_tcemain.php');
 
 if (TYPO3_MODE=='BE')	{
 	t3lib_extMgm::addModule('tools','txxflextemplateM1','',t3lib_extMgm::extPath($_EXTKEY).'mod1/');

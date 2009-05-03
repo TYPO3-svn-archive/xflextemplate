@@ -1,11 +1,27 @@
-plugin.tx_xflextemplate_pi1.multimedia.param.width=200
-plugin.tx_xflextemplate_pi1.multimedia.param.height=200
-plugin.tx_xflextemplate_pi1.installed=1
-plugin.tx_xflextemplate_pi1.image.captionSplit.separator=,
-plugin.tx_xflextemplate_pi1.image.photogallery.cols=4
-plugin.tx_xflextemplate_pi1.image.photogallery.paging.template.template=TEXT
-plugin.tx_xflextemplate_pi1.image.photogallery.paging.template.template.value(
-<div class="tx_xflextemplate_photogallery_pagebrowser">###PAGEFIRST###&nbsp;###PAGEPREVIOUS###&nbsp;###PAGELIST###&nbsp;###PAGENEXT###&nbsp;###PAGELAST###</div>
-)
-plugin.tx_xflextemplate_pi1.image.photogallery.paging.photoXPage=8
-styles.content.frames>
+#plugin.tx_xflextemplate_pi1.multimedia.param.width=200
+#plugin.tx_xflextemplate_pi1.multimedia.param.height=200
+#plugin.tx_xflextemplate_pi1.installed=1
+#plugin.tx_xflextemplate_pi1.image.captionSplit.separator=,
+#plugin.tx_xflextemplate_pi1.image.photogallery.cols=4
+#plugin.tx_xflextemplate_pi1.image.photogallery.paging.template.template=TEXT
+#plugin.tx_xflextemplate_pi1.image.photogallery.paging.template.template.value(
+#<div class="tx_xflextemplate_photogallery_pagebrowser">###PAGEFIRST###&nbsp;###PAGEPREVIOUS###&nbsp;###PAGELIST###&nbsp;###PAGENEXT###&nbsp;###PAGELAST###</div>
+#)
+#plugin.tx_xflextemplate_pi1.image.photogallery.paging.photoXPage=8
+#styles.content.frames>
+
+plugin.tx_xflextemplate_pi1{
+	installed = 1
+	text{
+		field = ###XFTELEMENTFIELD###
+	}
+	image{
+		file.import.field = ###XFTELEMENTFIELD###
+		file.import = uploads/pics/
+	}
+	multimedia {
+		file.field = ###XFTELEMENTFIELD###
+		file.wrap = uploads/pics/
+		file.listNum = 0
+	}
+}

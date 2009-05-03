@@ -46,7 +46,7 @@
   * @author	Federico Bernardin <federico@bernardin.it>
   * @version 0.7.5
   */
-class tx_xtemplate_handletemplate {
+class tx_xflextemplate_handletemplate {
 	var $prefix = 'Static: ';
 
 	/**
@@ -99,7 +99,7 @@ class tx_xtemplate_handletemplate {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/class.tx_xtemplate_handletemplate.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/class.tx_xtemplate_handletemplate.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.tx_xtemplate_handletemplate.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.tx_xtemplate_handletemplate.php']);
 }
 ?>

@@ -197,8 +197,8 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 								else{
 									$xftArray['xftMain'] = t3lib_div::_GP('xftMain');
 									$xftArray['xflextemplate'] = t3lib_div::_GP('xflextemplate');
-									$xml = $this->xftObject->save($xftArray);
-									echo '0|' . $xml;
+									$uid = $this->xftObject->save($xftArray);
+									echo '0|' . $uid;
 								}
 								exit();
 							break;

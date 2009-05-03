@@ -16,3 +16,6 @@ date = m-d-Y
   # cat=basic//10; type=string; label=standard string for textarea when defaultExtra is empty
 defaultExtra = richtext[]:rte_transform[flag=rte_enabled|mode=ts]
 
+  # cat=basic//10; type=int [3-1000]; label=max number of object in Group List (if you don't know, avoid to modify)
+autoSizeMax = 40
+

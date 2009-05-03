@@ -120,7 +120,7 @@
 <dt><label for="xflextemplate_###ID###_text_rows">###ROWS_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_text_rows" type="text" name="xflextemplate[###ID###][text_rows]" class="xft-input-text" value="###ROWSVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_text_default">###DEFAULT_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_text_default" type="text" name="xflextemplate[###ID###][_text_default]" class="xft-input-text" value="###DEFAULTVALUE###" /></dd>
+<dd><input id="xflextemplate_###ID###_text_default" type="text" name="xflextemplate[###ID###][text_default]" class="xft-input-text" value="###DEFAULTVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_text_wrap">###WRAP_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_text_wrap" type="checkbox" name="xflextemplate[###ID###][text_wrap]" class="xft-input-text" ###WRAPCHECKED### value="1" /></dd>
 <dt><label for="xflextemplate_###ID###_text_defaultExtras">###DEFAULTEXTRAS_LABEL###:</label></dt>
@@ -150,8 +150,10 @@
 <dd><input id="xflextemplate_###ID###_group_maxitems" type="text" name="xflextemplate[###ID###][group_maxitems]" class="xft-group-text" value="###MAXITEMSVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_group_minitems">###MINITEMS_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_group_minitems" type="text" name="xflextemplate[###ID###][group_minitems]" class="xft-group-text" value="###MINITEMSVALUE###" /></dd>
-<dt><label for="xflextemplate_###ID###_group_autosizemax">###AUTOSIZEMAX_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_group_autosizemax" type="checkbox" name="xflextemplate[###ID###][group_autosizemax]" class="xft-group-checkbox" ###AUTOSIZEMAXCHECKED### value="1" /></dd>
+<dt><label for="xflextemplate_###ID###_group_size">###SIZE_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_size" type="text" name="xflextemplate[###ID###][group_size]" class="xft-group-text" value="###SIZEVALUE###" /></dd>
+<dt><label for="xflextemplate_###ID###_group_autoSizeMax">###AUTOSIZEMAX_LABEL###:</label></dt>
+<dd><input id="xflextemplate_###ID###_group_autoSizeMax" type="text" name="xflextemplate[###ID###][group_autoSizeMax]" class="xft-group-text" value="###AUTOSIZEMAXVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_group_multiple">###MULTIPLE_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_group_multiple" type="text" name="xflextemplate[###ID###][group_multiple]" class="xft-group-text" value="###MULTIPLEVALUE###" /></dd>
 </dl>
@@ -161,7 +163,7 @@
 <!--###CHECKTYPE_SUBELEMENT### -->
 <dl>
 <dt><label for="xflextemplate_###ID###_check_items">###ITEMS_LABEL###:</label></dt>
-<dd><input id="xflextemplate_###ID###_check_items" type="text" name="xflextemplate[###ID###][check_items]" class="xft-input-check" value="###ITEMSVALUE###" /></dd>
+<dd><textarea id="xflextemplate_###ID###_check_items" type="text" name="xflextemplate[###ID###][check_items]" class="xft-input-check" >###ITEMSVALUE###</textarea></dd>
 <dt><label for="xflextemplate_###ID###_check_cols">###COLS_LABEL###:</label></dt>
 <dd><input id="xflextemplate_###ID###_check_cols" type="text" name="xflextemplate[###ID###][check_cols]" class="xft-input-check" value="###COLSVALUE###" /></dd>
 <dt><label for="xflextemplate_###ID###_check_default">###DEFAULT_LABEL###:</label></dt>
