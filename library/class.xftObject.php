@@ -120,6 +120,7 @@ class xftObject {
 			$savedData['title'] = $dataArray['xftMain']['xftTitle'];
 			$savedData['description'] = $dataArray['xftMain']['xftDescription'];
 			$savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];
+			$savedData['enablegroup'] = $dataArray['xftMain']['xftEnableGroups'];
 			$savedData['tstamp'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
 			$savedData['html'] = $dataArray['xftMain']['xftHTML'];
 			$savedData['palettes'] = serialize($tempPaletteArray);
@@ -179,7 +180,8 @@ class xftObject {
 			$xml = t3lib_div::array2xml($dataArrayIndexed);
 			$savedData['title'] = $dataArray['xftMain']['xftTitle'];
 			$savedData['description'] = $dataArray['xftMain']['xftDescription'];
-			$savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];
+			$savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];			
+			$savedData['enablegroup'] = $dataArray['xftMain']['xftEnableGroups'];
 			$savedData['crdate'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
 			$savedData['tstamp'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
 			$savedData['html'] = $dataArray['xftMain']['xftHTML'];
@@ -230,6 +232,7 @@ class xftObject {
 			}
 			$xftArray['xftMain']['xftTitle'] = $row['title'];
 			$xftArray['xftMain']['xftDescription'] = $row['description'];
+			$xftArray['xftMain']['xftEnableGroups'] = $row['enablegroup'];
 			$xftArray['xftMain']['xftHTML'] = $row['html'];
 			$xftArray['xftMain']['xftTyposcript'] = $row['typoscript'];
 			$xftArray['xftMain']['uid'] = $row['uid'];
@@ -308,6 +311,9 @@ class xftObject {
 	}
 	
 	
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.xftObject.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.xftObject.php']);
+}
 	
 }
 ?>

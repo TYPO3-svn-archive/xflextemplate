@@ -35,7 +35,7 @@ unset($MCONF);
 require ("conf.php");
 require ($BACK_PATH."init.php");
 require ($BACK_PATH."template.php");
-$LANG->includeLLFile("EXT:xflextemplate/mod1/locallang.php");
+$LANG->includeLLFile("EXT:xflextemplate/mod1/locallang.xml");
 require_once (PATH_t3lib."class.t3lib_scbase.php");
 require_once (PATH_t3lib."class.t3lib_extmgm.php");
 require_once('../library/class.elementTemplate.php');
@@ -173,8 +173,12 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 						exit();
 					break;
 					case 'getLL': //get label for a specific identificator (locallang file)
-						$key = t3lib_div::_GP('key');
-						echo(htmlentities(utf8_decode($this->language->getLL($key))));
+						/*$key = t3lib_div::_GP('key');
+						echo(htmlentities(utf8_decode($this->language->getLL($key))));*/
+						$keyArray = explode(',',t3lib_div::_GP('key'));
+						foreach($keyArray as $item)
+							$translationArray[] = htmlentities(utf8_decode($this->language->getLL($item)));
+						echo(implode(',',$translationArray));
 						exit();
 					break;
 					case 'dele': //deleting of template object
@@ -199,6 +203,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 									$xftArray['xflextemplate'] = t3lib_div::_GP('xflextemplate');
 									$uid = $this->xftObject->save($xftArray);
 									echo '0|' . $uid;
+									//echo '1|' . $uid;
 								}
 								exit();
 							break;
@@ -216,8 +221,8 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 			$this->doc->docType = 'xhtml_trans';
 			//stylesheets and js file
 			$this->doc->JScode = '
-				<link  rel="stylesheet" type="text/css" href="../res/css/template.css" />
 				<link  rel="stylesheet" type="text/css" href="../res/css/ui.tabs.css" />
+				<link  rel="stylesheet" type="text/css" href="../res/css/template.css" />
 				<link href="' . $this->doc->backPath . 'sysext/t3editor/css/t3editor.css" type="text/css" rel="stylesheet" />
 				<script type="text/javascript">
 					PATH_t3e = "' . $this->doc->backPath . 'sysext/t3editor/";
@@ -288,14 +293,23 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 	}
 	
 	/**
-	 * Function creates marker for general tab
-	 
+	 * Function creates marker for general tab	 
 	 * @return void
 	 */
 	function getGeneralTab(){
+		$this->elementArray['closeicons'] = '<img class="pointer-icon xftCloseDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/closedok.gif','') . ' title="' . $this->language->getLL('xftCloseDokTitle') . '"/>';
 		$this->elementArray['generalicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
 		$this->elementArray['xfttitle'] = $this->language->getLL('xftTitle');
-		$this->elementArray['generalbody'] = '<div class="tab-inner-container" ><label for="xftTitle">' . $this->language->getLL('xftTitle') . '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" /></div>';
+		//$enableGroupsArray = explode(',',$this->mainArray['xftEnableGroups']);
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid, title','be_groups','deleted=0 AND hide_in_lists=0 and hidden=0','','title');
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+			$checked = (t3lib_div::inList($this->mainArray['xftEnableGroups'],$row['uid'])) ? 'selected' : '' ;
+			$options.='<option value="' . $row['uid'] . '" ' . $checked . '>' . $row['title'] . '</option>' . chr(10) . chr(13);
+		}
+		$select = '<label for="xftTitle">' . $this->language->getLL('xftEnableGroups') . '</label><select id="xftEnableGroupsSelect" multiple size="10">' . $options . '</select><input type="hidden" id="xftEnableGroups"  name="xftMain[xftEnableGroups]" value="" />';
+		
+		$this->elementArray['generalbody'] = '<div class="tab-inner-container" ><dl><dd><label for="xftTitle">' . $this->language->getLL('xftTitle') . '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" />
+		</dd><dd>' . $select . '</dd></dl></div>';
 	}
 	
 	/**

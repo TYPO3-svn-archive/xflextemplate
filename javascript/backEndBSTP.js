@@ -54,16 +54,26 @@ $(document).ready(function(){
 	//Array for possible dialog button label name
 	var languageKeyArray = new Array('dialogYes', 'dialogNo', 'dialogOK', 'dialogCancel');
 	
+	//elements array containing tanslated label objects
+	var label = new Array();
+	
 	//retrieve labels for translation by ajax calls
 	parameters = {
 		url: ajaxUrl
 	}
+	counterLabel = 0;
 	$(languageKeyArray).each(function(i,j){
-		parameters.data = 'ajax=1&action=getLL&key=' + j;
-		ajaxObj = new ajaxClass(parameters);
-		ret = ajaxObj.exec();
-		languageArray[j] = ret;
+		label[counterLabel] = j;
+		counterLabel++;
 	});
+	labelString = label.join(',');
+	parameters.data = 'ajax=1&action=getLL&key=' + labelString;
+	ajaxObj = new ajaxClass(parameters);
+	ret = ajaxObj.exec();
+	languageReturned = ret.split(',');
+	for (j = 0; j < languageReturned.length; j++) {
+		languageArray[label[j]] = languageReturned[j];
+	}
 	
 	//Bind sortable to element column
 	$(".column").sortable({
@@ -125,6 +135,7 @@ $(document).ready(function(){
 	
 	//before submit code
 	$('.xftSaveDok').bind('click',function(){
+		$('#xftEnableGroups').val($('#xftEnableGroupsSelect').selectedValues().join(','));
 		//save typoscript editor content to textarea
 		$('#xftTyposcriptEditor').val(typoscriptEditor.getCode());
 		//save HTML editor content to textarea
@@ -133,6 +144,11 @@ $(document).ready(function(){
 		$.blockUI({message : '<img src="../res/css/images/loading_24.gif"', css : {width: '24px', height: '24px', border: 0, top: '50%', left : '50%', margin: '-15px 0 0 -15px', padding: '5px', background : 'transparent'} });
 		//submit form
 		$('#xftForm').ajaxSubmit(optionsForm); 
+	});
+	
+	//close icon inside template
+	$('.xftCloseDok').bind('click',function(){
+		document.location = "index.php";
 	});
 	
 	//Typoscript editor

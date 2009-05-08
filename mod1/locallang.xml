@@ -9,7 +9,7 @@
     </meta>
     <data type="array">
         <languageKey index="default" type="array">
-            <label index="title">XFlexTemplate - Dynamic content element genarator</label>
+            <label index="title">XFlexTemplate - Dynamic content element generator</label>
             <label index="titlelist">Title</label>
             <label index="descriptionlist">Description</label>
             <label index="filelist">File HTML</label>
@@ -72,6 +72,7 @@
             <label index="generalTitle">General</label>
             <label index="elementTitle">Elements</label>
             <label index="xftTitle">Name of template</label>
+            <label index="xftEnableGroups">Groups can view this template</label>
             <label index="xftElementTitle">Elements creation</label>
             <label index="xftTyposcriptTitle">Typoscript configuration</label>
             <label index="xftDescriptionTitle">General description for template</label>
@@ -191,6 +192,7 @@
             <label index="generalTitle">Generale</label>
             <label index="elementTitle">Elementi</label>
             <label index="xftTitle">Titolo del template</label>
+            <label index="xftEnableGroups">Gruppi che possono vedere template</label>
             <label index="xftElementTitle">Creazione degli elementi</label>
             <label index="xftTyposcriptTitle">Configurazione del typoscript</label>
             <label index="xftDescriptionTitle">Descrizione generale del template</label>

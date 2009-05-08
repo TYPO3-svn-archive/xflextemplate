@@ -45,7 +45,7 @@ visibility:hidden;
 background-position: -0px 0px;
 }
 
-.ui-icon-delete{
+.ui-icon-delete,.xft-closeicon{
 float: right;
 width: 16px;
 height: 16px;
@@ -102,6 +102,20 @@ dl.xft-main-element{
 	float: left;
 }
 
+#xftEnableGroups{
+	width: 100px;
+	height: 100px;
+}
+
+.tab-inner-container dl dd{
+	margin-bottom: 5px;
+}
+
+.tab-inner-container dl dd label{
+	vertical-align: top;
+	margin-right: 5px;
+}
+
 .portlet-header .ui-icon-delete{
 	cursor: pointer;
 }
@@ -133,6 +147,7 @@ div.ui-tabs-panel{
 	border-right: 1px solid #a2aab8;
 	border-bottom: 1px solid #a2aab8;
 	border-left: 1px solid #a2aab8;
+	clear:both;
 }
 
 .xft-icon{

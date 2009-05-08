@@ -88,12 +88,15 @@ class elementTemplate {
 		global $LANG;
 		//retrieves subelement template
 		$content = $this->getSubElementObject(strtoupper($elementName) . '_SUBELEMENT');
+		
+		//retrieve the type of element for prepending element array value
+		$preLabelElementArray = substr($elementName,0,strlen($elementName)-4);
 		$markerArray = array();
 		foreach($GLOBALS['configuration']['subElement'][$elementName] as $item){
 			$markerArray[$item . '_label'] = $LANG->sL('LLL:EXT:xflextemplate/language/locallang_template.xml:' . $item . 'label');
 			//checkbox
-			if(t3lib_div::inList('wrap',$item)){
-				$markerArray[$item . 'checked'] = ($elementArray[$item]) ? 'checked' : '';
+			if(t3lib_div::inList('wrap,show_thumbs,',$item)){
+				$markerArray[$item . 'checked'] = ($elementArray[$preLabelElementArray . '_' . $item]) ? 'checked' : '';
 			}
 			//select
 			if(t3lib_div::inList('hardtype',$item)){
@@ -109,9 +112,10 @@ class elementTemplate {
 					$markerArray['fileselected'] = '';
 					$markerArray['databaseselected'] = '';
 				} 
-				$markerArray[$item . 'selected'] = ($elementArray[$item] == 'file') ? 'checked' : '';
+				$markerArray[$item . 'selected'] = ($elementArray[$preLabelElementArray . '_' . $item] == 'file') ? 'checked' : '';
 			}
 		}
+		
 		//retrieves value from configuration array
 		$markerValueArray = $this->getSubElementValueArray($elementName, $elementArray);
 		//merge array
@@ -213,5 +217,10 @@ class elementTemplate {
 		return $markerArray;
 	}
 	
+}
+
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.elementTemplate.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.elementTemplate.php']);
 }
 ?>
