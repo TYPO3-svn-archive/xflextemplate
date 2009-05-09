@@ -91,14 +91,14 @@ class listTemplate {
 	 * 
 	 * @return string HTML code 
 	 */
-	function getTemplateList(){
+		function getTemplateList(){
 		global $BACK_PATH;
-		 $templateList = $this->xft->getTemplateList();
-		 //if there is some database rows
-		 if(count($templateList)){	
-		 	//retrieve template subparts	 	
-			$tableContent = $this->cObj->getSubpart($this->template,'###TEMPLATELIST###');
-			$rowTemplate = $this->cObj->getSubpart($tableContent,'###TEMPLATELISTCOLUMN###');
+		$templateList = $this->xft->getTemplateList();
+	 	//retrieve template subparts	 	
+		$tableContent = $this->cObj->getSubpart($this->template,'###TEMPLATELIST###');
+		$rowTemplate = $this->cObj->getSubpart($tableContent,'###TEMPLATELISTCOLUMN###');
+		//if there is some database rows
+		if(count($templateList)){	
 			$columnContent = '';
 			//builds column marker array
 			foreach($templateList as $item){
@@ -115,7 +115,7 @@ class listTemplate {
 													<img id="dele-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftDelete" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . ' title="' . $this->language->getLL('deleteColumnTips') . '"/>';
 				$columnContent .= $this->cObj->substituteMarkerArray($rowTemplate,$markerColumnArray,'###|###',1);
 			}
-		 }
+		}
 		//builds header marker array
 		$markerTableArray['titleHeader'] = $this->language->getLL("titleHeader");
 		$markerTableArray['descriptionHeader'] = $this->language->getLL("descriptionHeader");
@@ -126,7 +126,7 @@ class listTemplate {
 		$markerTableArray['deleteelementmessage'] = $this->language->getLL('deleteelementmessage');
 		$content = $this->cObj->substituteSubpart($tableContent, '###TEMPLATELISTCOLUMN###', $columnContent);
 		$content = $this->cObj->substituteMarkerArray($content,$markerTableArray,'###|###',1);
-		 return $content;
+		return $content;
 	} 	
 }
 
