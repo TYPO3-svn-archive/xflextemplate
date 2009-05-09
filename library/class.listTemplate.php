@@ -115,17 +115,17 @@ class listTemplate {
 													<img id="dele-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftDelete" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . ' title="' . $this->language->getLL('deleteColumnTips') . '"/>';
 				$columnContent .= $this->cObj->substituteMarkerArray($rowTemplate,$markerColumnArray,'###|###',1);
 			}
-			//builds header marker array
-			$markerTableArray['titleHeader'] = $this->language->getLL("titleHeader");
-			$markerTableArray['descriptionHeader'] = $this->language->getLL("descriptionHeader");
-			$markerTableArray['crdateHeader'] = $this->language->getLL("crdateHeader");
-			$markerTableArray['tstampHeader'] = $this->language->getLL("tstampHeader");
-			$markerTableArray['iconsHeader'] = '<img id="new-NEW" class="tableOperationIcon pointer-icon xftNew" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/new_el.gif','') . ' title="' . $this->language->getLL('newColumnTips') . '"/>';
-			$markerTableArray['deleteelementtitle'] = $this->language->getLL('deleteelementtitle');
-			$markerTableArray['deleteelementmessage'] = $this->language->getLL('deleteelementmessage');
-			$content = $this->cObj->substituteSubpart($tableContent, '###TEMPLATELISTCOLUMN###', $columnContent);
-			$content = $this->cObj->substituteMarkerArray($content,$markerTableArray,'###|###',1);
 		 }
+		//builds header marker array
+		$markerTableArray['titleHeader'] = $this->language->getLL("titleHeader");
+		$markerTableArray['descriptionHeader'] = $this->language->getLL("descriptionHeader");
+		$markerTableArray['crdateHeader'] = $this->language->getLL("crdateHeader");
+		$markerTableArray['tstampHeader'] = $this->language->getLL("tstampHeader");
+		$markerTableArray['iconsHeader'] = '<img id="new-NEW" class="tableOperationIcon pointer-icon xftNew" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/new_el.gif','') . ' title="' . $this->language->getLL('newColumnTips') . '"/>';
+		$markerTableArray['deleteelementtitle'] = $this->language->getLL('deleteelementtitle');
+		$markerTableArray['deleteelementmessage'] = $this->language->getLL('deleteelementmessage');
+		$content = $this->cObj->substituteSubpart($tableContent, '###TEMPLATELISTCOLUMN###', $columnContent);
+		$content = $this->cObj->substituteMarkerArray($content,$markerTableArray,'###|###',1);
 		 return $content;
 	} 	
 }
