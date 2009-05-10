@@ -196,7 +196,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 				}
 				$confSingle['10.'] = t3lib_div::array_merge_recursive_overrule($confType, $conf[$key . '.']);
 				$confSingle['10'] = strtoupper($this->conf[$key]);
-				debug($confSingle);
+				//debug($confSingle);
 				$this->markerArray['###' . strtoupper($key) . '###']=$this->cObj->cObjGet($confSingle);
 			}
 		}
