@@ -43,6 +43,17 @@ class xftObject {
 	var $version = '2.0.0';
 	
 	/**
+	 * @var string last allowed version for export and import
+	 */
+	var $lastAllowedVersion = '2.0.0';
+	
+	
+	var $tagIni='bfxft'; //first characters in exported file
+	var $tagMD5Ini;
+	var $tagMD5Array;
+	var $tagArray;
+	
+	/**
 	 * This function retrieves rows from database
 	 * 
 	 * @return array list of template 
@@ -258,6 +269,94 @@ class xftObject {
 			$updateArray['hidden'] = 1;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_xflextemplate_template', 'uid='.$uid, $updateArray);
 			return 'button_hide|button_unhide';
+		}
+	}
+	
+	/**
+	 * Function export template into file
+	 * 
+	 * @param int $uid id of template
+	 * @param array $emconf emconf of extension
+	 */
+	function export($uid,$emconf){		
+		$this->tagMD5Ini=md5($this->tagIni); // creates MD5 of Tag Ini
+		//fetch template data from database
+		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title, file, description, xml, typoscript, palettes, enablegroup, crdate, tstamp, cruser_id, deleted, hidden, html, version','tx_xflextemplate_template',' uid=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($uid,'tx_xflextemplate_template'));
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res)>0){ //if any is found
+			$row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			// filename is: xft name + xft major version number + _ + xft middle version number + xft minor version number + hour + minute + seconds + day + month + year
+			$filename=str_replace(' ','_',$row['title'].str_replace('.','_',$emconf['version']).date('hisdmY').'.xft');
+			header('Content-type: application/xft');
+			header('Content-Disposition: attachment; filename='.$filename);
+			$this->tagArray=serialize($row);
+			$tempArray[0]=base64_encode($this->tagIni);
+			$tempArray[1]=base64_encode($this->lastAllowedVersion);
+			$tempArray[2]=base64_encode($this->tagMD5Ini);
+			$tempArray[3]=base64_encode(md5($this->tagArray));
+			$tempArray[4]=base64_encode($this->tagArray);
+			$content=implode('.',$tempArray);
+			echo $content;
+			exit();
+		}
+	}
+	
+	function import($emconf){
+		$tmpFilename = t3lib_div::upload_to_tempfile($_FILES['template']['tmp_name']);
+		$content = t3lib_div::getURL($tmpFilename);
+		t3lib_div::unlink_tempfile($tmpFilename);
+		$tempArray=explode('.',$content); //
+		if(is_array($tempArray)){
+			foreach($tempArray as $key=>$item)
+				$tempArray[$key]=base64_decode($item);
+			$tagIni=$tempArray[0];
+			$tagMD5Ini=$tempArray[2];
+			debug($tempArray);
+			if ($tagMD5Ini==md5($tagIni)){ //checksum control
+				if($tagIni==$this->tagIni){ //initial string control
+					if($this->checkVersion($emconf['version'],$tempArray[1])){ //check version control
+						if($tempArray[3]==md5($tempArray[4])){//checksum control of xft content
+							$templateRow = unserialize($tempArray[4]);
+							debug($GLOBALS['TYPO3_DB']->INSERTquery('tx_xflextemplate_template',$templateRow));
+							return 1;
+						}
+						else // content is corrupted
+							t3lib_div::unlink_tempfile($tmpFilename);
+							return 0;
+					}
+					else{ // version is not correctly
+						t3lib_div::unlink_tempfile($tmpFilename);
+						return -1;
+					}
+				}
+				else{ // content is corrupted
+					t3lib_div::unlink_tempfile($tmpFilename);
+					return -2;
+				}
+			}
+			else{ // content is corrupted
+				t3lib_div::unlink_tempfile($tmpFilename);
+				return -3;
+			}
+		}
+		else{ // content is corrupted
+			t3lib_div::unlink_tempfile($tmpFilename);
+			return -4;
+		}
+	}
+	
+	/**
+	 * This function chek is version is correct
+	 *
+	 * @param	string		$ver2check: version to verify to be minor
+	 * @param	string		$ver: version to verify to be major
+	 * @return	string		true if $ver2check is major than $ver, otherwise false
+	 */
+	function checkVersion($ver2check,$ver){
+		debug($ver2check.'-->'.$ver);
+		if (t3lib_div::int_from_ver($ver2check) < t3lib_div::int_from_ver($ver))  {
+			return false;
+		} else {
+			return true;
 		}
 	}
 	

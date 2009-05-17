@@ -370,6 +370,10 @@ body .ui-resizable-autohide .ui-resizable-handle { display: none; } /* use 'body
 	display: none;
 }
 
+#dialogUploadContainer{
+	display: none;
+}
+
 
 .CodeMirror-line-numbers {
         width: 2.2em;

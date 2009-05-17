@@ -49,12 +49,12 @@ templateList.prototype = {
 				img = this;
 				operationArray = this.id.split('-');
 				//if operation is edit or new, redirect to index.php with element id for editing or NEW for new element
-				if (operationArray[0] == 'edit' || operationArray[0] == 'new'){
-					document.location.href = 'index.php?templateId=' + operationArray[1] + '&action=' + operationArray[0];
-				}
-				else{
-					//delete operation
-					if (operationArray[0] == 'dele'){
+				switch(operationArray[0]){
+					case 'edit':
+					case 'new':						
+						document.location.href = 'index.php?templateId=' + operationArray[1] + '&action=' + operationArray[0];
+					break;
+					case 'dele':
 						$('#dialog').dialog({
 							bgiframe: true,
 							resizable: false,
@@ -86,9 +86,8 @@ templateList.prototype = {
 						$('.ui-dialog-buttonpane button').each(function(){
 							$(this).html(languageArray[$(this).html()]);
 						});
-					}
-					//hide/show code
-					else{
+					break;
+					case 'hide':
 						var parameters = {
 							url: ajaxUrl,
 							data: 'ajax=1&action=' + operationArray[0] + '&templateId=' + operationArray[1]
@@ -101,7 +100,13 @@ templateList.prototype = {
 							$(img).attr('title',languageArray['showColumnTips']);
 						else
 							$(img).attr('title',languageArray['hiddenColumnTips']);
-					}
+					break;
+					case 'import':
+						document.location.href = 'index.php?action=import';
+					break;
+					case 'export':
+						document.location.href = 'index.php?templateId=' + operationArray[1] + '&action=export&ajax=1';
+					break;
 				}
 			});
 		});

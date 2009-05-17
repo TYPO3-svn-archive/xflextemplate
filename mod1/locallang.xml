@@ -95,6 +95,10 @@
 			<label index="deleteColumnTips">Delete template</label>
 			<label index="editColumnTips">Edit template</label>
 			<label index="newColumnTips">New template</label>
+			
+			
+			<label index="pi1_title">XflexTemplate</label>
+			<label index="pi1_plus_wiz_description">Full feature content Element for personalization of content</label>
             
         </languageKey>
         <languageKey index="it" type="array">
@@ -216,6 +220,9 @@
 			<label index="deleteColumnTips">Elimina template</label>
 			<label index="editColumnTips">Modifica template</label>
 			<label index="newColumnTips">Crea nuovo template</label>
+			
+			<label index="pi1_title">XflexTemplate</label>
+			<label index="pi1_plus_wiz_description">Elemento di contenuto personalizzabile</label>
 			
 			
         </languageKey>

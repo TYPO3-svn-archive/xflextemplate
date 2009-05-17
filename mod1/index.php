@@ -135,6 +135,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 	 */
 	function main()	{
 		global $BE_USER;
+		$_EXTKEY = $this->extKey;
 		// Access check!
 		// The page will show only if there is a valid page and if this page may be viewed by the user
 		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id,$this->perms_clause);
@@ -189,6 +190,13 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 						echo $this->xftObject->hideToggle(t3lib_div::_GP('templateId'));
 						exit();
 					break;
+					case 'export':
+						
+						// include exmconf file
+						require_once(t3lib_extMgm::extPath($this->extKey) . 'ext_emconf.php');
+						$this->xftObject->export(t3lib_div::_GP('templateId'),$EM_CONF[$this->extKey]);
+						exit();
+					break;
 					default:
 						switch ($this->mainArray['operation']){
 							case 'submit': //submit for saving a specific template
@@ -213,11 +221,11 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 				
 			}
 			
-			
+			//debug($MCONF);
 			// PAGE CREATION
 			$this->doc = t3lib_div::makeInstance("bigDoc");
 			$this->doc->backPath = $this->backPath;
-			$this->doc->form='<form onsubmit="return false" id="xftForm" action="index.php" method="POST">';
+			$this->doc->form='<form id="xftForm" action="index.php" method="POST">';
 			$this->doc->docType = 'xhtml_trans';
 			//stylesheets and js file
 			$this->doc->JScode = '
@@ -265,17 +273,28 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 			}
 			else{ //if operation is a listing display (default view)
 				//initialize listTemplate object
-				$templateListObject = t3lib_div::makeInstance('listTemplate');
-				$templateListObject->init($this->language, $this->templateFile, $this->globalConf);
-				
-				//retrieve content string for listing template
-				$content = $templateListObject->getTemplateList();
-				
-				//This jscode will be put only for listing display and no for edit or creation element
-				$this->doc->JScode .= '
-						<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
-						<script type="text/javascript" src="../javascript/library/class.templateList.js"></script>
-						<script type="text/javascript" src="../javascript/backEndBLTP.js"></script>';
+				if (t3lib_div::_GP('action') == 'import'){					
+					$this->doc->form='<form id="xftForm" action="index.php" method="POST" enctype="multipart/form-data">';
+					$content = $this->makeImportForm();
+				}
+				else{
+					if (t3lib_div::_GP('action') == 'importExecuted'){	
+						require_once(t3lib_extMgm::extPath($this->extKey) . 'ext_emconf.php');	
+						debug($this->xftObject->import($EM_CONF[$this->extKey]),'error');
+					}
+					$templateListObject = t3lib_div::makeInstance('listTemplate');
+					$templateListObject->init($this->language, $this->templateFile, $this->globalConf);
+					
+					//retrieve content string for listing template
+					$content = $templateListObject->getTemplateList();
+					
+					//This jscode will be put only for listing display and no for edit or creation element
+					$this->doc->JScode .= '
+							<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
+							<script type="text/javascript" src="../javascript/library/class.templateList.js"></script>
+							<script type="text/javascript" src="../javascript/backEndBLTP.js"></script>';
+					
+				}
 			}
 			
 			
@@ -392,6 +411,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 		';
 	}
 	
+	
 
 	/**
 	 * Prints out the module HTML
@@ -399,7 +419,6 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 	 * @return	void		
 	 */
 	function printContent()	{
-
 		$this->content.=$this->doc->endPage();
 		echo $this->content;
 	}
@@ -429,6 +448,13 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 		
 		//merge all and returning content
 		return implode(chr(10),$this->hiddenFields) . $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
+	}
+	
+	function makeImportForm(){
+		$this->elementArray['IMPORTTEMPLATEMESSAGE'] = $this->language->getLL('importTemplateMessage');
+		$this->elementArray['IMPORTTEMPLATESUBMIT'] = $this->language->getLL('importTemplateSubmit');
+		$subpart = $this->cObj->getSubpart($this->template,'TEMPLATEIMPORT');
+		return $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
 	}
 	
 	/**

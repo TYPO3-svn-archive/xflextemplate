@@ -40,7 +40,6 @@ languageArray = new Array;
 
 //Main document ready function
 $(document).ready(function(){
-	
 	//Array for possible dialog button label name
 	var languageKeyArray = new Array('dialogYes', 'dialogNo', 'dialogOK', 'dialogCancel','showColumnTips','hiddenColumnTips');
 	

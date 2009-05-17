@@ -33,15 +33,15 @@ class tx_xflextemplate_pi1_wizicon {
 	function proc($wizardItems)	{
 		global $LANG;
 
-		$LL = $this->includeLocalLang();
+		$LANG->includeLLFile("EXT:xflextemplate/mod1/locallang.xml");
 		$wizArray=array(); //create array for new wizard items
 		foreach($wizardItems as $key=>$item){
 			if ($key=='common'){ //if it's position of first common element insert xft wizard
 				$wizArray[$key]=$item;
 				$wizArray["common_xft"] = array(
 					"icon"=>t3lib_extMgm::extRelPath("xflextemplate")."pi1/xft_wiz.gif",
-					"title"=>$LANG->getLLL("pi1_title",$LL),
-					"description"=>$LANG->getLLL("pi1_plus_wiz_description",$LL),
+					"title"=>$LANG->getLL("pi1_title"),
+					"description"=>$LANG->getLL("pi1_plus_wiz_description"),
 						'tt_content_defValues' => array(
 							'CType' => 'xflextemplate_pi1'
 						)
@@ -52,10 +52,6 @@ class tx_xflextemplate_pi1_wizicon {
 		}
 
 		return $wizArray;
-	}
-	function includeLocalLang()	{
-		include(t3lib_extMgm::extPath("xflextemplate")."locallang.php");
-		return $LOCAL_LANG;
 	}
 }
 

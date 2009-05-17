@@ -112,7 +112,8 @@ class listTemplate {
 				$hiddenColumnTips = ($item['hidden'])?$this->language->getLL('showColumnTips'):$this->language->getLL('hiddenColumnTips');
 				$markerColumnArray['iconsColumn'] = '<img id="edit-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftEdit" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/edit2.gif','') . ' title="' . $this->language->getLL('editColumnTips') . '"/>
 													<img id="hide-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftHidden" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/' . $hiddenIcon . '.gif','') . ' title="' . $hiddenColumnTips . '"/>
-													<img id="dele-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftDelete" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . ' title="' . $this->language->getLL('deleteColumnTips') . '"/>';
+													<img id="dele-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftDelete" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . ' title="' . $this->language->getLL('deleteColumnTips') . '"/>
+													<img id="export-' . $item['uid'] . '" class="tableOperationIcon pointer-icon xftExport" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/copy_page_after.gif','') . ' title="' . $this->language->getLL('exportColumnTips') . '"/>';
 				$columnContent .= $this->cObj->substituteMarkerArray($rowTemplate,$markerColumnArray,'###|###',1);
 			}
 		}
@@ -121,7 +122,8 @@ class listTemplate {
 		$markerTableArray['descriptionHeader'] = $this->language->getLL("descriptionHeader");
 		$markerTableArray['crdateHeader'] = $this->language->getLL("crdateHeader");
 		$markerTableArray['tstampHeader'] = $this->language->getLL("tstampHeader");
-		$markerTableArray['iconsHeader'] = '<img id="new-NEW" class="tableOperationIcon pointer-icon xftNew" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/new_el.gif','') . ' title="' . $this->language->getLL('newColumnTips') . '"/>';
+		$markerTableArray['iconsHeader'] = '<img id="new-NEW" class="tableOperationIcon pointer-icon xftNew" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/new_el.gif','') . ' title="' . $this->language->getLL('newColumnTips') . '"/>
+											<img id="import-NEW" class="tableOperationIcon pointer-icon xftImport" ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/import.gif','') . ' title="' . $this->language->getLL('newColumnTips') . '"/>';
 		$markerTableArray['deleteelementtitle'] = $this->language->getLL('deleteelementtitle');
 		$markerTableArray['deleteelementmessage'] = $this->language->getLL('deleteelementmessage');
 		$content = $this->cObj->substituteSubpart($tableContent, '###TEMPLATELISTCOLUMN###', $columnContent);

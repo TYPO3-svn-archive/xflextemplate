@@ -89,7 +89,7 @@ class tx_xflextemplate_tceforms	{
 			if(is_array($flexFields)){ //if flexdata is an array data will be put into flexdata array
 				//put any field from flexfields
 				foreach($flexFields as $key=>$obj){
-					$row[$key]=$obj;
+					$row[$key]=($GLOBALS['TCA']['tt_content']['columns'][$key]['config']['default'] && ($obj == '')) ? $GLOBALS['TCA']['tt_content']['columns'][$key]['config']['default'] : $obj;
 				}
 			}
 		}

@@ -107,7 +107,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		//merge lConf with standard tt_content column, so in $this->cObj->data there are all data from xflextemplate
 		$this->cObj->data=array_merge($this->cObj->data,xmlTransformation::getArrayFromXMLData($this->cObj->data['xflextemplate']));
 		//fetch all other data from template
-		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('xml,file,typoscript,html','tx_xflextemplate_template','title="'.$this->cObj->data['xtemplate'].'" AND deleted=0 AND hidden=0');
+		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('xml,typoscript,html','tx_xflextemplate_template','title="'.$this->cObj->data['xtemplate'].'" AND deleted=0 AND hidden=0');
 		$databaseRow=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$this->typoscript=$databaseRow['typoscript'];
 		$ts=t3lib_div::makeInstance('t3lib_TSparser');
@@ -168,20 +168,19 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		$ts=t3lib_div::makeInstance('t3lib_TSparser');
 		//analyze single object and define data
 		foreach ($this->xflexData as $key=>$xftitem) {
-			//eseguo questa associazione per fare in modo che modifiche successive al template non implichino la visualizzazione di campi non riempiti
-			$item=$this->cObj->data[$key];
 			if($xftitem['xtype']!='none'){
 				$conf = array();
 				$confSingle = array();
 				$confType = array();
-				if(!$this->conf[$key]){
-					$this->conf[$key] = $xftitem['xtype'];
+				$conf = $this->conf; //cannot modify original array
+				if(!$conf[$key]){
+					$conf[$key] = $xftitem['xtype'];
 				}
-				if(is_array($this->conf[$this->conf[$key] . '.']))
-					$this->substiteValueInArrayRecursive('###XFTELEMENTFIELD###', $key ,$this->conf[$this->conf[$key] . '.']);
-				$confType = ($this->conf[$this->conf[$key] . '.']) ? $this->conf[$this->conf[$key] . '.'] : array();
-				$conf[$key . '.'] = ($this->conf[$key . '.']) ? $this->conf[$key . '.'] : array();
-				switch ($this->conf[$key]){
+				if(is_array($conf[$conf[$key] . '.']))
+					$this->substiteValueInArrayRecursive('###XFTELEMENTFIELD###', $key ,$conf[$conf[$key] . '.']);
+				$confType = ($conf[$conf[$key] . '.']) ? $conf[$conf[$key] . '.'] : array();
+				$conf[$key . '.'] = ($conf[$key . '.']) ? $conf[$key . '.'] : array();
+				switch ($conf[$key]){
 					case 'text':
 					break;
 					case 'image':
@@ -195,8 +194,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 					break;
 				}
 				$confSingle['10.'] = t3lib_div::array_merge_recursive_overrule($confType, $conf[$key . '.']);
-				$confSingle['10'] = strtoupper($this->conf[$key]);
-				//debug($confSingle);
+				$confSingle['10'] = strtoupper($conf[$key]);
 				$this->markerArray['###' . strtoupper($key) . '###']=$this->cObj->cObjGet($confSingle);
 			}
 		}
@@ -204,6 +202,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		//merge all marker in the output content object
 		$content=$this->cObj->substituteMarkerArray($templateString,$this->markerArray,'',1);
 		$this->markerArray=array();
+		$content = eregi_replace('^###(.)*###$', '', $content);
 		return $content;
 	}
 
