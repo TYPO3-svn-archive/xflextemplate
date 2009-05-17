@@ -464,7 +464,57 @@
         </textarea>
     </dd>
 </dl>
-<!--###RADIOTYPE_SUBELEMENT### --><!--###LANGUAGE_HELPER_BLOCK### -->
+<!--###RADIOTYPE_SUBELEMENT### -->
+<!--###WIZARDTYPE_SUBELEMENT### -->
+<dl>
+    <dt>
+        <label for="xflextemplate_###ID###_wizard_wizicon">
+            ###WIZICON_LABEL###:
+        </label>
+    </dt>
+    <dd>
+        <input id="xflextemplate_###ID###_wizard_wizicon" type="text" name="xflextemplate[###ID###][wizard_wizicon]" class="xft-input-text" value="###WIZICONVALUE###" />
+    </dd>
+    <dt>
+        <label for="xflextemplate_###ID###_wizard_classPath">
+            ###CLASSPATH_LABEL###:
+        </label>
+    </dt>
+    <dd>
+        <input id="xflextemplate_###ID###_wizard_classPath" type="text" name="xflextemplate[###ID###][wizard_classPath]" class="xft-input-text" value="###CLASSPATHVALUE###" />
+    </dd>
+    <dt>
+        <label for="xflextemplate_###ID###_wizard_className">
+            ###CLASSNAME_LABEL###:
+        </label>
+    </dt>
+    <dd>
+        <input id="xflextemplate_###ID###_wizard_className" type="text" name="xflextemplate[###ID###][wizard_className]" class="xft-input-text" value="###CLASSNAMEVALUE###" />
+    </dd>
+</dl><!--###WIZARDTYPE_SUBELEMENT### -->
+
+<!--###WIZARDTYPE_XML### -->
+<type>text</type>
+<rows>5</rows>
+<cols>40</cols>
+<wizards>
+	<_HIDDENFIELD>1</_HIDDENFIELD>
+	<_PADDING>4</_PADDING>
+	<select>
+		<type>script</type>
+		<title>XFT wizard</title>
+		<icon>###ICON###</icon>
+		<script>EXT:xflextemplate/mod1/wizard.php</script>
+		<params>
+			<className>###CLASSNAME###</className>
+			<classPath>###CLASSPATH###</classPath>
+		</params>
+	</select>
+</wizards>
+<!--###WIZARDTYPE_XML### -->
+
+
+<!--###LANGUAGE_HELPER_BLOCK### -->
 <div class="tsHelperContainer">
     <span class="tsHelperRow">
         <label for="helperLanguage">

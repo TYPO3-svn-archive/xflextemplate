@@ -18,6 +18,7 @@
 			<label index="selectType">select</label>
 			<label index="groupType">group</label>
 			<label index="cObjectType">cObject</label>
+			<label index="wizardType">Custom element</label>
 			
 			
 			<label index="noneXtype">none</label>
@@ -54,6 +55,10 @@
 			<label index="autoSizeMaxlabel">Max dimension of list</label>
 			<label index="multiplelabel">Multiplicity</label>
 			<label index="palettenone">None</label>
+			
+			<label index="wiziconlabel">Wizard Icon</label>
+			<label index="classPathlabel">Wizard class path</label>
+			<label index="classNamelabel">Wizard class name</label>
 			
 			
 			

@@ -208,7 +208,6 @@ class scWizardFactory {
 	 * @return	string		HTML content for the form.
 	 */
 	function wizardRender()	{
-
 			// First, check the references by selecting the record:
 		$row = t3lib_BEfunc::getRecord($this->P['table'],$this->P['uid']);
 		if (!is_array($row))	{
@@ -216,44 +215,44 @@ class scWizardFactory {
 			exit;
 		}
 		
+		$fieldArray = xmlTransformation::getArrayFromXMLData($row['xflextemplate']);
+		
 		$wizardClass = t3lib_div::makeInstance('pippoWizard');
 		if ($_POST['savedok_x'] || $_POST['saveandclosedok_x'])	{
 
 					// Make TCEmain object:
 				$tce = t3lib_div::makeInstance('t3lib_TCEmain');
 				$tce->stripslashes_values=0;
-
-					// Put content into the data array:
-				$data=array();
 				
-				$data[$this->P['table']][$this->P['uid']][$this->P['field']]=$wizardClass->getCompactField($_POST);;
-
+				//$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('xml','tx_xflextemplate_template','title="'.$row['xtemplate'].'" AND deleted=0 AND hidden=0');
+				//$dbrow=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+				// extract xml data from template and assign to fieldArray
+				$data=array();
+				$data[$this->P['table']][$this->P['uid']] = $fieldArray;
+					// Put content into the data array:
+				$data[$this->P['table']][$this->P['uid']]['CType'] = 'xflextemplate_pi1';
+				$data[$this->P['table']][$this->P['uid']]['xtemplate'] = $row['xtemplate'];
+				$data[$this->P['table']][$this->P['uid']][$this->P['field']]=$wizardClass->getCompactField($_POST);
 					// Perform the update:
 				$tce->start($data,array());
 				$tce->process_datamap();
-
+		
 					// If the save/close button was pressed, then redirect the screen:
 				if ($_POST['saveandclosedok_x'])	{
 					header('Location: '.t3lib_div::locationHeaderUrl($this->P['returnUrl']));
 					exit;
 				}
+				else{
+					
+					$row = t3lib_BEfunc::getRecord($this->P['table'],$this->P['uid']);
+					$fieldArray = xmlTransformation::getArrayFromXMLData($row['xflextemplate']);
+				}
 			}
-		else{
 		
-		//if()
-		
-		
-		$content = $wizardClass->render($row['test']);
-		
-			// This will get the content of the form configuration code field to us - possibly cleaned up, saved to database etc. if the form has been submitted in the meantime.
-		//$tableCfgArray = $this->getConfigCode($row);
-
-			// Generation of the Table Wizards HTML code:
-		//$content = $this->getTableHTML($tableCfgArray,$row);
+		$content = $wizardClass->render($fieldArray[$this->P['field']]);
 
 			// Return content:
 		return $content;
-		}
 	}
 
 

@@ -73,51 +73,78 @@ class tcaTransformation	{
 		$fieldArray = t3lib_div::xml2array($xmlArray);
 		//var_export($fieldArray);
 		if(is_array($fieldArray)){ // if array is correct
+			$globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
 			foreach($fieldArray as $object){
 				$palettes='';
 				$name = $object['name'];
-				foreach($object as $key=>$item){ //create TCA array from fields
-					switch ($key){
-						case 'name':
-							$name=$item; //name of column
-						break;
-						case 'defaultExtras':
-							$xflexTceForms[$name][$key]=$item; //valid only for rte
-						break;
-						case 'items':
-							$xflexTceForms[$name]['config'][$key]=$this->setSelectItems($item); // items for select and radio buttons
-						break;
-						case 'palettes': //list of palettes
-							$palettes=$item;
-							$paletteArray[$item][] = $name;
-						break;
-						case 'palette':
-						break;
-						case 'xtype': //list of palettes
-						break;
-						default:
-							$xflexTceForms[$name]['config'][$key]=$item; // standard config fields
-						break;
+				if($globalConf['enableWizard'] || $object['type'] != 'wizard'){
+					foreach($object as $key=>$item){ //create TCA array from fields
+						switch ($key){
+							case 'name':
+								$name=$item; //name of column
+							break;
+							case 'defaultExtras':
+								$xflexTceForms[$name][$key]=$item; //valid only for rte
+							break;
+							case 'items':
+								$xflexTceForms[$name]['config'][$key]=$this->setSelectItems($item); // items for select and radio buttons
+							break;
+							case 'palettes': //list of palettes
+								$palettes=$item;
+								$paletteArray[$item][] = $name;
+							break;
+							case 'palette':
+							case 'classPath':
+							case 'className':
+							break;
+							case 'xtype': //list of palettes
+							break;
+							case 'wizicon':
+								if ($globalConf['enableWizard']){
+									$xflexTceForms[$name]['config'] = array(												
+										'type' => 'text',
+										'rows' => '5',
+										'cols' =>'40',
+										'wizards' => Array(
+											'_HIDDENFIELD' =>1,
+											'_PADDING' => 4, 
+											'select' => array( 
+												'type' => 'script',
+												'title' => 'XFT wizard',
+												'icon' => $item,
+												'script' => 'EXT:xflextemplate/mod1/wizard.php',
+												'params' => array('className' => $object['className'], 'classPath' => $object['classPath'])
+											)
+						
+										)
+									);
+								}
+							break;
+							default:
+								if ($item != 'wizard')
+									$xflexTceForms[$name]['config'][$key]=$item; // standard config fields
+							break;
+						}
 					}
-				}
-				//defines personalization in label of field, it can be fetch from dynamicfieldtranslation
-				//var_export($this->ts->setup['language.'][$name.'.']['beLabel.']);
-				if (is_array($this->ts->setup['language.'][$name.'.']['beLabel.']))
-					$xflexTceForms[$name]['label']=($this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']])?$this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']]:$this->ts->setup['language.'][$name.'.']['beLabel.']['default'];
-				//exclude field is always set to zero
-				$xflexTceForms[$name]['exclude']='0';
-				$globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
-				//this fields is for RTE and other implementation of particular field (documentation in TYPO3 core api)
-				if(!$xflexTceForms[$name]['defaultExtras'] && $xflexTceForms[$name]['config']['type'] == 'text') //defaultExtras is defined as follow
-					$xflexTceForms[$name]['defaultExtras']=$globalConf['defaultExtra'];
-				if($xflexTceForms[$name]['config']['internal_type']=='file'){
-					$xflexTceForms[$name]['config']['uploadfolder']=$globalConf['uploadFolder'];
-					$xflexTceForms[$name]['config']['autoSizeMax'] = ($xflexTceForms[$name]['config']['autoSizeMax']) ? $xflexTceForms[$name]['config']['autoSizeMax'] : $globalConf['autoSizeMax'];
-				}
-				//create types fields for palettes
-				if (!$palettes) {
-					$paletteValue=($this->translatePalettesArray[$name])?$this->translatePalettesArray[$name]:'';
-					$showfields[]=$name.';;'.$paletteValue.';;';
+					//defines personalization in label of field, it can be fetch from dynamicfieldtranslation
+					//var_export($this->ts->setup['language.'][$name.'.']['beLabel.']);
+					if (is_array($this->ts->setup['language.'][$name.'.']['beLabel.']))
+						$xflexTceForms[$name]['label']=($this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']])?$this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']]:$this->ts->setup['language.'][$name.'.']['beLabel.']['default'];
+					//exclude field is always set to zero
+					$xflexTceForms[$name]['exclude']='0';
+					$globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
+					//this fields is for RTE and other implementation of particular field (documentation in TYPO3 core api)
+					if(!$xflexTceForms[$name]['defaultExtras'] && $xflexTceForms[$name]['config']['type'] == 'text') //defaultExtras is defined as follow
+						$xflexTceForms[$name]['defaultExtras']=$globalConf['defaultExtra'];
+					if($xflexTceForms[$name]['config']['internal_type']=='file'){
+						$xflexTceForms[$name]['config']['uploadfolder']=$globalConf['uploadFolder'];
+						$xflexTceForms[$name]['config']['autoSizeMax'] = ($xflexTceForms[$name]['config']['autoSizeMax']) ? $xflexTceForms[$name]['config']['autoSizeMax'] : $globalConf['autoSizeMax'];
+					}
+					//create types fields for palettes
+					if (!$palettes) {
+						$paletteValue=($this->translatePalettesArray[$name])?$this->translatePalettesArray[$name]:'';
+						$showfields[]=$name.';;'.$paletteValue.';;';
+					}
 				}
 			}
 		}
@@ -161,12 +188,22 @@ class tcaTransformation	{
 						case 'palettes': //list of palettes
 							$palettes=$item;
 						break;
+						case 'wizicon':
+							/*$markerArray = array();
+							$markerArray['icon'] = $item;
+							$markerArray['className'] = $object['className'];
+							$markerArray['classPath'] = $object['classPath'];
+							$content = $this->cObj->getSubpart(t3lib_div::getURL('EXT:xflextemplate/configuration/subelement.tmpl'),'###WIZARDTYPE_XML###');
+							$tempConfig .= $this->cObj->substituteMarkerArray($content,$markerArray,'###|###',1);*/
+						break;
 						case 'internal_type':
 							if($item == 'file')
 								$tempConfig.='<uploadfolder>'.$globalConf['uploadFolder'].'</uploadfolder>'."\n";
 							$tempConfig.='<'.$key.'>'.$item.'</'.$key.'>'."\n";
 						break;
-						default:
+						default:							
+							if ($item == 'wizard')
+								$item = 'text';
 							$tempConfig.='<'.$key.'>'.$item.'</'.$key.'>'."\n";
 						break;
 					}

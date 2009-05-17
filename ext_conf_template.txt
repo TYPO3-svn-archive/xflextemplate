@@ -19,3 +19,6 @@ defaultExtra = richtext[]:rte_transform[flag=rte_enabled|mode=ts]
   # cat=basic//10; type=int [3-1000]; label=max number of object in Group List (if you don't know, avoid to modify)
 autoSizeMax = 40
 
+  # cat=basic//10; type=boolean; label= if not set, wizard type is disabled (high security)
+enableWizard = 0
+
