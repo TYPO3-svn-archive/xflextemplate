@@ -99,12 +99,12 @@ class elementTemplate {
 				$markerArray[$item . 'checked'] = ($elementArray[$preLabelElementArray . '_' . $item]) ? 'checked' : '';
 			}
 			//select
-			if(t3lib_div::inList('hardtype',$item)){
-				if ($elementArray[$item] == 'file'){
+			if(t3lib_div::inList('internal_type',$item)){
+				if ($elementArray[$preLabelElementArray . '_' . $item] == 'file'){
 					$markerArray['fileselected'] = 'selected';
 					$markerArray['databaseselected'] = '';
 				}
-				elseif($elementArray[$item] == 'database'){
+				elseif($elementArray[$preLabelElementArray . '_' . $item] == 'db'){
 					$markerArray['fileselected'] = '';
 					$markerArray['databaseselected'] = 'selected';
 				}
