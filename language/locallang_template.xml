@@ -25,6 +25,7 @@
 			<label index="textXtype">text</label>
 			<label index="imageXtype">image</label>
 			<label index="multimediaXtype">multimedia</label>
+			<label index="cObjectXtype">COA</label>
 			
 			<label index="sizelabel">Field lenght</label>
 			<label index="maxlabel">Max char number</label>

@@ -190,6 +190,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 					}
 				break;
 				case 'cObject':
+					$conf[$key] = 'COA';
 				break;
 			}
 			$confSingle['10.'] = t3lib_div::array_merge_recursive_overrule($confType, $conf[$key . '.']);
