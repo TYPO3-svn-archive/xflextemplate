@@ -168,35 +168,35 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		$ts=t3lib_div::makeInstance('t3lib_TSparser');
 		//analyze single object and define data
 		foreach ($this->xflexData as $key=>$xftitem) {
-			if($xftitem['xtype']!='none'){
-				$conf = array();
-				$confSingle = array();
-				$confType = array();
-				$conf = $this->conf; //cannot modify original array
-				if(!$conf[$key]){
-					$conf[$key] = $xftitem['xtype'];
-				}
-				if(is_array($conf[$conf[$key] . '.']))
-					$this->substiteValueInArrayRecursive('###XFTELEMENTFIELD###', $key ,$conf[$conf[$key] . '.']);
-				$confType = ($conf[$conf[$key] . '.']) ? $conf[$conf[$key] . '.'] : array();
-				$conf[$key . '.'] = ($conf[$key . '.']) ? $conf[$key . '.'] : array();
-				switch ($conf[$key]){
-					case 'text':
-					break;
-					case 'image':
-					case 'multimedia':
-						if($conf[$key . '.']['file']){
-							unset($confType['file.']['import']);
-							unset($confType['file.']['import.']);
-						}
-					break;
-					case 'cObject':
-					break;
-				}
-				$confSingle['10.'] = t3lib_div::array_merge_recursive_overrule($confType, $conf[$key . '.']);
-				$confSingle['10'] = strtoupper($conf[$key]);
-				$this->markerArray['###' . strtoupper($key) . '###']=$this->cObj->cObjGet($confSingle);
+			$conf = array();
+			$confSingle = array();
+			$confType = array();
+			$conf = $this->conf; //cannot modify original array
+			if(!$conf[$key]){
+				$conf[$key] = $xftitem['xtype'];
 			}
+			if(is_array($conf[$conf[$key] . '.']))
+				$this->substiteValueInArrayRecursive('###XFTELEMENTFIELD###', $key ,$conf[$conf[$key] . '.']);
+			$confType = ($conf[$conf[$key] . '.']) ? $conf[$conf[$key] . '.'] : array();
+			$conf[$key . '.'] = ($conf[$key . '.']) ? $conf[$key . '.'] : array();
+			switch ($conf[$key]){
+				case 'text':
+				break;
+				case 'image':
+				case 'multimedia':
+					if($conf[$key . '.']['file']){
+						unset($confType['file.']['import']);
+						unset($confType['file.']['import.']);
+					}
+				break;
+				case 'cObject':
+				break;
+			}
+			$confSingle['10.'] = t3lib_div::array_merge_recursive_overrule($confType, $conf[$key . '.']);
+			$confSingle['10'] = strtoupper($conf[$key]);
+			if($conf[$key]!='NONE')
+				$this->markerArray['###' . strtoupper($key) . '###']=$this->cObj->cObjGet($confSingle);
+					
 		}
 		$this->markerArray['###CONTENTUID###']=$this->cObj->data['uid'];
 		//merge all marker in the output content object
