@@ -1,0 +1,21 @@
+  # cat=basic//10; type=boolean; label= if not set, no control on  acces group to xflextemplate
+emptyGroupnoControl = 0
+
+  # cat=basic//10; type=int [10-300]; label=Number of Columns of TextArea: This field specify the number of column of text area in the template edit form
+textareaCols = 50
+
+  # cat=basic//10; type=int [10-300]; label=Number of Rows of TextArea: This field specify the number of rows of text area in the template edit form
+textareaRows = 20
+
+  # cat=basic//10; type=string; label=Upload folder for saving images and other files
+uploadFolder = uploads/pics
+
+  # cat=basic//10; type=string; label=Date configuration string 
+date = m-d-Y
+
+  # cat=basic//10; type=string; label=standard string for textarea when defaultExtra is empty
+defaultExtra = richtext[]:rte_transform[flag=rte_enabled|mode=ts]
+
+  # cat=basic//10; type=int [3-1000]; label=max number of object in Group List (if you don't know, avoid to modify)
+autoSizeMax = 40
+
