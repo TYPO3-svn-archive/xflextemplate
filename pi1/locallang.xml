@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description>Frontend labels for xflextemplate</description>
+		<type>module</type>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="noStaticTyposcriptLoaded">Nessun template statico è  stato caricato!</label>
+			<label index="pi1_title">Nessun template statico è  stato caricato!</label>
+			<label index="pi1_plus_wiz_description">Nessun template statico è  stato caricato!</label>
+			<label index="pagebrowse.next">Next &gt;</label>
+			<label index="pagebrowse.last">Last &gt;&gt;</label>
+			<label index="pagebrowse.previous">&lt; Previous</label>
+			<label index="pagebrowse.first">&lt;&lt; First</label>
+		</languageKey>
+		<languageKey index="it" type="array">
+			<label index="noStaticTyposcriptLoaded">Nessun template statico è  stato caricato!</label>
+			<label index="pi1_title">Nessun template statico è  stato caricato!</label>
+			<label index="pi1_plus_wiz_description">Nessun template statico è  stato caricato!</label>
+			<label index="pagebrowse.next">Successiva &gt;</label>
+			<label index="pagebrowse.last">Ultima &gt;&gt;</label>
+			<label index="pagebrowse.previous">&lt; Precedente</label>
+			<label index="pagebrowse.first">&lt;&lt; Prima</label>
+		</languageKey>
+	</data>
+</T3locallang>
