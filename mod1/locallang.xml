@@ -55,17 +55,19 @@
             <label index="selectpalettes">Palette:</label>
             <label index="type">Render:</label>
             <label index="xtype">Tipo:</label>
-            
-            
+
+            <label index="chooseTemplate">Choose a template:</label>
+
+
             <label index="deleteelementmessage">Are you sure to delete element?</label>
             <label index="deleteelementtitle">Delete</label>
-            
+
             <label index="dialogYes">Yes</label>
             <label index="dialogNo">No</label>
             <label index="dialogCancel">Cancel</label>
             <label index="dialogOK">OK</label>
-			
-			
+
+
             <label index="typoscriptTitle">Typoscript</label>
             <label index="HTMLTitle">HTML</label>
             <label index="descriptionTitle">Description</label>
@@ -78,13 +80,13 @@
             <label index="xftDescriptionTitle">General description for template</label>
             <label index="xftNewElementTitle">Add new element</label>
             <label index="xftSaveDokTitle">Save template</label>
-			
+
             <label index="emptyTitleEntry">Title couldn't be empty</label>
             <label index="duplicateTitleEntry">Title is already present in the database</label>
             <label index="emptyElementEntry">A template with empty element couldn't be saved</label>
             <label index="emptyElementTitleEntry">Title for element n° %d couldn't be empty</label>
 			<label index="dialogErrorTitle">Errors during saving</label>
-			
+
 			<label index="titleHeader">Title</label>
 			<label index="descriptionHeader">Description</label>
 			<label index="crdateHeader">Creation date</label>
@@ -95,12 +97,20 @@
 			<label index="deleteColumnTips">Delete template</label>
 			<label index="editColumnTips">Edit template</label>
 			<label index="newColumnTips">New template</label>
-			
-			
+
+
 			<label index="pi1_title">XflexTemplate</label>
 			<label index="pi1_plus_wiz_description">Full feature content Element for personalization of content</label>
-            
-        </languageKey>
+			<label index="importTemplateMessage">&lt;h2 class=&quot;xft-helpTitle&quot;&gt;Import system&lt;/h2&gt;&lt;div class=&quot;xft-helpDescription&quot;&gt;Select xflextemplate exported file from your computer, then press &quot;Import&quot; button and your template will be inserted&lt;/div&gt;</label>
+			<label index="importTemplateFileLabel">Select file to import:</label>
+			<label index="importTemplateSubmit">Import</label>
+			<label index="corruptedContent">&lt;div class=&quot;xft-error&quot;&gt;Imported file is corrupted&lt;/div&gt;</label>
+			<label index="versionIncorrect">&lt;div class=&quot;xft-error&quot;&gt;The imported file is not compatible with this version of xflextemplate&lt;/div&gt;</label>
+			<label index="initialStringControlFailed">&lt;div class=&quot;xft-error&quot;&gt;Imported file is corrupted&lt;/div&gt;</label>
+			<label index="md5EncodingFailed">&lt;div class=&quot;xft-error&quot;&gt;Imported file is corrupted&lt;/div&gt;</label>
+			<label index="impossibleOpeningTmpFile">&lt;div class=&quot;xft-error&quot;&gt;Impossible saved temporary file (control write access to system tmp directory)&lt;/div&gt;</label>
+       		<label index="duplicateTemplateEntry">&lt;div class=&quot;xft-error&quot;&gt;The template name already exists, the operation will not be completed&lt;/div&gt;</label>
+		</languageKey>
         <languageKey index="it" type="array">
             <label index="title">XFlexTemplate - costruttore di elementi di template dinamici</label>
             <label index="titlelist">Titolo</label>
@@ -180,16 +190,16 @@
             <label index="minitems">numero minimo di elementi</label>
             <label index="autoSizeMax">Dimensionamneto lista</label>
             <label index="multiple">Molteplicita'</label>
-            
-            
+
+
             <label index="deleteelementmessage">Si è sicuri di voler cancellare l'elemento?</label>
             <label index="deleteelementtitle">Cancellazione</label>
             <label index="dialogYes">Sì</label>
             <label index="dialogNo">No</label>
             <label index="dialogCancel">Annulla</label>
             <label index="dialogOK">OK</label>
-			
-			
+
+
             <label index="typoscriptTitle">Typoscript</label>
             <label index="HTMLTitle">HTML</label>
             <label index="descriptionTitle">Descrizione</label>
@@ -202,14 +212,14 @@
             <label index="xftDescriptionTitle">Descrizione generale del template</label>
             <label index="xftNewElementTitle">Aggiungi nuovo elemento</label>
             <label index="xftSaveDokTitle">Salva template</label>
-			
+
             <label index="emptyTitleEntry">Il campo titolo non può essere vuoto</label>
             <label index="duplicateTitleEntry">Il campo titolo non può essere già presente</label>
             <label index="emptyElementEntry">Non si può salvare un template senza elementi</label>
             <label index="emptyElementTitleEntry">Il titolo dell'elemento n° %d non può essere vuoto</label>
 			<label index="dialogErrorTitle">Errori durante il salvataggio</label>
-			
-			
+
+
 			<label index="titleHeader">Titolo</label>
 			<label index="descriptionHeader">Descrizione</label>
 			<label index="crdateHeader">Data di creazione</label>
@@ -220,11 +230,23 @@
 			<label index="deleteColumnTips">Elimina template</label>
 			<label index="editColumnTips">Modifica template</label>
 			<label index="newColumnTips">Crea nuovo template</label>
-			
+
 			<label index="pi1_title">XflexTemplate</label>
 			<label index="pi1_plus_wiz_description">Elemento di contenuto personalizzabile</label>
-			
-			
+
+            <label index="chooseTemplate">Scegliere un template:</label>
+			<label index="importTemplateMessage">&lt;h2 class=&quot;xft-helpTitle&quot;&gt;Sistema di importazione&lt;/h2&gt;&lt;div class=&quot;xft-helpDescription&quot;&gt;Selezionare il file precedentemente esportato dal proprio computer, poi premete sul pulsante &quot;Import&quot; e il template sara' caricato.&lt;/div&gt;</label>
+			<label index="importTemplateFileLabel">Selezionare il file da importare:</label>
+			<label index="importTemplateSubmit">Importa</label>
+
+			<label index="corruptedContent">&lt;div class=&quot;xft-error&quot;&gt;Il file importato non è corretto&lt;/div&gt;</label>
+			<label index="versionIncorrect">&lt;div class=&quot;xft-error&quot;&gt;Il file che si cerca di importare non è compatibile con questa versione di xflextemplate&lt;/div&gt;</label>
+			<label index="initialStringControlFailed">&lt;div class=&quot;xft-error&quot;&gt;Il file importato non è corretto&lt;/div&gt;</label>
+			<label index="md5EncodingFailed">&lt;div class=&quot;xft-error&quot;&gt;Il file importato nonè corretto&lt;/div&gt;</label>
+			<label index="impossibleOpeningTmpFile">&lt;div class=&quot;xft-error&quot;&gt;Impossibile salvare il file temporaneo (controllare gli accessi in scrittura alla cartella temporanea del sistema)&lt;/div&gt;</label>
+			<label index="duplicateTemplateEntry">&lt;div class=&quot;xft-error&quot;&gt;Il nome del template esiste già, impossibile completare l'importazione&lt;/div&gt;</label>
+
+
         </languageKey>
     </data>
     <orig_hash type="array">

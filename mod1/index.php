@@ -44,63 +44,62 @@ require_once (PATH_site."/typo3conf/ext/xflextemplate/class.tx_xflextemplate_imp
 require_once ('../library/class.xftObject.php');
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 
-/**
- * @todo GESTIRE ERRORI SUGLI ELEMENTI
- * @todo controlla re che il campo template o templateFile ci siano 
- */
- 
-//TODO pippo
-
 class tx_xflextemplate_backend extends t3lib_SCbase {
-	
-		
-	
+
+
+		/**
+		 * @var string extension key
+		 */
 		var $extKey='xflextemplate';
+
+		/**
+		 * @var string directory of extension
+		 */
 		var $extensionDir='xflextemplate';
-		
+
 		/**
 		 * @var object content Object (tslib_content.php)
-		 */	
+		 */
 		var $cObj;
-		
+
 		/**
 		 * @var object object accessible without global keyword
 		 */
 		var $language;
-		
+
 		/**
 		 * @var object instance of xflextemplate Template Object
 		 */
 		var $xftObject;
-		
+
 		/**
 		 * @var array array containing marker for template
 		 */
 		var $elementArray;
-		
+
 		/**
 		 * @var string text contained into $templateFile
-		 * @see $templateFile 
+		 * @see $templateFile
 		 */
-		var $template;	
-		
-		
+		var $template;
+
+
 		/**
 		 * @var string name of template file for backend customization
-		 * @see $template 
+		 * @see $template
 		 */
 		var $templateFile;
-		
+
 		/**
 		 * @var array extension configuration from unserialization of $GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']
 		 */
 		var $globalConf;
-		
+
 		/**
 		 * @var string path to typo3 directory
 		 */
 		var $backPath;
-		
+
 		/**
 		 * @var array error description list of errors
 		 */
@@ -109,29 +108,29 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 
 	/**
 	 * Initialization of XFT engine
-	 * @return	void		
+	 * @return	void
 	 */
 	function init()	{
 		global $BE_USER,$LANG,$BACK_PATH;
 		parent::init();
 		//Assign objects
-		$this->language = $LANG;		
+		$this->language = $LANG;
 		$this->backPath=$BACK_PATH;
 		$this->globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
-		//$this->textareaCols=($this->globalConf['textareaCols'])?$this->globalConf['textareaCols']:80;
-		//$this->textareaRows=($this->globalConf['textareaRows'])?$this->globalConf['textareaRows']:40;	
+		$this->debug = ($this->globalConf['debug']) ? 1 : 0 ;
 		$this->templateFile = PATH_site.'/typo3conf/ext/xflextemplate/configuration/subelement.tmpl';
 		$this->template = file_get_contents($this->templateFile);
 		$this->xftObject = t3lib_div::makeInstance('xftObject');
+		$this->xftObject->debug = $this->debug;
 		$this->elementArray = array();
-		$this->errorList = array();		
+		$this->errorList = array();
 	}
 
 	/**
 	 * Main function of the module. Write the content to $this->content
 	 * This function answers both ajax and standard calls
 	 *
-	 * @return	void	
+	 * @return	void
 	 */
 	function main()	{
 		global $BE_USER;
@@ -145,6 +144,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 			if (t3lib_div::_GP('ajax')==1){
 				$this->mainArray = t3lib_div::_GP('xftMain');
 				$template = t3lib_div::makeInstance('elementTemplate');
+				$template->debug = ($this->globalConf['debug']) ? 1 : 0 ;
 				$template->init($this->templateFile);
 				//identify post operation from ajax
 				switch(t3lib_div::_GP('action')){
@@ -155,7 +155,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 						$parameters = array(
 								'ID' => $elementID,
 							);
-						
+
 						$parameters['paletteArray'] = (strlen(str_replace('|','',$palette))) ? explode('|',trim($palette)) : array();
 						$content = $template->setSubElement($subElement,$parameters);
 						echo($content);
@@ -189,6 +189,13 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 						echo $this->xftObject->hideToggle(t3lib_div::_GP('templateId'));
 						exit();
 					break;
+					case 'export':
+						// include exmconf file
+						$_EXTKEY = $this->extKey;
+						require_once(t3lib_extMgm::extPath($this->extKey) . 'ext_emconf.php');
+						$this->xftObject->export(t3lib_div::_GP('templateId'),$EM_CONF[$this->extKey]);
+						exit();
+					break;
 					default:
 						switch ($this->mainArray['operation']){
 							case 'submit': //submit for saving a specific template
@@ -210,12 +217,12 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 						}
 					break;
 				}
-				
+
 			}
-			
-			
+
+
 			// PAGE CREATION
-			$this->doc = t3lib_div::makeInstance("bigDoc");
+			$this->doc = t3lib_div::makeInstance("template");
 			$this->doc->backPath = $this->backPath;
 			$this->doc->form='<form onsubmit="return false" id="xftForm" action="index.php" method="POST">';
 			$this->doc->docType = 'xhtml_trans';
@@ -232,9 +239,9 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 				<script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js"></script>
 				<script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js"></script>
 			';
-			
+
 			// if operation is an edit or new creation template
-			if(t3lib_div::_GP('templateId') && ((t3lib_div::_GP('action') == 'edit') || (t3lib_div::_GP('action') == 'new'))){				
+			if(t3lib_div::_GP('templateId') && ((t3lib_div::_GP('action') == 'edit') || (t3lib_div::_GP('action') == 'new'))){
 				//if operation is edit retrive postvar templateId and load the specific template
 				if(t3lib_div::_GP('action') == 'edit' && t3lib_div::_GP('templateId')){
 					$xftArray = $this->xftObject->load(t3lib_div::_GP('templateId'));
@@ -242,7 +249,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 					$this->mainArray = $xftArray['xftMain'];
 					$this->xFlexArray = $xftArray['xflextemplate'];
 				}
-				
+
 				//generate marker Array for each content elements
 				$this->getGeneralTab();
 				$this->getTyposcriptTab();
@@ -250,7 +257,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 				$this->getDescriptionTab();
 				$this->getElementTab();
 				$content = $this->makeTabs();
-				
+
 				//This jscode will be put only for edit or creation element no for listing display
 				$this->doc->JScode .= '
 						<script type="text/javascript" src="../javascript/jquery/jquery.bgiframe.js"></script>
@@ -265,21 +272,59 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 			}
 			else{ //if operation is a listing display (default view)
 				//initialize listTemplate object
-				$templateListObject = t3lib_div::makeInstance('listTemplate');
-				$templateListObject->init($this->language, $this->templateFile, $this->globalConf);
-				
-				//retrieve content string for listing template
-				$content = $templateListObject->getTemplateList();
-				
-				//This jscode will be put only for listing display and no for edit or creation element
-				$this->doc->JScode .= '
-						<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
-						<script type="text/javascript" src="../javascript/library/class.templateList.js"></script>
-						<script type="text/javascript" src="../javascript/backEndBLTP.js"></script>';
+
+				if (t3lib_div::_GP('action') == 'import'){
+					$this->doc->form='<form id="xftForm" action="index.php" method="POST" enctype="multipart/form-data">';
+					$content = $this->makeImportForm();
+				}
+				else{
+					if (t3lib_div::_GP('action') == 'importExecuted'){
+						$errorDescription = '';
+						$error = $this->xftObject->import();
+						if ($this->debug)
+							debug($error,'Import Error');
+						if($error != 1){
+							switch ($error){
+								case 0:
+									$errorDescription = $this->language->getLL("corruptedContent");
+								break;
+								case -1:
+									$errorDescription = $this->language->getLL("versionIncorrect");
+								break;
+								case -2:
+									$errorDescription = $this->language->getLL("initialStringControlFailed");
+								break;
+								case -3:
+									$errorDescription = $this->language->getLL("md5EncodingFailed");
+								break;
+								case -4:
+									$errorDescription = $this->language->getLL("impossibleOpeningTmpFile");
+								break;
+								case -5:
+									$errorDescription = $this->language->getLL("duplicateTemplateEntry");
+								break;
+							}
+						}
+					}
+					$templateListObject = t3lib_div::makeInstance('listTemplate');
+					$templateListObject->init($this->language, $this->templateFile, $this->globalConf);
+
+					//retrieve content string for listing template
+					$content = $templateListObject->getTemplateList();
+
+					$content = str_replace( '###ERRORIMPORTDESCRIPTION###', $errorDescription, $content);
+
+					//This jscode will be put only for listing display and no for edit or creation element
+					$this->doc->JScode .= '
+							<script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
+							<script type="text/javascript" src="../javascript/library/class.templateList.js"></script>
+							<script type="text/javascript" src="../javascript/backEndBLTP.js"></script>';
+
+				}
 			}
-			
-			
-			//FINALIZE PAGE GENERATION			
+
+
+			//FINALIZE PAGE GENERATION
 			$this->content.=$this->doc->startPage($this->language->getLL("title"));
 			//space before title
 			$this->content.=$this->doc->spacer(10);
@@ -287,13 +332,13 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 			$this->content.=$this->doc->header($this->language->getLL("title"));
 			//line between title and page content
 			$this->content.=$this->doc->divider(15);
-			
+
 			$this->content.=$content;
 		}
 	}
-	
+
 	/**
-	 * Function creates marker for general tab	 
+	 * Function creates marker for general tab
 	 * @return void
 	 */
 	function getGeneralTab(){
@@ -307,14 +352,14 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 			$options.='<option value="' . $row['uid'] . '" ' . $checked . '>' . $row['title'] . '</option>' . chr(10) . chr(13);
 		}
 		$select = '<label for="xftTitle">' . $this->language->getLL('xftEnableGroups') . '</label><select id="xftEnableGroupsSelect" multiple size="10">' . $options . '</select><input type="hidden" id="xftEnableGroups"  name="xftMain[xftEnableGroups]" value="" />';
-		
+
 		$this->elementArray['generalbody'] = '<div class="tab-inner-container" ><dl><dd><label for="xftTitle">' . $this->language->getLL('xftTitle') . '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" />
 		</dd><dd>' . $select . '</dd></dl></div>';
 	}
-	
+
 	/**
 	 * Function creates marker for typoscript tab
-	 
+
 	 * @return void
 	 */
 	function getTyposcriptTab(){
@@ -322,10 +367,10 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 		$this->elementArray['xftTyposcriptTitle'] = $this->language->getLL('xftTyposcriptTitle');
 		$this->elementArray['typoscriptbody'] = '<div class="tab-inner-container" ><textarea class="fixed-font enable-tab t3editor" id="xftTyposcriptEditor" name="xftMain[xftTyposcript]" >' . $this->mainArray['xftTyposcript'] . '</textarea></div>';
 	}
-	
+
 	/**
 	 * Function creates marker for HTML tab
-	 
+
 	 * @return void
 	 */
 	function getHTMLTab(){
@@ -333,20 +378,20 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 		$this->elementArray['xftHTMLTitle'] = $this->language->getLL('xftHTMLTitle');
 		$this->elementArray['HTMLbody'] = '<div class="tab-inner-container" ><textarea class="fixed-font enable-tab t3editor" id="xftHTMLEditor" name="xftMain[xftHTML]" cols="' . $this->textareaCols . '" rows="' . $this->textareaCols . '" >' . $this->mainArray['xftHTML'] . '</textarea></div>';
 	}
-	
+
 	/**
 	 * Function creates marker for description tab
-	 
+
 	 * @return void
 	 */
 	function getDescriptionTab(){
 		$this->elementArray['xftDescriptionTitle'] = $this->language->getLL('xftDescriptionTitle');
 		$this->elementArray['descriptionbody'] = '<div class="tab-inner-container" ><textarea class="xftDescriptionClass" name="xftMain[xftDescription]" >' . $this->mainArray['xftDescription'] . '</textarea></div>';
 	}
-	
+
 	/**
 	 * Function creates marker for element tab
-	 
+
 	 * @return void
 	 */
 	function getElementTab(){
@@ -366,16 +411,16 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 				$element[$key] = $elementArray;
 			}
 			//$element contains all element object
-			
+
 			//setting palette array (with every title) for each object
 			foreach ($this->xFlexArray as $key => $item){
 				$element[$key]['paletteArray'] = $paletteArray;
-				
+
 				//render element
-				$columns .= $template->setSubElement($element[$key]['type'], $element[$key]);	
+				$columns .= $template->setSubElement($element[$key]['type'], $element[$key]);
 			}
 		}
-		
+
 		//generate element content HTML with dialogs
 		$this->elementArray['elementbody'] = '
 			<div class="column"> ' . $columns . '
@@ -388,25 +433,25 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 					<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><div class="dialogContent"></div></p>
 				</div>
 			</div>
-			<span class="clear">&nbsp;</span>			
+			<span class="clear">&nbsp;</span>
 		';
 	}
-	
+
 
 	/**
 	 * Prints out the module HTML
 	 *
-	 * @return	void		
+	 * @return	void
 	 */
 	function printContent()	{
 
 		$this->content.=$this->doc->endPage();
 		echo $this->content;
 	}
-	
+
 	/**
 	 * Merge all tabs into and return the form content
-	 
+
 	 * @return string main content HTML string
 	 */
 	function makeTabs(){
@@ -415,25 +460,38 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 		$this->elementArray['typoscriptTitle'] = $this->language->getLL('typoscriptTitle');
 		$this->elementArray['elementTitle'] = $this->language->getLL('elementTitle');
 		$this->elementArray['HTMLTitle'] = $this->language->getLL('HTMLTitle');
-		
+
 		//merge tabs inside template
 		$subpart = $this->cObj->getSubpart($this->template,'TABS');
-		
+
 		//insert template uid, if it's an insert operation setting uid to 0
-		$uid = ($this->mainArray['uid'])?$this->mainArray['uid']:0; 
-		
+		$uid = ($this->mainArray['uid'])?$this->mainArray['uid']:0;
+
 		//insert hidden HTML input element
 		$this->hiddenFields[]='<input type="hidden" name="ajax" value="1" />';
 		$this->hiddenFields[]='<input type="hidden" id="xftOperation" name="xftMain[operation]" value="submit" />';
 		$this->hiddenFields[]='<input type="hidden" id="xftUid" name="xftMain[uid]" value="' . $uid . '" />';
-		
+
 		//merge all and returning content
 		return implode(chr(10),$this->hiddenFields) . $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
 	}
-	
+
+	/**
+	 * Function for creating the import template
+	 *
+	 * @return string the HTML content
+	 */
+	function makeImportForm(){
+		$this->elementArray['IMPORTTEMPLATEMESSAGE'] = $this->language->getLL('importTemplateMessage');
+		$this->elementArray['IMPORTTEMPLATESUBMIT'] = $this->language->getLL('importTemplateSubmit');
+		$this->elementArray['IMPORTTEMPLATEFILELABEL'] = $this->language->getLL('importTemplateFileLabel');
+		$subpart = $this->cObj->getSubpart($this->template,'TEMPLATEIMPORT');
+		return $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
+	}
+
 	/**
 	 * Evaluates if an error is submitted during ajax submition operation (saving data)
-	 * 
+	 *
 	 * @return int 0 no error, 1 at least one error
 	 */
 	function evaluateError(){
@@ -452,7 +510,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 						break;
 					}
 				}
-			}				
+			}
 		}
 		else{ //if title is empty thrown an error
 			$error = 1;

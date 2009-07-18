@@ -29,23 +29,39 @@
 
 /**
  * XFT object for elementary function
- * 
+ *
  * @author Federico Bernardin <federico@bernardin.it>
  * @version 2.0
  * @package TYPO3
  * @subpackage xfletemplate
  */
 class xftObject {
-	
+
 	/**
 	 * @var string define the version of xft
 	 */
 	var $version = '2.0.0';
-	
+
+	/**
+	 * @var string last allowed version for export and import
+	 */
+	var $lastAllowedVersion = '2.0.0';
+
+
+	var $tagIni='bfxft'; //first characters in exported file
+	var $tagMD5Ini;
+	var $tagMD5Array;
+	var $tagArray;
+
+	/**
+	 * @var boolean if set debugging information are shown
+	 */
+	var $debug = 0;
+
 	/**
 	 * This function retrieves rows from database
-	 * 
-	 * @return array list of template 
+	 *
+	 * @return array list of template
 	 */
 	function getTemplateList(){
 		$rows = array();
@@ -55,11 +71,11 @@ class xftObject {
 		}
 		return $rows;
 	}
-	
+
 	/**
-	 * This function save data into database 
+	 * This function save data into database
 	 * @param array Array containing xftMain and xflextemplate subarray
-	 * 
+	 *
 	 * @return void
 	 */
 	function save($dataArray){
@@ -97,14 +113,14 @@ class xftObject {
 							$dataArray['xflextemplate'][$mainKey]['xtype'] = substr($dataArray['xflextemplate'][$mainKey]['xtype'],0,strlen($dataArray['xflextemplate'][$mainKey]['xtype'])-5);
 						break;
 						default:
-							if(strstr($key,$type . '_')){	
+							if(strstr($key,$type . '_')){
 								if($value){
 									$dataArray['xflextemplate'][$mainKey][$keyReduced] = $value;
 									unset($dataArray['xflextemplate'][$mainKey][$key]);
-								}	
-								else						
+								}
+								else
 									unset($dataArray['xflextemplate'][$mainKey][$key]);
-							}								
+							}
 						break;
 					}
 				}
@@ -114,7 +130,7 @@ class xftObject {
 			if(is_array($paletteArray)){
 				foreach($paletteArray as $key=>$item){
 					$tempPaletteArray[$key] = implode(',', $item);
-				}				
+				}
 			}
 			$xml = t3lib_div::array2xml($dataArrayIndexed);
 			$savedData['title'] = $dataArray['xftMain']['xftTitle'];
@@ -158,14 +174,14 @@ class xftObject {
 							$dataArray['xflextemplate'][$mainKey]['xtype'] = substr($dataArray['xflextemplate'][$mainKey]['xtype'],0,strlen($dataArray['xflextemplate'][$mainKey]['xtype'])-5);
 						break;
 						default:
-							if(strstr($key,$type . '_')){	
+							if(strstr($key,$type . '_')){
 								if($value){
 									$dataArray['xflextemplate'][$mainKey][$keyReduced] = $value;
 									unset($dataArray['xflextemplate'][$mainKey][$key]);
-								}	
-								else						
+								}
+								else
 									unset($dataArray['xflextemplate'][$mainKey][$key]);
-							}								
+							}
 						break;
 					}
 				}
@@ -175,12 +191,12 @@ class xftObject {
 			if(is_array($paletteArray)){
 				foreach($paletteArray as $key=>$item){
 					$tempPaletteArray[$key] = implode(',', $item);
-				}				
+				}
 			}
 			$xml = t3lib_div::array2xml($dataArrayIndexed);
 			$savedData['title'] = $dataArray['xftMain']['xftTitle'];
 			$savedData['description'] = $dataArray['xftMain']['xftDescription'];
-			$savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];			
+			$savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];
 			$savedData['enablegroup'] = $dataArray['xftMain']['xftEnableGroups'];
 			$savedData['crdate'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
 			$savedData['tstamp'] = mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
@@ -189,11 +205,11 @@ class xftObject {
 			$savedData['xml'] = $xml;
 			$savedData['version'] = $this->version;
 			$savedData['cruser_id'] = $BE_USER->user['uid'];
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_xflextemplate_template',$savedData);		
-			return $GLOBALS['TYPO3_DB']->sql_insert_id();	
+			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_xflextemplate_template',$savedData);
+			return $GLOBALS['TYPO3_DB']->sql_insert_id();
 		}
 	}
-	
+
 	function load($uid) {
 		//retrieve information on template
 		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_xflextemplate_template','uid='.$uid);
@@ -222,12 +238,12 @@ class xftObject {
 							$xftArray['xflextemplate'][$mainKey]['xtype'] = $value . 'Xtype';
 						break;
 						default:
-							if(!t3lib_div::inList('name,title,xtype,palette,palettes',$key)){								
+							if(!t3lib_div::inList('name,title,xtype,palette,palettes',$key)){
 								$xftArray['xflextemplate'][$mainKey][$type .'_' . $key] = $value;
 								unset($xftArray['xflextemplate'][$mainKey][$key]);
-							}					
+							}
 						break;
-						
+
 					}
 			}
 			$xftArray['xftMain']['xftTitle'] = $row['title'];
@@ -236,32 +252,127 @@ class xftObject {
 			$xftArray['xftMain']['xftHTML'] = $row['html'];
 			$xftArray['xftMain']['xftTyposcript'] = $row['typoscript'];
 			$xftArray['xftMain']['uid'] = $row['uid'];
-		}		
+		}
 		return $xftArray;
 	}
-	
+
 	function delete($uid){
 		$deleteArray['deleted'] = 1;
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_xflextemplate_template', 'uid='.$uid, $deleteArray);
 	}
-	
+
 	function hideToggle($uid){
 		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('hidden','tx_xflextemplate_template','uid='.$uid);
 		$row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$hidden = $row['hidden'];
-		if($row['hidden']){			
+		if($row['hidden']){
 			$updateArray['hidden'] = 0;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_xflextemplate_template', 'uid='.$uid, $updateArray);
 			return 'button_unhide|button_hide';
 		}
-		else{			
+		else{
 			$updateArray['hidden'] = 1;
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_xflextemplate_template', 'uid='.$uid, $updateArray);
 			return 'button_hide|button_unhide';
 		}
 	}
-	
-	
+
+	/**
+	 * Function export template into file
+	 *
+	 * @param int $uid id of template
+	 * @param array $emconf emconf of extension
+	 */
+	function export($uid,$emconf){
+		$this->tagMD5Ini=md5($this->tagIni); // creates MD5 of Tag Ini
+		//fetch template data from database
+		$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title, file, description, xml, typoscript, palettes, enablegroup, crdate, tstamp, cruser_id, deleted, hidden, html, version','tx_xflextemplate_template',' uid=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($uid,'tx_xflextemplate_template'));
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res)>0){ //if any is found
+			$row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			// filename is: xft name + xft major version number + _ + xft middle version number + xft minor version number + hour + minute + seconds + day + month + year
+			$filename=str_replace(' ','_',$row['title'].str_replace('.','_',$emconf['version']).date('hisdmY').'.xft');
+			header('Content-type: application/xft');
+			header('Content-Disposition: attachment; filename='.$filename);
+			$this->tagArray=serialize($row);
+			$tempArray[0]=base64_encode($this->tagIni);
+			$tempArray[1]=base64_encode($emconf['version']);
+			$tempArray[2]=base64_encode($this->tagMD5Ini);
+			$tempArray[3]=base64_encode(md5($this->tagArray));
+			$tempArray[4]=base64_encode($this->tagArray);
+			$content=implode('.',$tempArray);
+			echo $content;
+			exit();
+		}
+	}
+
+	function import(){
+		$tmpFilename = t3lib_div::upload_to_tempfile($_FILES['template']['tmp_name']);
+		$content = t3lib_div::getURL($tmpFilename);
+		$tempArray=explode('.',$content); //
+		if(is_array($tempArray)){
+			foreach($tempArray as $key=>$item)
+				$tempArray[$key]=base64_decode($item);
+			$tagIni=$tempArray[0];
+			$tagMD5Ini=$tempArray[2];
+			if ($tagMD5Ini==md5($tagIni)){ //checksum control
+				if($tagIni==$this->tagIni){ //initial string control
+					if($this->checkVersion($this->lastAllowedVersion,$tempArray[1])){ //check version control
+						if($tempArray[3]==md5($tempArray[4])){//checksum control of xft content
+							$templateRow = unserialize($tempArray[4]);
+							$resTemplateName = $GLOBALS['TYPO3_DB']->exec_SELECTquery('title','tx_xflextemplate_template','deleted = 0');
+							while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resTemplateName)){
+								$templateNameFromDB[] = $row['title'];
+							}
+							if (t3lib_div::inList(implode(',',$templateNameFromDB), $templateRow['title'])){
+								return -5;
+							}
+							else{
+								$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_xflextemplate_template',$templateRow);
+								return 1;
+							}
+						}
+						else // content is corrupted
+							t3lib_div::unlink_tempfile($tmpFilename);
+							return 0;
+					}
+					else{ // version is not correctly
+						t3lib_div::unlink_tempfile($tmpFilename);
+						return -1;
+					}
+				}
+				else{ // content is corrupted
+					t3lib_div::unlink_tempfile($tmpFilename);
+					return -2;
+				}
+			}
+			else{ // content is corrupted
+				t3lib_div::unlink_tempfile($tmpFilename);
+				return -3;
+			}
+		}
+		else{ // content is corrupted
+			t3lib_div::unlink_tempfile($tmpFilename);
+			return -4;
+		}
+	}
+
+	/**
+	 * This function chek is version is correct
+	 *
+	 * @param	string		$ver2check: version to verify to be minor
+	 * @param	string		$ver: version to verify to be major
+	 * @return	string		true if $ver2check is major than $ver, otherwise false
+	 */
+	function checkVersion($ver2check,$ver){
+		if ($this->debug)
+			debug($ver2check.'-->'.$ver);
+		if (t3lib_div::int_from_ver($ver2check) < t3lib_div::int_from_ver($ver))  {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * [Describe function...]
 	 *
@@ -308,10 +419,10 @@ class xftObject {
 		$this->loaded=true;
 		return $xftArray;
 	}
-	
-	
+
+
 }
-	
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.xftObject.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflextemplate/library/class.xftObject.php']);
 }

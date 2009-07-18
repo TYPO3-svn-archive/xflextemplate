@@ -57,14 +57,44 @@ require_once (PATH_site."/typo3conf/ext/xflextemplate/library/class.xmlTransform
  * @version 1.0.0
  */
 class tx_xflextemplate_pi1 extends tslib_pibase {
+
+	/**
+	 * @var string prefix for some place in code
+	 */
 	var $prefixId = 'tx_xflextemplate_pi1';		// Same as class name
+
+	/**
+	 * @var string realtive path to thi script
+	 */
 	var $scriptRelPath = 'pi1/class.tx_xtemplate_pi1.php';	// Path to this script relative to the extension dir.
+
+	/**
+	 * @var string extension key
+	 */
 	var $extKey = 'xflextemplate';	// The extension key.
+
+	/**
+	 * @var boolean define if extension uses cHash
+	 */
 	var $pi_checkCHash = TRUE;
+
 	//define stabdard variable used inside the code
+
+	/**
+	 * @var array configuration array
+	 */
 	var $conf=array();
-	var $photogalleryStdCols=4;  // standard value for photogallery columns if none is choosen
-	var $xflexData=array(); //Contain flexdata element from xflextemplate column
+
+	/**
+	 * @var array flexdata element for xflextemplate column
+	 */
+	var $xflexData=array();
+
+	/**
+	 * boolean variable for debugging system
+	 * @var boolean
+	 */
+	var $debug = 0;
 
 	/**
 	 * The main method of the PlugIn
@@ -74,10 +104,13 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 	 * @return	string		The	content that is displayed on the website
 	 */
 	function main($content,$conf)	{
-
+		//define standard global variables
 		$this->conf=$conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
+		if ($this->debug)
+			debug($this->conf,'configuration');
+
 		//call init function to extract and recollect data
 		$this->init();
 		//if not static plugin is loaded generate an error, in the static template is defined many standard variable, the plugin could generate error without it
@@ -86,11 +119,11 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 				$content=$this->putContent($this->template);
 			}
 			else{
-				$content=$this->pi_getLL('emptyTemplate','Template is not found or it\'s empty');
+				$content=$this->pi_getLL('emptyTemplate','Template is not found or it\'s empty, control your xft template for HTML tabs or typoscript');
 			}
 		}
 		else
-			$content=$this->pi_getLL('noStaticTyposcriptLoaded','no static template is loaded!');
+			$content=$this->pi_getLL('noStaticTyposcriptLoaded','no static template is loaded!, insert inside your typoscript template the xflextemplate template');
 		return $content;
 	}
 
@@ -195,9 +228,13 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 			}
 			$confSingle['10.'] = t3lib_div::array_merge_recursive_overrule($confType, $conf[$key . '.']);
 			$confSingle['10'] = strtoupper($conf[$key]);
+			if ($this->debug)
+				debug($confSingle,$key);
 			if($conf[$key]!='NONE')
 				$this->markerArray['###' . strtoupper($key) . '###']=$this->cObj->cObjGet($confSingle);
-					
+			if ($this->debug)
+				debug($this->cObj->cObjGet($confSingle),$key);
+
 		}
 		$this->markerArray['###CONTENTUID###']=$this->cObj->data['uid'];
 		//merge all marker in the output content object
@@ -207,7 +244,13 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		return $content;
 	}
 
-	
+	/**
+	 * Function for substitute recursively some string inside array
+	 * @param string $search string to search
+	 * @param string $replace replacement string
+	 * @param array $array array to navigate
+	 * @return none
+	 */
 	function substiteValueInArrayRecursive($search,$replace,&$array){
 		foreach($array as $key=>$item){
 			if (!is_array($item)){

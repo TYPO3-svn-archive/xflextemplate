@@ -82,18 +82,22 @@ class tx_xflextemplate_handletemplate {
 			foreach($pObj->cachedTSconfig as $key => $item){
 				$ContentElementArray = $item['_THIS_ROW'];
 			}
+			//load language file
+			$language = $LANG;
+			$language->includeLLFile('EXT:xflextemplate/mod1/locallang.xml');
+
 			$res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('title,uid,enablegroup','tx_xflextemplate_template','deleted=0 AND hidden=0');
 			$this->globalConf=unserialize($GLOBALS['TYPO3_CONF_VARS']["EXT"]["extConf"]['xflextemplate']);
 			//if no template is chosen 'select template' label will be shown
 			if(!$ContentElementArray['xtemplate']){
-				$params['items'][]=array('Scegliere un template','notemplate');
+				$params['items'][]=array($language->getLL('chooseTemplate'),'notemplate');
 			}
 			while($row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 
 				if ($this->checkLeastInList($BE_USER->groupList,$row['enablegroup']) || $BE_USER->user['admin'])
 					$params['items'][]=Array($row['title'],$row['title']);
 				else
-					if(!$row['enablegroup'] && $this->globalConf['emptyGroupnoControl'])
+					if(!$this->globalConf['emptyGroupnoControl'])
 						$params['items'][]=Array($row['title'],$row['title']);
 			}
 	}

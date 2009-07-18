@@ -6,22 +6,12 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="noStaticTyposcriptLoaded">Nessun template statico è  stato caricato!</label>
-			<label index="pi1_title">Nessun template statico è  stato caricato!</label>
-			<label index="pi1_plus_wiz_description">Nessun template statico è  stato caricato!</label>
-			<label index="pagebrowse.next">Next &gt;</label>
-			<label index="pagebrowse.last">Last &gt;&gt;</label>
-			<label index="pagebrowse.previous">&lt; Previous</label>
-			<label index="pagebrowse.first">&lt;&lt; First</label>
+			<label index="emptyTemplate">Template is not found or it\'s empty, control your xft template for HTML tabs or typoscript.</label>
+			<label index="noStaticTyposcriptLoaded">Nessun template statico è  stato caricato! Go to typoscript of your page and add xflextemplate to static template.</label>
 		</languageKey>
 		<languageKey index="it" type="array">
-			<label index="noStaticTyposcriptLoaded">Nessun template statico è  stato caricato!</label>
-			<label index="pi1_title">Nessun template statico è  stato caricato!</label>
-			<label index="pi1_plus_wiz_description">Nessun template statico è  stato caricato!</label>
-			<label index="pagebrowse.next">Successiva &gt;</label>
-			<label index="pagebrowse.last">Ultima &gt;&gt;</label>
-			<label index="pagebrowse.previous">&lt; Precedente</label>
-			<label index="pagebrowse.first">&lt;&lt; Prima</label>
+			<label index="emptyTemplate">Non è stato trovato alcun template oppure è vuoto, controllate nel vostro xft template le schede HTML o typoscript.</label>
+			<label index="noStaticTyposcriptLoaded">Nessun template statico è  stato caricato! Andate nel typoscript della pagina ed aggiungete xflextemplate ai template statici.</label>
 		</languageKey>
 	</data>
 </T3locallang>
