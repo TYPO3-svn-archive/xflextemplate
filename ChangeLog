@@ -1,4 +1,10 @@
 (add new changes on top of this file)
+-------------------------------------------Release 2.0.8--------------------------
+2009-08-26 Federico Bernardin  <federico@bernardin.it>
+Add start and stop field in Backend
+Add new feature in extension configuration
+Add Export and import feature
+
 
 -------------------------------------------Release 2.0.0--------------------------
 2009-04-22 Federico Bernardin  <federico@bernardin.it>
