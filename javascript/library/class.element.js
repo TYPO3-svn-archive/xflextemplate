@@ -23,7 +23,7 @@
 
 /**
  * element object class for managing single object (content element)
- * 
+ *
  * @author Federico Bernardin <federico@bernardin.it>
  * @version 2.0
  * @package TYPO3
@@ -36,7 +36,7 @@ element = function(initializeParameters){
 	var type;
 	var xtype;
 	var renderType;
-	var palettes; 
+	var palettes;
 	this.configuration = {
 		portletClass: 'portlet',
 		portletHeaderClass: 'portlet-header',
@@ -56,7 +56,7 @@ element = function(initializeParameters){
 		create: 1,
 		open: 1
 	};
-	
+
 	//merge data from caller with private one
 	$.extend(this.configuration, initializeParameters);
  }
@@ -74,7 +74,7 @@ element = function(initializeParameters){
 			palette = Array();
 			//create palette array
 			$(' .' + oThis.configuration.titleClass).each(function(){
-				if ($(this).val()) 
+				if ($(this).val())
 					palette.push($(this).val() + '_' + id);
 			});
 			//palette is built join single item with pipe
@@ -94,9 +94,9 @@ element = function(initializeParameters){
         this.addSortProperties();
         this.addDeleteHandler();
 	},
-		
+
 	/**
-	 * This function add Title update event to system 
+	 * This function add Title update event to system
 	 * When user change focus from title title input change all palette from other element
 	 * When user press key on title input, title of element change
 	 */
@@ -105,12 +105,12 @@ element = function(initializeParameters){
 		$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .' + oThis.configuration.titleClass).bind('keyup',function(){
 			dataArray = $(this).attr('id').split('_');
 			$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .title').html(htmlentities($(this).val()));
-		});	
+		});
 		$('#' + oThis.configuration.elementPreId + '_'+oThis.id+'.' + oThis.configuration.portletClass + ' .' + oThis.configuration.titleClass).bind('blur',function(){
 			oThis.changeAllPaletteByChangerID($(this).val());
-		});	
+		});
 	},
-	
+
 	/**
 	 * This function binds change on type select of element
 	 * When user changes type of element, application calls (via ajax) the modificatio of subelement
@@ -128,7 +128,7 @@ element = function(initializeParameters){
 			$('#' + oThis.configuration.subElementPreId + '_' + oThis.id).html(ret);
 		});
 	},
-	
+
 	/**
 	 * This function changes title in palette of all other element with title of this element
 	 * @param string title of element
@@ -154,7 +154,7 @@ element = function(initializeParameters){
 			}
 		})
 	},
-	
+
 	/**
 	 * This function removes title from all other palettes
 	 */
@@ -171,7 +171,7 @@ element = function(initializeParameters){
 				this.selectedIndex = selectedIndex;
 		});
 	},
-	
+
 	/**
 	 * This function add sorting feature to the element
 	 */
@@ -185,7 +185,7 @@ element = function(initializeParameters){
 			className = 'ui-icon-plusthick';
 			$('#' + oThis.configuration.elementPreId + '_' + oThis.id + '.portlet').find('.portlet-content').toggle();
 		}
-		
+
 		//add sort draggable function
 		$('#' + oThis.configuration.elementPreId + '_' + oThis.id + '.portlet').addClass('ui-widget ui-widget-content ui-helper-clearfix ui-corner-all')
 		.find('.portlet-header')
@@ -193,7 +193,7 @@ element = function(initializeParameters){
 			.prepend('<span class="ui-icon ' + className + '"></span>')
 			.end()
 		.find('.portlet-content');
-	
+
 		//enable open and close event
 		$('#' + oThis.configuration.elementPreId + '_' + oThis.id + ' .' + oThis.configuration.portletHeaderClass + ' .' + oThis.configuration.uiIconClass).click(function() {
 			$(this).toggleClass('ui-icon-minusthick');
@@ -203,12 +203,12 @@ element = function(initializeParameters){
 			elementId = dataArray[1];
 		});
 	},
-	
+
 	/**
 	 * This function adds delete event, opens dialog for confirmation of deleting element
 	 */
 	addDeleteHandler: function(){
-		oThis = this;
+		var oThis = this;
 		$('#' + oThis.configuration.elementPreId + '_'+ this.id +' .portlet-header .ui-icon-delete').bind('click',function() {
 			//open dialog
 			$('#dialog').dialog({

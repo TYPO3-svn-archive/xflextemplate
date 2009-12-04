@@ -25,7 +25,7 @@
 /**
  * element template class
  * Manage single element with all features
- * 
+ *
  * @author Federico Bernardin <federico@bernardin.it>
  * @version 2.0
  * @package TYPO3
@@ -40,55 +40,55 @@ require_once($BACK_PATH . 'sysext/cms/tslib/class.tslib_content.php');
 require_once('../configuration/elementConfiguration.php');
 
 class elementTemplate {
-	
+
 	/**
 	 * @var object cObject (tslib_content.php) for using template functions
 	 */
 	var $cObj;
-	
+
 	/**
 	 * @var string template string
 	 */
 	var $template;
-	
+
 	/**
 	 * This function defines template and content object
 	 * @param string name of file
-	 * 
+	 *
 	 * @return  void
 	 */
 	function init($fileName=''){
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 		$this->template = ($fileName) ? file_get_contents($fileName) : '';
 	}
-	
+
 	/**
 	 * This function retrieves subelement string
-	 * 
+	 *
 	 * @param string subelement marker string
 	 * @param string filename
-	 * 
+	 *
 	 * @return string subelement template string
 	 */
 	function getSubElementObject($elementName,$fileName=''){
 		if(!$this->template)
 			$this->init($fileName);
-		return ($this->template && $elementName)?$this->cObj->getSubpart($this->template,strtoupper($elementName)):'errore';		
+		return ($this->template && $elementName)?$this->cObj->getSubpart($this->template,strtoupper($elementName)):'errore';
 	}
-	
+
 	/**
 	 * This function creates the subelement and return the subelement part
-	 * 
+	 *
 	 * @param string name of subelement type
 	 * @param array configuration array
-	 * 
+	 *
 	 * @return string subelement code
 	 */
-	function setSubElementType($elementName = 'inputType',$elementArray = array()){		
+	function setSubElementType($elementName = 'inputType',$elementArray = array()){
 		global $LANG;
 		//retrieves subelement template
 		$content = $this->getSubElementObject(strtoupper($elementName) . '_SUBELEMENT');
-		
+
 		//retrieve the type of element for prepending element array value
 		$preLabelElementArray = substr($elementName,0,strlen($elementName)-4);
 		$markerArray = array();
@@ -111,11 +111,11 @@ class elementTemplate {
 				else{
 					$markerArray['fileselected'] = '';
 					$markerArray['databaseselected'] = '';
-				} 
+				}
 				$markerArray[$item . 'selected'] = ($elementArray[$preLabelElementArray . '_' . $item] == 'file') ? 'checked' : '';
 			}
 		}
-		
+
 		//retrieves value from configuration array
 		$markerValueArray = $this->getSubElementValueArray($elementName, $elementArray);
 		//merge array
@@ -123,16 +123,16 @@ class elementTemplate {
 		$markerArray = t3lib_div::array_merge_recursive_overrule($markerValueArray,$markerArray);
 		$content = $this->cObj->substituteMarkerArray($content,$markerArray,'###|###',1);
 		//removes markers not used
-		$content = ereg_replace('###[a-zA-Z0-9]*###','',$content);
+		$content = preg_replace('/###[a-zA-Z0-9]*###/','',$content);
 		return $content;
 	}
-	
+
 	/**
 	 * This function defines the element object (this function calls setSubElementType)
-	 * 
-	 * @param string subelememnt type 
+	 *
+	 * @param string subelememnt type
 	 * @param array array of subelement
-	 * 
+	 *
 	 * @return string element code
 	 * @see setSubElemntType
 	 */
@@ -145,7 +145,7 @@ class elementTemplate {
 				$markerArray[$item] = $LANG->sL('LLL:EXT:xflextemplate/language/locallang_template.xml:' . $item);
 			}
 		}
-		
+
 		//setting type select
 		$optionType = array();
 		if (count($GLOBALS['configuration']['subElement']['type'])){
@@ -155,7 +155,7 @@ class elementTemplate {
 			}
 		}
 		$markerArray['TYPESELECT'] = implode(chr(10),$optionType);
-		
+
 		//setting rendering type select
 		$optionType = array();
 		if (count($GLOBALS['configuration']['subElement']['xtype'])){
@@ -165,46 +165,46 @@ class elementTemplate {
 			}
 		}
 		$markerArray['XTYPESELECT'] = implode(chr(10),$optionType);
-		
+
 		//setting palettes select
 		$optionType = array();
 		$optionType[] = '<option value="none">' . $LANG->sL('LLL:EXT:xflextemplate/language/locallang_template.xml:palettenone') . '</option>';
 		if (is_array($elementArray['paletteArray']) && count($elementArray['paletteArray'])){
-			foreach($elementArray['paletteArray'] as $item){				
+			foreach($elementArray['paletteArray'] as $item){
 				$paletteSubItem = explode('_',$item);
 				$selected = ($elementArray['palette'] == 'element_' . $paletteSubItem[1]) ? ' selected ' : '';
 				if($paletteSubItem[0] != $elementArray['title']){
 					$optionType[] = '<option value="element_' . $paletteSubItem[1] . '" ' . $selected . '>' . $paletteSubItem[0] . '</option>';
 				}
 			}
-		}		
+		}
 		$markerArray['PALETTESELECT'] = implode(chr(10),$optionType);
-		
+
 		//setting delete icon
 		$markerArray['DELETEICON'] = '<img ' . t3lib_iconWorks::skinImg($BACK_PATH,'gfx/garbage.gif','') . '/>';
-		
+
 		//setting titlebar
 		$markerArray['TITLEVALUE'] = htmlentities($elementArray['title']);
-		
+
 		//setting subelement
 		$markerArray['SUBELEMENT'] = $this->setSubElementType($elementName,$elementArray);
-		
+
 		//setting and merge markerarray and elementarray
 		$markerArray = t3lib_div::array_merge_recursive_overrule($elementArray,$markerArray);
-		
-		
+
+
 		$content = $this->cObj->substituteMarkerArray($content,$markerArray,'###|###',1);
-		$content = ereg_replace('###[a-zA-Z0-9]*###','',$content);
-		
+		$content = preg_replace('/###[a-zA-Z0-9]*###/','',$content);
+
 		//return element
 		return $content;
 	}
-	
+
 	/**
 	 * This function return an array with value for every field extract from element array
 	 * @param string name of element type
 	 * @param array array of element value
-	 * 
+	 *
 	 * @return array markerArray with values
 	 */
 	function getSubElementValueArray($elementName,$elementArray = array()){
@@ -216,7 +216,7 @@ class elementTemplate {
 		}
 		return $markerArray;
 	}
-	
+
 }
 
 
