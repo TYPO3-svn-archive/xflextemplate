@@ -95,6 +95,12 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 	 * @var boolean
 	 */
 	var $debug = 0;
+	
+	/**
+	 * Configuration array from extension Manager
+	 * @var array
+	 */
+	var $mgmConfiguration;
 
 	/**
 	 * The main method of the PlugIn
@@ -108,6 +114,12 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
 		$this->conf=$conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
+		
+		//extract configuration
+        $this->mgmConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['xflextemplate']);
+        if (isset($this->mgmConfiguration['debug']))
+          $this->debug = $this->mgmConfiguration['debug'];
+          
 		if ($this->debug)
 			debug($this->conf,'configuration');
 

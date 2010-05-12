@@ -37,11 +37,13 @@ if ($xflextemplateConfiguration['xflextemplateIsStandardContentElement']){
 include_once(t3lib_extMgm::extPath('xflextemplate').'library/class.tx_xflextemplate_handletemplate.php');
 include_once(t3lib_extMgm::extPath('xflextemplate').'hooks/class.tx_xflextemplate_tceforms.php');
 include_once(t3lib_extMgm::extPath('xflextemplate').'hooks/class.tx_xflextemplate_tcemain.php');
+include_once(t3lib_extMgm::extPath('xflextemplate').'hooks/class.tx_xflextemplate_pi1_newContentElementWizardItemsHook.php');
 
 if (TYPO3_MODE=='BE')	{
   t3lib_extMgm::addModule('tools','txxflextemplateM1','',t3lib_extMgm::extPath($_EXTKEY).'mod1/');
   //include wizard for displaying xft as common element
   $TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_xflextemplate_pi1_wizicon"] = t3lib_extMgm::extPath($_EXTKEY)."pi1/class.tx_xflextemplate_pi1_wizicon.php";
+ // $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_xflextemplate_pi1_newContentElementWizardItemsHook'] = t3lib_extMgm::extPath($_EXTKEY) . 'hooks/class.tx_xflextemplate_pi1_newContentElementWizardItemsHook.php';
 }
 
 
