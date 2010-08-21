@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <description>pippo</description>
+        <type></type>
+        <csh_table></csh_table>
+        <labelContext type="array">
+        </labelContext>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="helpCode_1">This field is used to define the template name, it will be visible in template list, inside the backend field template. It's very important to use a unique name for template.</label>
+            <label index="helpCode_2">In this field you can choose what groups can access this template. If you leave empty, all backend groups can access this template.</label>
+      <label index="helpCode_3">In this field you can insert a description to explain how does template work. This text is visible in template list of XFlexTemplate module, not in the template page item.</label>
+            <label index="helpCode_4"><![CDATA[In this field you can insert the typoscript to use in your template.<br />Each template Element can be setted in this field, you can define back-end localized label for each fields too.<br />
+      Example: Suppose you have just created an element named <i>title</i> and you want define the english label <i>block title</i> and italian translation as <i>Titolo del template</i> you have to write:<br/>
+      language.title.beLabel.en = block title<br/>
+      language.title.beLabel.it = Titolo del template]]></label>
+    <label index="helpCode_5"><![CDATA[In this field you can insert the typoscript to use in your template.<br />Each template Element can be setted in this field, you can define back-end localized label for each fields too.<br />
+      Example: Suppose you have just created an element named <i>title</i> and you want define the english label <i>block title</i> and italian translation as <i>Titolo del template</i> you have to write:<br/>
+      language.title.beLabel.en = block title<br/>
+      language.title.beLabel.it = Titolo del template]]></label>
+        <label index="helpCode_20">This field contains code of field in TCE Forms. This field have to be alphanumeric, without space and it mustn't a name of tt_content table.</label>
+        <label index="helpCode_21"><![CDATA[This select contains the config type data of the TCE Form field.<br />If you change this value also the fields below change.<br /><br /><b>input</b>: this is the standard input field
+    <br /><b>Text</b>: this is the standard textarea field, you can use RTE leaving empty the defaultExtras. If you write anything in the defaultExtras field, RTE will not be shown.]]></label>
+        <label index="helpCode_22"><![CDATA[This field defines the field in which these one will be shown. Palettes is the secondary fields and these type of fields are visible is you checked
+    <i>show secondary options</i> (for a better understanding of palettes see API Core documentations of TYPO3).]]></label>
+        <label index="helpCode_23"><![CDATA[Render Type is the default method to show this element. Each field will be rendered by tslib_content method, so this field will be rendered with IMAGE or TEXT or MULTIMEDIA (the render type you have choosen) unless you have changed the type by typoscript template form.]]></label>
+
+        <label index="helpCode_30">Maximum number of characters the user will be able to insert into the field.</label>
+        <label index="helpCode_31">The size attribute of the input element (the length of input box in characters).</label>
+        <label index="helpCode_32">Default value for the input box, if it's empty the value will be this.</label>
+        <label index="helpCode_33">Separated comma values of allowed words to be inserted in this input box.</label>
+        <label index="helpCode_34"><![CDATA[Configuration of field evaluation.<br />The eval-functions will be executed in the list-order.<br />The possible values are:<br />required, trim, date, datetime, time, timesec, year, int, upper, lower, alpha, num, alphanum, alphanum_x, nospace, md5, is_in, password, double2, unique, uniqueInPid.<br />For a specific description of each value and how does it work,  you can see TYPO3 Core API.]]></label>
+        <label index="helpCode_35"></label>
+        <label index="helpCode_36"></label>
+        <label index="helpCode_37"></label>
+
+
+        <label index="helpCode_40"></label>
+        <label index="helpCode_41"></label>
+        <label index="helpCode_42"></label>
+        <label index="helpCode_43"></label>
+        <label index="helpCode_44"></label>
+
+
+        <label index="helpCode_50"></label>
+        <label index="helpCode_51"></label>
+        <label index="helpCode_52"></label>
+        <label index="helpCode_53"></label>
+
+
+        <label index="helpCode_60"></label>
+        <label index="helpCode_61"></label>
+        <label index="helpCode_62"></label>
+
+
+        <label index="helpCode_70"></label>
+        <label index="helpCode_71"></label>
+        <label index="helpCode_72"></label>
+        <label index="helpCode_73"></label>
+        <label index="helpCode_74"></label>
+        <label index="helpCode_75"></label>
+        <label index="helpCode_76"></label>
+        <label index="helpCode_77"></label>
+        <label index="helpCode_78"></label>
+        <label index="helpCode_79"></label>
+        <label index="helpCode_80"></label>
+            </languageKey>
+    </data>
+</T3locallang>

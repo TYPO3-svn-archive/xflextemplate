@@ -41,6 +41,7 @@ require_once (PATH_t3lib."class.t3lib_extmgm.php");
 require_once('../library/class.elementTemplate.php');
 require_once ('../library/class.listTemplate.php');
 require_once (PATH_site."/typo3conf/ext/xflextemplate/class.tx_xflextemplate_importexport.php");
+require_once('../configuration/elementConfiguration.php');
 require_once ('../library/class.xftObject.php');
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 
@@ -105,6 +106,30 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
      */
     var $errorList;
 
+    private $helpCode = array(
+        '1' => 'template name',
+        '2' => 'Group List Enable templates',
+        '3' => 'description template',
+        '4' => 'Typoscript template',
+        '5' => 'HTML template',
+        '6' => 'Element Template',
+        '20' => 'Subelement Title',
+        '21' => 'Subelement Type',
+        '22' => 'Subelement Palettes',
+        '23' => 'Subelement Render Type',
+    // INPUT TYPE
+        '30' => 'Max chars number',
+        '31' => 'Field length',
+        '32' => 'Default value',
+        '33' => 'Lista allowed values',
+        '34' => 'dataType evaluation',
+        '35' => 'Checkbox',
+        '36' => 'Max value',
+        '37' => 'Min value',
+    );
+
+    private $helperTranslation = array();
+
 
   /**
    * Initialization of XFT engine
@@ -124,6 +149,51 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
     $this->xftObject->debug = $this->debug;
     $this->elementArray = array();
     $this->errorList = array();
+    $this->helperTranslation = $this->setHelperArray();
+  }
+
+  private function setHelperArray(){
+      global $LANG;
+      $translateHelperArray = array();
+      foreach($GLOBALS['configuration']['subElementHelpCode'] as $value){
+          foreach($value as $key => $item){
+            $translateHelperArray[$item] = str_replace("\t",'',str_replace("\n",'',$this->language->sL('LLL:EXT:xflextemplate/mod1/help_locallang.xml:helpCode_' . $item)));
+          }
+      }
+      return $translateHelperArray;
+  }
+
+  private function setIcon($icon, $options = array()) {
+      $baseArray = array();
+      $class = '';
+      if (isset($options['class'])){
+          $class=" " . $options['class'];
+      }
+      switch ($icon) {
+          case 'help':
+              $baseArray['title'] = $this->language->getLL('helpTip');
+              $baseArray['class'] = 'pointer-icon xftHelp' . $class;
+              $baseArray['style'] = 'margin: 10px 10px 10px 5px;';
+              $iconSprite = 'actions-system-help-open';
+              break;
+          case 'newElement':
+              $baseArray['title'] = $this->language->getLL('xftNewElementTitle');
+              $baseArray['class'] = 'pointer-icon xftNewElement';
+              $baseArray['style'] = 'margin: 0 5px';
+              $iconSprite = 'actions-document-new';
+              break;
+          case 'save':
+              $baseArray['title'] = $this->language->getLL('xftSaveDokTitle');
+              $baseArray['class'] = 'pointer-icon xftSaveDok';
+              $iconSprite = 'actions-document-save';
+              break;
+          case 'close':
+              $baseArray['title'] = $this->language->getLL('xftCloseDokTitle');
+              $baseArray['class'] = 'tableOperationIcon pointer-icon xftCloseDok';
+              $iconSprite = 'actions-document-close';
+              break;
+      }
+      return t3lib_iconWorks::getSpriteIcon($iconSprite ,t3lib_div::array_merge($options,$baseArray));
   }
 
   /**
@@ -133,7 +203,12 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    * @return	void
    */
   function main()	{
-    global $BE_USER;
+    global $BE_USER,$BACK_PATH;
+    $error = 1;
+    $this->setPageTemplate();
+
+           /* $this->doc->getPageRenderer()->loadExtJS($css = TRUE, $theme = TRUE);
+            $this->doc->getPageRenderer()->enableExtJsDebug();*/
     // Access check!
     // The page will show only if there is a valid page and if this page may be viewed by the user
     $this->pageinfo = t3lib_BEfunc::readPageAccess($this->id,$this->perms_clause);
@@ -220,21 +295,22 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 
       }
 
-
       // PAGE CREATION
-      $this->doc = t3lib_div::makeInstance("template");
+     // $this->doc = t3lib_div::makeInstance("template");
       $this->doc->backPath = $this->backPath;
       $this->doc->form='<form onsubmit="return false" id="xftForm" action="index.php" method="POST">';
       $this->doc->docType = 'xhtml_trans';
       //stylesheets and js file
       $this->doc->JScode = '
         <link  rel="stylesheet" type="text/css" href="../res/css/ui.tabs.css" />
+        <link  rel="stylesheet" type="text/css" href="../res/css/jquery.gritter.css" />
         <link  rel="stylesheet" type="text/css" href="../res/css/template.css" />
         <link href="' . $this->doc->backPath . 'sysext/t3editor/css/t3editor.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript">
           PATH_t3e = "' . $this->doc->backPath . 'sysext/t3editor/";
           PATH_xft = "' . $this->doc->backPath . '../typo3conf/ext/xflextemplate/";
           URL_xft = "' . substr(t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR'),0,strpos(t3lib_div::getIndpEnv('TYPO3_REQUEST_DIR'),t3lib_div::getThisUrl())) . t3lib_div::getThisUrl() . '";
+          helperTranslation = ' . json_encode($this->helperTranslation) . ';
         </script>
         <script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js"></script>
         <script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js"></script>
@@ -256,7 +332,9 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
         $this->getHTMLTab();
         $this->getDescriptionTab();
         $this->getElementTab();
-        $content = $this->makeTabs();
+
+
+        $content .= $this->makeTabs();
 
         //This jscode will be put only for edit or creation element no for listing display
         $this->doc->JScode .= '
@@ -264,6 +342,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
             <script type="text/javascript" src="../javascript/jquery/jquery.selectboxes.js"></script>
             <script type="text/javascript" src="../javascript/jquery/jquery.form.js"></script>
             <script type="text/javascript" src="../javascript/jquery/jquery.blockUI.js"></script>
+            <script type="text/javascript" src="../javascript/jquery/jquery.gritter.min.js"></script>
             <script type="text/javascript" src="../javascript/library/class.general.js"></script>
             <script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
             <script type="text/javascript" src="../javascript/library/class.element.js"></script>
@@ -275,15 +354,21 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 
         if (t3lib_div::_GP('action') == 'import'){
           $this->doc->form='<form id="xftForm" action="index.php" method="POST" enctype="multipart/form-data">';
+
+        //This jscode will be put only for edit or creation element no for listing display
+        $this->doc->JScode .= '
+            <script type="text/javascript" src="../javascript/import.js"></script>';
           $content = $this->makeImportForm();
         }
         else{
           if (t3lib_div::_GP('action') == 'importExecuted'){
             $errorDescription = '';
+            $errorHeader = '';
             $error = $this->xftObject->import();
             if ($this->debug)
               debug($error,'Import Error');
             if($error != 1){
+                $errorHeader = $this->language->getLL("errorHeader");
               switch ($error){
                 case 0:
                   $errorDescription = $this->language->getLL("corruptedContent");
@@ -306,14 +391,23 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
               }
             }
           }
+
+
           $templateListObject = t3lib_div::makeInstance('listTemplate');
           $templateListObject->init($this->language, $this->templateFile, $this->globalConf);
 
+
+          $content .=$this->doc->spacer(5);
+
           //retrieve content string for listing template
-          $content = $templateListObject->getTemplateList();
+          $content .= $templateListObject->getTemplateList();
 
-          $content = str_replace( '###ERRORIMPORTDESCRIPTION###', $errorDescription, $content);
+          if($error != 1){
+            $message = t3lib_div::makeInstance('t3lib_FlashMessage', $errorDescription,$errorHeader, // the header is optional
+t3lib_FlashMessage::ERROR);
 
+            $content = str_replace( '###ERRORIMPORTDESCRIPTION###', $message->render(), $content);
+          }
           //This jscode will be put only for listing display and no for edit or creation element
           $this->doc->JScode .= '
               <script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
@@ -324,17 +418,79 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
       }
 
 
+        $content = $this->doc->header($this->language->getLL("title")) . $content;
+        $content = preg_replace('/###[A-Z0-9]*###/i', '', $content);
+
+    // Setting up the buttons and markers for docheader
+        $docHeaderButtons = $this->getButtons();
+        $markers = array(
+            'CSH' =>  $docHeaderButtons['csh'],
+            'FUNC_MENU' => '&nbsp;',
+            'CONTENT' => $content
+        );
+
+  /*      echo('OK');
+        print_r($markers);
+exit();*/
+            // Build the <body> for the module
+        $this->content = $this->doc->startPage($this->language->getLL("title"));
+
+     // $content.=$this->doc->header($this->language->getLL("title"));
+      //line between title and page content
+      //$content.=$this->doc->divider(15);
+       //$this->content.=$this->doc->spacer(5);
+        $this->content.= $this->doc->moduleBody($this->pageinfo,  $docHeaderButtons, $markers);
+        $this->content.= $this->doc->endPage();
+        $this->content= $this->doc->insertStylesAndJS($this->content);
+        //echo($this->doc->startPage('Extension Manager'));
+       /* exit();*/
       //FINALIZE PAGE GENERATION
-      $this->content.=$this->doc->startPage($this->language->getLL("title"));
+     /* $this->content.=$this->doc->startPage($this->language->getLL("title"));
       //space before title
       $this->content.=$this->doc->spacer(10);
       //title
       $this->content.=$this->doc->header($this->language->getLL("title"));
       //line between title and page content
-      $this->content.=$this->doc->divider(15);
+      $this->content.=$this->doc->divider(15);*/
 
-      $this->content.= $content;
+      //$this->content.= $content;
     }
+  }
+
+/**
+     * Create the panel of buttons for submitting the form or otherwise perform operations.
+     *
+     * @return  array   all available buttons as an assoc. array
+     */
+    protected function getButtons() {
+
+        $buttons = array(
+            'csh' => '',
+            'back' => '',
+            'shortcut' => ''
+        );
+            // CSH
+        //$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_func', '', $GLOBALS['BACK_PATH']);
+
+            // Shortcut
+        if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
+            $buttons['shortcut'] = $this->doc->makeShortcutIcon('CMD','function',$this->MCONF['name']);
+        }
+            // Back
+        if(($this->CMD['showExt'] && (!$this->CMD['standAlone'] && !t3lib_div::_GP('standAlone'))) || ($this->CMD['importExt'] || $this->CMD['uploadExt'] && (!$this->CMD['standAlone'])) || $this->CMD['importExtInfo']) {
+            $buttons['back'] = '<a href="index.php" class="typo3-goBack" title="' . $GLOBALS['LANG']->getLL('go_back') . '">' .
+                t3lib_iconWorks::getSpriteIcon('actions-view-go-back') .
+            '</a>';
+        }
+
+        return $buttons;
+    }
+
+  private function setPageTemplate() {
+            // Initialize Document Template object:
+        $this->doc = t3lib_div::makeInstance('template');
+        $this->doc->backPath = $this->backPath;
+        $this->doc->setModuleTemplate('templates/em_index.html');
   }
 
   /**
@@ -342,19 +498,29 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    * @return void
    */
   function getGeneralTab(){
-    $this->elementArray['closeicons'] = '<img class="pointer-icon xftCloseDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/closedok.gif','') . ' title="' . $this->language->getLL('xftCloseDokTitle') . '"/>';
-    $this->elementArray['generalicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+    $this->elementArray['closeicons'] = $this->setIcon('close');
+    $this->elementArray['generalicons'] = $this->setIcon('save');
     $this->elementArray['xfttitle'] = $this->language->getLL('xftTitle');
     //$enableGroupsArray = explode(',',$this->mainArray['xftEnableGroups']);
     $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid, title','be_groups','deleted=0 AND hide_in_lists=0 and hidden=0','','title');
+    $beGroupsNumber = 0;
     while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
       $checked = (t3lib_div::inList($this->mainArray['xftEnableGroups'],$row['uid'])) ? 'selected' : '' ;
       $options.='<option value="' . $row['uid'] . '" ' . $checked . '>' . $row['title'] . '</option>' . chr(10) . chr(13);
+      $beGroupsNumber++;
     }
-    $select = '<label for="xftTitle">' . $this->language->getLL('xftEnableGroups') . '</label><select id="xftEnableGroupsSelect" multiple size="10">' . $options . '</select><input type="hidden" id="xftEnableGroups"  name="xftMain[xftEnableGroups]" value="" />';
+    if ($beGroupsNumber) {
+        $select = '<tr><td colspan="2"><hr class="xftRowDivider" /></td></tr><tr><td class="xftHelpColumn">' . $this->setIcon('help', array('helperCode' => '2')) . '</td><td class="xftStandardColumn"><label for="xftTitle">' .
+                    $this->language->getLL('xftEnableGroups') . '</label><select id="xftEnableGroupsSelect" multiple size="3">' . $options .
+                    '</select><input type="hidden" id="xftEnableGroups"  name="xftMain[xftEnableGroups]" value="" /></td></tr>';
+    } else {
+        $select = '<tr><td colspan="2"><input type="hidden" id="xftEnableGroups"  name="xftMain[xftEnableGroups]" value="" /></td></tr>';
+    }
 
-    $this->elementArray['generalbody'] = '<div class="tab-inner-container" ><dl><dd><label for="xftTitle">' . $this->language->getLL('xftTitle') . '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" />
-    </dd><dd>' . $select . '</dd></dl></div>';
+    $this->elementArray['generalbody'] = '<div class="tab-inner-container" ><table  border="0" cellspacing="0" cellpadding="0" width="100%"><tr>'.
+                                    '<td class="xftHelpColumn">' . $this->setIcon('help', array('helperCode' => '1')) . '</td><td class="xftStandardColumn"><label for="xftTitle">' .
+                                    $this->language->getLL('xftTitle') .     '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" /></td></tr>' .
+                                    $select . '</table></div>';
   }
 
   /**
@@ -363,9 +529,13 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    * @return void
    */
   function getTyposcriptTab(){
-    $this->elementArray['typoscripticons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+    $this->elementArray['typoscripticons'] = $this->setIcon('save');
     $this->elementArray['xftTyposcriptTitle'] = $this->language->getLL('xftTyposcriptTitle');
-    $this->elementArray['typoscriptbody'] = '<div class="tab-inner-container" ><textarea class="fixed-font enable-tab t3editor" id="xftTyposcriptEditor" name="xftMain[xftTyposcript]" >' . $this->mainArray['xftTyposcript'] . '</textarea></div>';
+    $this->elementArray['typoscriptbody'] = '<div class="tab-inner-container" ><table  border="0" cellspacing="0" cellpadding="0" width="100%"><tr>'.
+                                    '<td class="xftHelpColumn">' . $this->setIcon('help', array('helperCode' => '4')) .
+                                    '</td><td class="xftStandardColumn"><label for="xftDescription">' . $this->language->getLL('xftTyposcriptText') . '</label>' .
+                                    '<div class="xftEditorContainer"><textarea class="fixed-font enable-tab t3editor" id="xftTyposcriptEditor" name="xftMain[xftTyposcript]" >' .
+                                    $this->mainArray['xftTyposcript'] . '</textarea></div></td></tr></table></div>';
   }
 
   /**
@@ -374,9 +544,13 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    * @return void
    */
   function getHTMLTab(){
-    $this->elementArray['htmlicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/>';
+    $this->elementArray['htmlicons'] = $this->setIcon('save');
     $this->elementArray['xftHTMLTitle'] = $this->language->getLL('xftHTMLTitle');
-    $this->elementArray['HTMLbody'] = '<div class="tab-inner-container" ><textarea class="fixed-font enable-tab t3editor" id="xftHTMLEditor" name="xftMain[xftHTML]" cols="' . $this->textareaCols . '" rows="' . $this->textareaCols . '" >' . $this->mainArray['xftHTML'] . '</textarea></div>';
+    $this->elementArray['HTMLbody'] = '<div class="tab-inner-container" ><table  border="0" cellspacing="0" cellpadding="0" width="100%"><tr>'.
+                                    '<td class="xftHelpColumn">' . $this->setIcon('help', array('helperCode' => '5')) .
+                                    '</td><td class="xftStandardColumn"><label for="xftDescription">' . $this->language->getLL('xftHTMLText') . '</label>' .
+                                    '<div class="xftEditorContainer"><textarea class="fixed-font enable-tab t3editor" id="xftHTMLEditor" name="xftMain[xftHTML]" ' .
+                                    'cols="' . $this->textareaCols . '" rows="' . $this->textareaCols . '" >' . $this->mainArray['xftHTML'] . '</textarea></div></td></tr></table></div>';
   }
 
   /**
@@ -386,7 +560,11 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    */
   function getDescriptionTab(){
     $this->elementArray['xftDescriptionTitle'] = $this->language->getLL('xftDescriptionTitle');
-    $this->elementArray['descriptionbody'] = '<div class="tab-inner-container" ><textarea class="xftDescriptionClass" name="xftMain[xftDescription]" >' . $this->mainArray['xftDescription'] . '</textarea></div>';
+    $this->elementArray['descriptionbody'] = '<div class="tab-inner-container" ><table  border="0" cellspacing="0" cellpadding="0" width="100%"><tr>'.
+                                    '<td class="xftHelpColumn">' . $this->setIcon('help', array('helperCode' => '3')) .
+                                    '</td><td class="xftStandardColumn"><label for="xftDescription">' . $this->language->getLL('xftDescriptionText') . '</label>' .
+                                    '<textarea id="xftDescription" class="xftDescriptionClass" name="xftMain[xftDescription]" >' .
+                                    $this->mainArray['xftDescription'] . '</textarea></td></tr></table></div>';
   }
 
   /**
@@ -395,7 +573,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    * @return void
    */
   function getElementTab(){
-    $this->elementArray['elementicons'] = '<img class="pointer-icon xftSaveDok" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/savedok.gif','') . ' title="' . $this->language->getLL('xftSaveDokTitle') . '"/><img class="pointer-icon xftNewElement" ' . t3lib_iconWorks::skinImg($this->backPath,'gfx/new_el.gif','') . ' title="' . $this->language->getLL('xftNewElementTitle') . '"/>';
+    $this->elementArray['elementicons'] = $this->setIcon('save') . $this->setIcon('newElement');
     $this->elementArray['xftElementTitle'] = $this->language->getLL('xftElementTitle');
     $template = t3lib_div::makeInstance('elementTemplate');
     $template->init($this->templateFile);
@@ -445,7 +623,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    */
   function printContent()	{
 
-    $this->content.=$this->doc->endPage();
+   // $this->content.=$this->doc->endPage();
     echo $this->content;
   }
 
@@ -482,9 +660,13 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
    * @return string the HTML content
    */
   function makeImportForm(){
+      $this->elementArray['CLOSEICONS'] = $this->setIcon('close');
+    $this->elementArray['IMPORTTEMPLATETITLE'] = $this->language->getLL('importTemplateTitle');
     $this->elementArray['IMPORTTEMPLATEMESSAGE'] = $this->language->getLL('importTemplateMessage');
     $this->elementArray['IMPORTTEMPLATESUBMIT'] = $this->language->getLL('importTemplateSubmit');
     $this->elementArray['IMPORTTEMPLATEFILELABEL'] = $this->language->getLL('importTemplateFileLabel');
+    $this->elementArray['IMPORTTEMPLATEFILELABEL'] = $this->language->getLL('importTemplateFileLabel');
+    $this->elementArray['HELPICON'] = $this->setIcon('help', array('helperCode' => '100'));
     $subpart = $this->cObj->getSubpart($this->template,'TEMPLATEIMPORT');
     return $this->cObj->substituteMarkerArray($subpart,$this->elementArray,'###|###',1);
   }
@@ -532,7 +714,10 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
     }
     return $error;
   }
+
 }
+
+
 
 
 
@@ -542,15 +727,14 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/xflexte
 
 
 
-
 // Make instance:
 $SOBE = t3lib_div::makeInstance('tx_xflextemplate_backend');
 $SOBE->init();
 
 // Include files?
 foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
-
 $SOBE->main();
+
 $SOBE->printContent();
 
 ?>

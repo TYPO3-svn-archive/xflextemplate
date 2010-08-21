@@ -99,7 +99,13 @@ class xftObject {
                 $paletteID = substr($dataArray['xflextemplate'][$mainKey]['palette'],8);
                 //$dataArray['xflextemplate'][$mainKey]['palettes'] = $dataArray['xflextemplate'][$paletteID]['title'];
                 unset($dataArray['xflextemplate'][$mainKey]['palette']);
-                $paletteArray[$dataArray['xflextemplate'][$paletteID]['title']][] = $title;
+                if(isset($dataArray['xflextemplate'][$paletteID]['title'])){
+                    $titleKey = $dataArray['xflextemplate'][$paletteID]['title'];
+                }
+                else {
+                    $titleKey = $dataArray['xflextemplate'][$paletteID]['name'];
+                }
+                $paletteArray[$titleKey][] = $title;
               }
             break;
             case 'title':
