@@ -121,7 +121,6 @@ class elementTemplate {
         $markerArray[$item . 'selected'] = ($elementArray[$preLabelElementArray . '_' . $item] == 'file') ? 'checked' : '';
       }
     }
-
     //retrieves value from configuration array
     $markerValueArray = $this->getSubElementValueArray($elementName, $elementArray);
     //merge array
@@ -205,7 +204,7 @@ class elementTemplate {
 
 
     $content = $this->cObj->substituteMarkerArray($content,$markerArray,'###|###',1);
-    $content = preg_replace('/###[a-zA-Z0-9]*###/','',$content);
+    $content = preg_replace('/###[a-zA-Z0-9_]*###/','',$content);
 
     //return element
     return $content;

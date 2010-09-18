@@ -106,28 +106,6 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
      */
     var $errorList;
 
-    private $helpCode = array(
-        '1' => 'template name',
-        '2' => 'Group List Enable templates',
-        '3' => 'description template',
-        '4' => 'Typoscript template',
-        '5' => 'HTML template',
-        '6' => 'Element Template',
-        '20' => 'Subelement Title',
-        '21' => 'Subelement Type',
-        '22' => 'Subelement Palettes',
-        '23' => 'Subelement Render Type',
-    // INPUT TYPE
-        '30' => 'Max chars number',
-        '31' => 'Field length',
-        '32' => 'Default value',
-        '33' => 'Lista allowed values',
-        '34' => 'dataType evaluation',
-        '35' => 'Checkbox',
-        '36' => 'Max value',
-        '37' => 'Min value',
-    );
-
     private $helperTranslation = array();
 
 
@@ -408,6 +386,14 @@ t3lib_FlashMessage::ERROR);
 
             $content = str_replace( '###ERRORIMPORTDESCRIPTION###', $message->render(), $content);
           }
+          elseif($error == 1 && t3lib_div::_GP('action') == 'importExecuted') {
+            $message = t3lib_div::makeInstance('t3lib_FlashMessage', $this->language->getLL("importOKDescription"),$this->language->getLL("importOKHeader"), // the header is optional
+t3lib_FlashMessage::OK);
+            $content = str_replace( '###ERRORIMPORTDESCRIPTION###', $message->render(), $content);
+          }
+          else {
+              $content = str_replace( '###ERRORIMPORTDESCRIPTION###', '', $content);
+          }
           //This jscode will be put only for listing display and no for edit or creation element
           $this->doc->JScode .= '
               <script type="text/javascript" src="../javascript/library/class.ajax.js"></script>
@@ -419,7 +405,7 @@ t3lib_FlashMessage::ERROR);
 
 
         $content = $this->doc->header($this->language->getLL("title")) . $content;
-        $content = preg_replace('/###[A-Z0-9]*###/i', '', $content);
+        //$content = preg_replace('/###[A-Z0-9]*###/i', '', $content);
 
     // Setting up the buttons and markers for docheader
         $docHeaderButtons = $this->getButtons();

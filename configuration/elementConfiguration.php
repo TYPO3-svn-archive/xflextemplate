@@ -8,7 +8,7 @@ $GLOBALS['configuration'] = array(
     'textType' => array('cols', 'rows', 'default', 'wrap', 'defaultExtras'),
     'checkType' => array('items','cols', 'default', 'itemprocfunc'),
     'radioType' => array('items', 'default', 'itemprocfunc'),
-    'groupType' => array('internal_type', 'allowed', 'disallowed', 'MM', 'max_size', 'show_thumbs', 'maxitems', 'minitems', 'size', 'autoSizeMax', 'multiple'),
+    'groupType' => array('internal_type', 'allowed', 'disallowed', 'MM', 'max_size', 'show_thumbs', 'maxitems', 'minitems', 'size', 'autoSizeMax', 'multiple','disable_controls'),
     'cObjectType' => array(),
   ),
 
@@ -19,7 +19,7 @@ $GLOBALS['configuration'] = array(
         'textType' => array('cols' => 40, 'rows' => 41, 'default' => 42, 'wrap' => 43, 'defaultExtras' => 44),
         'checkType' => array('items' => 50,'cols' => 51, 'default' => 52, 'itemprocfunc' => 53),
         'radioType' => array('items' => 60, 'default' => 61, 'itemprocfunc' => 62),
-        'groupType' => array('internal_type' => 70, 'allowed' => 71, 'disallowed' => 72, 'MM' => 73, 'max_size' => 74, 'show_thumbs' => 75, 'maxitems' => 76, 'minitems' => 77, 'size' => 78, 'autoSizeMax' => 79, 'multiple' => 80)
+        'groupType' => array('internal_type' => 70, 'allowed' => 71, 'disallowed' => 72, 'MM' => 73, 'max_size' => 74, 'show_thumbs' => 75, 'maxitems' => 76, 'minitems' => 77, 'size' => 78, 'autoSizeMax' => 79, 'multiple' => 80, 'disable_controls' => 81)
     ),
 );
 ?>

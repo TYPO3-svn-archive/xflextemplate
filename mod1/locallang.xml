@@ -56,6 +56,8 @@
             <label index="type">Render:</label>
             <label index="xtype">Tipo:</label>
 
+
+
             <label index="chooseTemplate">Choose a template:</label>
             <label index="importTemplateTip">Import a saved template</label>
             <label index="exportTemplateTip">Export template</label>
@@ -118,6 +120,10 @@
       <label index="md5EncodingFailed">Imported file is corrupted</label>
       <label index="impossibleOpeningTmpFile">Impossible saved temporary file (control write access to system tmp directory)</label>
            <label index="duplicateTemplateEntry">The template name already exists, the operation will not be completed</label>
+           <label index="importOKDescription">The template was succesfully saved</label>
+           <label index="importOKHeader">Import System</label>
+
+
     </languageKey>
         <languageKey index="it" type="array">
             <label index="title">XFT: eXtensibleFlexibleTemplate - generatore di elementi di template dinamici</label>
@@ -198,6 +204,7 @@
             <label index="minitems">numero minimo di elementi</label>
             <label index="autoSizeMax">Dimensionamneto lista</label>
             <label index="multiple">Molteplicita'</label>
+            <label index="disable_controls">Visualizzazione dell'importazione</label>
 
 
             <label index="deleteelementmessage">Si è sicuri di voler cancellare l'elemento?</label>
@@ -262,6 +269,8 @@
       <label index="md5EncodingFailed">Il file importato nonè corretto</label>
       <label index="impossibleOpeningTmpFile">Impossibile salvare il file temporaneo (controllare gli accessi in scrittura alla cartella temporanea del sistema)</label>
       <label index="duplicateTemplateEntry">Il nome del template esiste già, impossibile completare l'importazione</label>
+           <label index="importOKDescription">Il template è stato importato correttamente</label>
+           <label index="importOKHeader">Sistema di importazione</label>
 
 
         </languageKey>

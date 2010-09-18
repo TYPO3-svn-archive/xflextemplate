@@ -95,13 +95,18 @@ class tcaTransformation	{
             break;
             case 'xtype': //list of palettes
             break;
+            case 'maxval':
+                $xflexTceForms[$name]['config']['range']['upper']=$item;
+                break;
+            case 'minval':
+                $xflexTceForms[$name]['config']['range']['lower']=$item;
+                break;
             default:
               $xflexTceForms[$name]['config'][$key]=$item; // standard config fields
             break;
           }
         }
         //defines personalization in label of field, it can be fetch from dynamicfieldtranslation
-        //var_export($this->ts->setup['language.'][$name.'.']['beLabel.']);
         if (is_array($this->ts->setup['language.'][$name.'.']['beLabel.']))
           $xflexTceForms[$name]['label']=($this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']])?$this->ts->setup['language.'][$name.'.']['beLabel.'][$GLOBALS['BE_USER']->uc['lang']]:$this->ts->setup['language.'][$name.'.']['beLabel.']['default'];
         //exclude field is always set to zero
@@ -119,14 +124,13 @@ class tcaTransformation	{
           $paletteValue=($this->translatePalettesArray[$name])?$this->translatePalettesArray[$name]:'';
           $showfields[]=$name.';;'.$paletteValue.';;';
         }
+
       }
     }
     $showfields=(is_array($showfields) && count($showfields)>0)?implode(',',$showfields) . ',':'';
     //Update TCA!! It's very important pass TCA for reference!!!
     $TCA['columns']=(is_array($xflexTceForms))?array_merge_recursive($TCA['columns'],$xflexTceForms):$TCA['columns'];//if template is hidden not merge array but use original TCA
     $TCA['types'][$this->_EXTKEY.'_pi1']['showitem']=$TCA['types'][$this->_EXTKEY.'_pi1']['showitem'].','. $showfields . '--div--;LLL:EXT:cms/locallang_tca.xml:pages.tabs.access, starttime, endtime, fe_group';
-    //var_export($TCA['columns']['image']);
-    //var_export($TCA['columns']['el2']);
   }
 
 /**
@@ -145,6 +149,7 @@ class tcaTransformation	{
       foreach($fieldArray as $object){ // each object is a content subitem
         $temp=array();
         $name=$tempConfig='';
+        $tempRange = array();
         foreach($object as $key=>$item){ //create TCA array from fields
           switch ($key){
             case 'name':
@@ -161,6 +166,12 @@ class tcaTransformation	{
             case 'palettes': //list of palettes
               $palettes=$item;
             break;
+            case 'maxval':
+                $tempRange['upper']='<upper>' . $item . '</upper>';
+                break;
+            case 'minval':
+                $tempRange['lower']='<lower>' . $item . '</lower>';
+                break;
             case 'internal_type':
               if($item == 'file')
                 $tempConfig.='<uploadfolder>'.$globalConf['uploadFolder'].'</uploadfolder>'."\n";
@@ -173,6 +184,9 @@ class tcaTransformation	{
         }
         if(!$defaultExtras && $object['type'] == 'text'){ //defaultExtras is defined as follow
           $defaultExtras = '<defaultExtras>' . $globalConf['defaultExtra'] . '</defaultExtras>';
+        }
+        if (count($tempRange)>0) {
+            $tempConfig.='<range>'.implode('',$tempRange).'</range>'."\n";
         }
         //flextstring contains the xml block for each TCA column
         $flexString.='<'.$name.'><TCEforms>'.$label.'<config>'.$tempConfig.'</config>'.$defaultExtras.'</TCEforms></'.$name.'>'."\n";
