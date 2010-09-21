@@ -128,7 +128,7 @@ $(document).ready(function(){
 
   //Bind button for new element creation
   $('.xftNewElement').bind('click',function(){
-      alert($('#helperBlock').css('display'));
+     // alert($('#helperBlock').css('display'));
     elementId++;
         elements[elementId] = new element({portletClass: 'portlet',language:{dialogYes:languageArray['dialogYes'],dialogCancel:languageArray['dialogCancel']}});
         elements[elementId].add(elementId);
