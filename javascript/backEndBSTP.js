@@ -121,6 +121,11 @@ $(document).ready(function(){
     param = {portletClass: 'portlet',create: 0,language:{dialogYes:languageArray['dialogYes'],dialogCancel:languageArray['dialogCancel']}};
     elements[elementId] = new element(param);
         elements[elementId].add(elementId);
+
+        //close all portlet
+        jQuery(this).find('.portlet-content').toggle();
+        jQuery(this).find('.ui-icon').toggleClass('ui-icon-plusthick');
+        jQuery(this).find('.ui-icon').toggleClass('ui-icon-minusthick');
   });
   var helpVisible = false;
 
@@ -145,11 +150,11 @@ $(document).ready(function(){
       returnArray = responseText.split('|');
       error = returnArray[0];
       if (error == 1) {
-        $('#dialogError .dialogContent').html(returnArray[1]);
+        $('#dialogError .dialogContent').html(unescape(returnArray[1]));
         $('#dialogError').dialog({
           bgiframe: true,
-          resizable: false,
-          height: 140,
+          resizable: true,
+          //height: 140,
           modal: true,
           overlay: {
             backgroundColor: '#000',

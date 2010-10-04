@@ -54,6 +54,12 @@ class tcaTransformation	{
 
   var $ts;
 
+  /**
+   *
+   * @var array contains list of palettes field (field inside palettes not field containing palettes)
+   */
+  public $palettesFieldsList = array();
+
 
   function init($extKey, $tsParser){
     $this->_EXTKEY = $extKey;
@@ -227,15 +233,31 @@ class tcaTransformation	{
     end($TCA['palettes']);
      $last=key($TCA['palettes'])+1;
      //in this way $last is the last index +1 (gratest index) in the array and function uses a grater value
-    if($palettesArray){
+    if(is_array($palettesArray)){
       foreach($palettesArray as $key=>$value){
         $TCA['palettes'][$last]=array('showitem'=>$value);
+        $this->palettesFieldsList = $this->attachPalettesValueToArray($this->palettesFieldsList, $value);
         $this->translatePalettesArray[$key]=$last;
         $last++;
       }
     }
-
   }
+
+    /**
+     * This function manages the merging mechnics of palettes item
+     * @param $palettesFinalArray array contains merged pallettes
+     * @param $palettesList array contains comma separated values palettes field
+     * @return array merged
+     */
+    function attachPalettesValueToArray($palettesFinalArray, $palettesList) {
+        $temporaryArray = explode(',',$palettesList);
+        if (is_array($temporaryArray) && is_array($palettesFinalArray)){
+             return array_merge($palettesFinalArray,$temporaryArray);
+        }
+        else{
+            return $palettesFinalArray;
+        }
+    }
 
   /**
    * This function creates the array from items will be passed to TCA constructor for creating select or radio items.

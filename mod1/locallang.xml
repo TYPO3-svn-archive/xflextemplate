@@ -93,6 +93,7 @@
             <label index="duplicateTitleEntry">Title is already present in the database</label>
             <label index="emptyElementEntry">A template with empty element couldn't be saved</label>
             <label index="emptyElementTitleEntry">Title for element n° %d couldn't be empty</label>
+            <label index="noBlankInElementTitle"><![CDATA[Title: <i>%s</i>, cannot contain blank space]]></label>
       <label index="dialogErrorTitle">Errors during saving</label>
 
       <label index="titleHeader">Title</label>

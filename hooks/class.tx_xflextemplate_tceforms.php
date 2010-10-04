@@ -86,15 +86,23 @@ class tx_xflextemplate_tceforms	{
       $tcaTransformation->getTCApalettes($GLOBALS['TCA']['tt_content'],$dbrow['palettes']);
       //send lis of fields to exclude to show (those are in palettes) to getFormTCA
       $palettesArray = @unserialize($dbrow['palettes']);
+      /*debug($palettesArray);
       if (is_array($palettesArray) && count($palettesArray)>0) {
-          $excludePalettesField = $palettesArray;
+          $excludePalettesField= array();
+          foreach ($palettesArray as $value){
+              $excludePalettesField = array_merge($excludePalettesField,$value);
+          }
+          //$excludePalettesField = $palettesArray;
+          debug($excludePalettesField);
       }
       else{
           $excludePalettesField = array();
-      }
+      }*/
+      $excludePalettesField = $tcaTransformation->palettesFieldsList;
       //call getFormTCA with field to exclude (changed in version 2.1)
       $tcaTransformation->getFormTCA($GLOBALS['TCA']['tt_content'],$xml,$excludePalettesField);
       $flexFields=xmlTransformation::getArrayFromXMLData($row[$this->_EXTKEY]);
+     // debug($GLOBALS['TCA']['tt_content']);
       if(is_array($flexFields)){ //if flexdata is an array data will be put into flexdata array
         //put any field from flexfields
         foreach($flexFields as $key=>$obj){

@@ -452,12 +452,18 @@ body#ext-xflextemplate-mod1-index-php .em-listbg2{
   font-weight: bold;
 }
 
-.xft-error{
+ul.xft-error{
   color: red;
-  font-weight: bold;
+  font-weight: normal;
+  font-size: 10px;
+  padding: 0;
 }
 
-.xft-helpDescription,.xft-error{
+ul.xft-error li{
+  margin:5px;
+}
+
+.xft-helpDescription,ul.xft-error{
   margin: 0 0 8px;
 }
 
