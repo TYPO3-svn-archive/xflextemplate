@@ -295,6 +295,8 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
         </script>
         <script type="text/javascript" src="../javascript/jquery/jquery-1.2.6.pack.js"></script>
         <script type="text/javascript" src="../javascript/jquery/jquery-ui-1.5.3.min.js"></script>
+        <!--<script type="text/javascript" src="../javascript/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../javascript/jquery/jquery-ui-1.8.5.min.js"></script>-->
       ';
 
             // if operation is an edit or new creation template
