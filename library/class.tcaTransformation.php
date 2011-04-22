@@ -101,6 +101,17 @@ class tcaTransformation	{
             break;
             case 'xtype': //list of palettes
             break;
+            case 'link':
+                $xflexTceForms[$name]['config']['wizards'] = array(
+                    '_PADDING' => 2,
+                    'link' => array(
+                        'type' => 'popup',
+                        'title' => 'Link',
+                        'icon' => 'link_popup.gif',
+                        'script' => 'browse_links.php?mode=wizard', 'JSopenParams' => 'height=300,width=500,status=0,menubar=0,scrollbars=1'
+                    )
+                );
+                break;
             case 'maxval':
                 $xflexTceForms[$name]['config']['range']['upper']=$item;
                 break;

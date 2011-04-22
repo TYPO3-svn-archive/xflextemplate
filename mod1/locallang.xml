@@ -183,6 +183,7 @@
             <label index="select">Select box</label>
             <label index="group">Immagini/Elementi db</label>
             <label index="size">Dimensione</label>
+            <label index="link">Aggiungere il wizard per il link</label>
             <label index="max">Max numero di car.</label>
             <label index="default">Valore di default</label>
             <label index="eval">Tipo di dato</label>

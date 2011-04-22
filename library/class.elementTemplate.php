@@ -101,7 +101,7 @@ class elementTemplate {
     //setting delete icon
     $markerArray['HELPICON' . $GLOBALS['configuration']['subElementHelpCode'][$elementName][$item]] = $this->setIcon('help', array('helperCode' => $GLOBALS['configuration']['subElementHelpCode'][$elementName][$item]));
       //checkbox
-      if(t3lib_div::inList('wrap,show_thumbs,',$item)){
+      if(t3lib_div::inList('wrap,show_thumbs,link,',$item)){
         $markerArray[$item . 'checked'] = ($elementArray[$preLabelElementArray . '_' . $item]) ? 'checked' : '';
       }
       //select

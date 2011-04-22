@@ -5,8 +5,65 @@
     <description>Language labels for database tables/fields belonging to extension 'xtemplate'</description>
   </meta>
   <data type="array">
-    <languageKey index="default" type="array">
-      <label index="titleLabel">title</label>
+    <languageKey index="it" type="array">
+      <label index="titleLabel">Titolo</label>
+      <label index="paletteLabel">Campo principale</label>
+      <label index="xtypeLabel">Rendere l'oggetto come</label>
+      <label index="typeLabel">Tipo di campo</label>
+
+      <label index="inputType">Input</label>
+      <label index="textType">text</label>
+      <label index="radioType">radio</label>
+      <label index="checkType">check</label>
+      <label index="selectType">select</label>
+      <label index="groupType">group</label>
+      <label index="cObjectType">cObject</label>
+
+
+      <label index="noneXtype">Nessuno</label>
+      <label index="textXtype">Testo</label>
+      <label index="imageXtype">Immagine</label>
+      <label index="multimediaXtype">Multimedia</label>
+      <label index="cObjectXtype">COA</label>
+
+      <label index="sizelabel">Lunghezza</label>
+      <label index="linklabel">Wizard per link</label>
+      <label index="maxlabel">Numero massimo di caratteri</label>
+      <label index="is_inlabel">Valori permessi in lista</label>
+      <label index="defaultlabel">Valore predefinito</label>
+      <label index="evallabel">Tipo di dato da valutare</label>
+      <label index="checkboxlabel">Checkbox</label>
+      <label index="maxvallabel">Valore massimo</label>
+      <label index="minvallabel">Valore minimo</label>
+
+      <label index="colslabel">Numero di colonne</label>
+      <label index="rowslabel">Numero di righe</label>
+      <label index="wraplabel">Avvolto in textarea</label>
+      <label index="defaultExtraslabel">Funzioni extra (vedi TCA)</label>
+
+
+      <label index="itemslabel">Elementi</label>
+      <label index="itemprocfunclabel">Funzione utente</label>
+
+      <label index="internal_typelabel">Tipo di valore interno</label>
+      <label index="allowedlabel">Contenuto/estensione permessa</label>
+      <label index="disallowedlabel">Contenuto/estensione non permessa</label>
+      <label index="MMlabel">Relazioni</label>
+      <label index="max_sizelabel">Dimensione massima (per i file)</label>
+      <label index="show_thumbslabel">Miniatura</label>
+      <label index="maxitemslabel">Numero massimo di elementi</label>
+      <label index="minitemslabel">Numero minimo di elementi</label>
+      <label index="autoSizeMaxlabel">Numero massimo di elementi nella lista</label>
+      <label index="multiplelabel">Possibilità di selezionare più elementi</label>
+            <label index="disable_controlslabel">Tipo di upload (vedi disable_control in TCA)</label>
+
+      <label index="palettenone">Nessuna</label>
+
+
+
+    </languageKey>
+    <languageKey index="deafult" type="array">
+<label index="titleLabel">title</label>
       <label index="paletteLabel">palette</label>
       <label index="xtypeLabel">Render type</label>
       <label index="typeLabel">Element type</label>
@@ -27,6 +84,7 @@
       <label index="cObjectXtype">COA</label>
 
       <label index="sizelabel">Field lenght</label>
+      <label index="linklabel">Link icon</label>
       <label index="maxlabel">Max char number</label>
       <label index="is_inlabel">List allowed values</label>
       <label index="defaultlabel">Default value</label>
@@ -57,12 +115,6 @@
             <label index="disable_controlslabel">Type of upload feature</label>
 
       <label index="palettenone">None</label>
-
-
-
-    </languageKey>
-    <languageKey index="it" type="array">
-
     </languageKey>
   </data>
 </T3locallang>
