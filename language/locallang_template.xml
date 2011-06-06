@@ -62,7 +62,7 @@
 
 
     </languageKey>
-    <languageKey index="deafult" type="array">
+    <languageKey index="default" type="array">
 <label index="titleLabel">title</label>
       <label index="paletteLabel">palette</label>
       <label index="xtypeLabel">Render type</label>
