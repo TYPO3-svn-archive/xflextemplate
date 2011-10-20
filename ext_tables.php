@@ -23,7 +23,6 @@ t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types'][$_EXTKEY.'_pi1']['showitem']='CType;;4;;1-1-1,hidden;;;;1-1-1,header;LLL:EXT:lang/locallang_general.php:LGL.name;;;2-2-2,xtemplate,--div--;LLL:EXT:xflextemplate/locallang_db.xml:xftDiv';
 $TCA['tt_content']['ctrl']['requestUpdate'] .= (trim($TCA['tt_content']['ctrl']['requestUpdate']))?',xtemplate':'xtemplate';
 
-t3lib_extMgm::addStaticFile($_EXTKEY,"pi1/static/","XFlexTemplate");
 
 
 
