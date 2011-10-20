@@ -510,7 +510,7 @@ class tx_xflextemplate_backend extends t3lib_SCbase {
 
         $this->elementArray['generalbody'] = '<div class="tab-inner-container" ><table  border="0" cellspacing="0" cellpadding="0" width="100%"><tr>'.
                                     '<td class="xftHelpColumn">' . $this->setIcon('help', array('helperCode' => '1')) . '</td><td class="xftStandardColumn"><label for="xftTitle">' .
-        $this->language->getLL('xftTitle') .     '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" /></td></tr>' .
+        $this->language->getLL('xftTitle') .     '</label><input type="text" id="xftTitle" name="xftMain[xftTitle]" value="' . $this->mainArray['xftTitle'] . '" /><div style="margin-top:10px"><input style="margin-right:5px" type="checkbox" id="xftShowinwizard" name="xftMain[xftShowInWizard]" value="1" ' . ($this->mainArray['xftShowInWizard']==1?'checked="checked"':'') . '" />' . $this->language->getLL('xftShowInWizard') . '</div></td></tr>' .
         $select . '</table></div>';
     }
 

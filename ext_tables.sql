@@ -25,6 +25,7 @@ CREATE TABLE tx_xflextemplate_template (
   	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
   	deleted tinyint(3) unsigned DEFAULT '0' NOT NULL,
   	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	showinwizard tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid)
 );

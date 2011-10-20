@@ -88,6 +88,7 @@
             <label index="xftHTMLText">Template HTML code</label>
             <label index="xftNewElementTitle">Add new element</label>
             <label index="xftSaveDokTitle">Save template</label>
+           <label index="xftShowInWizard">Show in content element wizard</label>
 
             <label index="emptyTitleEntry">Title couldn't be empty</label>
             <label index="duplicateTitleEntry">Title is already present in the database</label>

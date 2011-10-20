@@ -140,6 +140,7 @@ class xftObject {
             }
             $xml = t3lib_div::array2xml($dataArrayIndexed);
             $savedData['title'] = $dataArray['xftMain']['xftTitle'];
+            $savedData['showinwizard'] = $dataArray['xftMain']['xftShowInWizard'];
             $savedData['description'] = $dataArray['xftMain']['xftDescription'];
             $savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];
             $savedData['enablegroup'] = $dataArray['xftMain']['xftEnableGroups'];
@@ -201,6 +202,7 @@ class xftObject {
             }
             $xml = t3lib_div::array2xml($dataArrayIndexed);
             $savedData['title'] = $dataArray['xftMain']['xftTitle'];
+            $savedData['showinwizard'] = $dataArray['xftMain']['xftShowInWizard'];
             $savedData['description'] = $dataArray['xftMain']['xftDescription'];
             $savedData['typoscript'] = $dataArray['xftMain']['xftTyposcript'];
             $savedData['enablegroup'] = $dataArray['xftMain']['xftEnableGroups'];
@@ -268,6 +270,7 @@ class xftObject {
             $xftArray['xftMain']['xftHTML'] = $row['html'];
             $xftArray['xftMain']['xftTyposcript'] = $row['typoscript'];
             $xftArray['xftMain']['uid'] = $row['uid'];
+            $xftArray['xftMain']['xftShowInWizard'] = $row['showinwizard'];
         }
         return $xftArray;
     }
