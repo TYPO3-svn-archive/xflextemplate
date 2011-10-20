@@ -1,4 +1,11 @@
 (add new changes on top of this file)
+-------------------------------------------Release 2.0.15--------------------------
+2011-10-11 15:25:23 CEST  federico@bernardin.it    added feature on wizard list: all single template are available also for templavoila
+2011-10-11 15:20:17 CEST  federico@bernardin.it    refactor of basic extension template, now is automatically loaded
+2011-07-27 15:05:02 CEST  federico@bernardin.it    fix bug: not reload on template selection
+
+-------------------------------------------Release 2.0.14--------------------------
+2011-06-06 16:08:11 CEST  federico@bernardin.it    fix problem with label of single element
 
 -------------------------------------------Release 2.0.13--------------------------
 2011-04-22 16:32:50 CEST  federico@bernardin.it    fix problem with multicolumn
