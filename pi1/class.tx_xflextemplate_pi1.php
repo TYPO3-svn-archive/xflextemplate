@@ -155,8 +155,12 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
     $res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('xml,typoscript,html','tx_xflextemplate_template','title="'.$this->cObj->data['xtemplate'].'" AND deleted=0 AND hidden=0');
     $databaseRow=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
     $this->typoscript=$databaseRow['typoscript'];
-    $ts=t3lib_div::makeInstance('t3lib_TSparser');
-    $ts->parse($this->typoscript);
+    //debug();
+    //This code updates typoscript of template with template from page
+    $GLOBALS['TSFE']->tmpl->config[count($GLOBALS['TSFE']->tmpl->config)] = $this->typoscript;
+    $typoscriptParser = $GLOBALS['TSFE']->tmpl;
+    $typoscriptParser->generateConfig();
+
     //$ts contains all typoscript from xflextemplate
     $xml=str_replace("''","'",$databaseRow['xml']);
     //create correct element data from xml in the xflextemplate
@@ -167,7 +171,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
       }
     }
     //assign typoscript
-    $this->typoscript=$ts->setup;
+    $this->typoscript=$typoscriptParser->setup;
     //$this->template=($databaseRow['html']) ? $databaseRow['html'] : $this->cObj->TEMPLATE($this->typoscript['templateFile.']);
     if(!$databaseRow['html']){
       $this->template=$this->cObj->getSubpart($this->cObj->TEMPLATE($this->typoscript['templateFile.']),  '###'.strtoupper(str_replace(' ','_',$this->cObj->data['xtemplate'])).'###');
@@ -178,7 +182,7 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
     //only for back compatibility
     $this->template=($this->template)?$this->template:$this->getTemplateString($dbrow['file']);//retrieve file data, only if is not defined in template
     //Updating conf array with typoscript
-    $this->conf=t3lib_div::array_merge_recursive_overrule($this->conf,$ts->setup);
+    $this->conf=t3lib_div::array_merge_recursive_overrule($this->conf,$typoscriptParser->setup);
   }
 
   /**
@@ -210,7 +214,6 @@ class tx_xflextemplate_pi1 extends tslib_pibase {
         $hookObjectsArr[] = &t3lib_div::getUserObj($classRef);
       }
     }
-    $ts=t3lib_div::makeInstance('t3lib_TSparser');
     //analyze single object and define data
     foreach ($this->xflexData as $key=>$xftitem) {
       $conf = array();
